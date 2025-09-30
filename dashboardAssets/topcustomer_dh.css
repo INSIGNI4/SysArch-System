@@ -1,0 +1,45 @@
+.topcustomer_dashboard {
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.topcustomer_header {
+    background: #00AEEF;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+.topcustomer_header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.topcustomer_header span {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.topcustomer_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.topcustomer_table th {
+    background: #f1f1f1;
+    text-align: left;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.topcustomer_table td {
+    padding: 5px;
+    border-top: 1px solid #ddd;
+}

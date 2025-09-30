@@ -1,0 +1,55 @@
+.card {
+    background: linear-gradient(#f8f8f8, #d1d1d1);
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    padding: 8px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+}
+
+.card-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 5px 0;
+    text-align: left;
+}
+
+.card-footer {
+    font-size: 11px;
+    color: #444;
+    text-align: right;
+}
+
+/* Keep your original grid layout */
+.totalproduct_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 7;
+}
+
+.growth_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 3;
+    grid-row-start: 7;
+}
+
+.totalsold_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 8;
+}
+
+.totalcustomer_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 3;
+    grid-row-start: 8;
+}

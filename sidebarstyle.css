@@ -1,0 +1,151 @@
+
+*,
+::after,
+::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Poppins", sans-serif;
+    /* background-color: lightcyan; */
+    background-image: url(loginBG.png);
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: cover;
+}
+
+h4 {
+    font-size: 1.2375rem;
+    color: #fff;
+}
+
+a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+.wrapper {
+    display: flex;
+}
+
+#sidebar {
+    max-width: 264px;
+    min-width: 264px;
+    transition: all 0.35s ease-in-out;
+    box-shadow: 0 0 35px 0 rgba(48, 57, 66, 0.6);
+}
+
+.h-100 {
+    height: 100% !important;
+}
+
+.sidebar-logo {
+    padding: 1.15rem 1.5rem;
+}
+
+.sidebar-logo a {
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.35s ease-in-out;
+}
+
+.dashboard-navbar {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.sidetoggle-btn {
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+    margin-right: 1.5rem;
+}
+
+.sidetoggle-btn i {
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.sidebar-header {
+    color: #fff;
+    font-size: .75rem;
+    padding: 1.5rem 1.5rem .375rem;
+}
+
+a.sidebar-link {
+    padding: .625rem 1.625rem;
+    color: #fff;
+    position: relative;
+    display: block;
+    font-size: 1rem;
+    background: red;
+}
+
+.sidebar-link i{
+    padding-right: .5rem;
+}
+
+/* Style for dropdown */
+
+.sidebar-item .sidebar-dropdown {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 200ms linear, max-height 200ms linear;
+    will-change: opacity,max-height;
+    color: blue;
+    padding: 0 25px;
+
+}
+
+.sidebar-link.has-dropdown::after {
+    content: "";
+    display: inline-block;
+    padding: 2px;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.4rem;
+    transform: rotate(45deg);
+    transition: all .2s ease-out;
+    border: solid;
+    border-radius:  0 .075rem .075rem 0;
+}
+.sidebar-link.has-dropdown.active::after{
+    transform: rotate(-135deg);
+    transition: all .2s ease-out;
+}
+
+.sidebar-link.has-dropdown.active+.sidebar-dropdown{
+    opacity: 1;    
+    max-height: 15em;
+    transition: all 200ms linear;
+    will-change: opacity, max-height;
+}
+
+#sidebar.collapsed{
+    margin-left: -264px;
+
+}
+
+.content{
+    flex: 1;
+    max-width: 100vw;
+    width: 100vw;
+    padding: 1rem 1.5rem;
+}

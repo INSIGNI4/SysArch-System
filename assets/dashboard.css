@@ -1,0 +1,96 @@
+.parent_dashboard {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 8px;
+    height: 100vh; /* full screen */
+    width: 100vw;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+}
+
+.analytics_dashboard {
+    grid-column: span 4 / span 4;
+    grid-row: span 4 / span 4;
+    background: #f3c4c4;
+}
+
+
+.forecast_dashboard {
+    grid-column: span 4 / span 4;
+    grid-row: span 4 / span 4;
+    grid-column-start: 5;
+    background: #c4e1f3;
+}
+
+.topcustomer_dashboard {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 9;
+    background: #c4f3d5;
+}
+
+.return_dashboard {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 9;
+    grid-row-start: 3;
+    background: #f3eac4;
+}
+
+.products_dashboard {
+    grid-column: span 4 / span 4;
+    grid-row: span 2 / span 2;
+    grid-row-start: 5;
+    background: #e2c4f3;
+}
+
+.confidence_dashboard {
+    grid-column: span 3 / span 3;
+    grid-column-start: 5;
+    grid-row-start: 5;
+    background: #c4f3f1;
+}
+
+.projected_dashboard {
+    grid-column: span 3 / span 3;
+    grid-column-start: 8;
+    grid-row-start: 5;
+    background: #f3c4e4;
+}
+
+.totalproduct_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 7;
+    background: #ffd6a5;
+}
+
+.growth_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 3;
+    grid-row-start: 7;
+    background: #caffbf;
+}
+
+.totalsold_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 8;
+    background: #9bf6ff;
+}
+
+.totalcustomer_dashboard {
+    grid-column: span 2 / span 2;
+    grid-column-start: 3;
+    grid-row-start: 8;
+    background: #ffc6ff;
+}
+
+.stock_dashboard {
+    grid-column: span 6 / span 6;
+    grid-row: span 3 / span 3;
+    grid-column-start: 5;
+    grid-row-start: 6;
+    background: #fdffb6;
+}

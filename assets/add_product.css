@@ -1,0 +1,101 @@
+/* ===== MODAL BACKDROP ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* ===== MODAL BOX ===== */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px 30px;
+    border-radius: 10px;
+    width: 450px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+
+    margin-top: 10px;
+
+}
+
+/* ===== HEADINGS ===== */
+.modal-content h3 {
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+}
+
+/* ===== FORM INPUTS ===== */
+.modal-content label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #545151;
+    border-radius: 6px;
+    font-size: 14px;
+
+}
+
+/* ===== BUTTONS ===== */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+    gap: 10px;
+    
+}
+
+.na-btn {
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Add Button */
+.na-btn-add {
+    background-color: #ffc107;
+    color: white;
+}
+
+.na-btn-add:hover {
+    background-color: #a72d04;
+}
+
+/* Cancel Button */
+.na-btn-cancel {
+    background-color: #f44336;
+    color: white;
+}
+
+.na-btn-cancel:hover {
+    background-color: #680402;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

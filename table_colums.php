@@ -40,21 +40,38 @@ $table_colums_mapping = [
     'restock' => [
         'Orestock_ID', 'Type', 'Quantity', 'OrderDate', 'Product_ID',
         'Supplier_ID', 'Status', 'Image', 'DeliveryStatus'
+        ,'TotalReceived','withIssue'
     ],
+
 
     
     // /// ======= FORECASTING & ANALYTICS DATABASE ======= ///
-    'forecast' => [
-        'Forecast_ID', 'ForecastType', 'ProductScope', 'ForecastPeriod',
+    'daily_forecast' => [
+        'DailyForecast_ID', 'ForecastType', 'ProductScope', 'ForecastPeriod',
         'ForecastStart', 'ForecastEnd', 'ProjectedSales', 'ConfidenceLevel', 'Account_ID'
     ],
+    'weekly_forecast' => [
+        'WeeklyForecast_ID', 'ForecastType', 'ProductScope', 'ForecastPeriod',
+        'ForecastStart', 'ForecastEnd', 'ProjectedSales', 'ConfidenceLevel', 'Account_ID'
+    ],
+    'monthly_forecast' => [
+        'MonthlyForecast_ID', 'ForecastType', 'ProductScope', 'ForecastPeriod',
+        'ForecastStart', 'ForecastEnd', 'ProjectedSales', 'ConfidenceLevel', 'Account_ID'
+    ],
+    
     'analytics' => [
         'AnalyticsID', 'Forecast_ID', 'Forecast_Type','Report_Date', 'ProductScope', 'PeriodType', 'SalesMetrics',
         'Inventory_ID', 'Account_ID'
     ],
-    'salesaggregration' => [
-        'Aggregation_ID', 'PeriodType', 'PeriodStart', 'PeriodEnd', 'Product_ID', 'TotalSales', 'TotalQuantity'
-    ],
+    
+    
+    // 'salesaggregration' => [
+    //     'Aggregation_ID', 'PeriodType', 'PeriodStart', 'PeriodEnd', 'Product_ID', 'TotalSales', 'TotalQuantity'
+    // ],
+
+
+
+
 
     'daily_sales' => [
         'DailySales_ID ', 'PeriodStart', 'PeriodEnd', 'Product_ID', 'TotalSales', 'TotalQuantity'
@@ -67,6 +84,22 @@ $table_colums_mapping = [
     'monthly_sales' => [
         'MonthlySales_ID ', 'PeriodStart', 'PeriodEnd', 'Product_ID', 'TotalSales', 'TotalQuantity'
     ],
+
+
+
+    'daily_total_sales' => [
+        'EntireDailySales_ID ', 'PeriodStart', 'PeriodEnd', 'TotalSales', 'TotalQuantity'
+    ],
+
+    'weekly_total_sales' => [
+        'EntireWeeklySales_ID ', 'PeriodStart', 'PeriodEnd', 'TotalSales', 'TotalQuantity'
+    ],
+
+    'monthly_total_sales' => [
+        'EntireMonthlySales_ID ', 'PeriodStart', 'PeriodEnd', 'TotalSales', 'TotalQuantity'
+    ],
+
+    
 
 
 

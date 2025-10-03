@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const productSelect = document.getElementById("Product_ID");
+  const productSelect = document.getElementById("Product_IDSALES");
 
   async function loadProductIDs() {
     try {

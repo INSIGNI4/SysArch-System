@@ -399,6 +399,7 @@ body, html {
 .na-btn-add { background-color: #ffc107; color: white; }
 /* .na-btn-add:hover { background-color: #983906; color: white; } */
 .na-btn-update { background-color: #027004; color: white; }
+.na-btn-update:hover { background-color: #023003; color: white; }
 .na-btn-add1 { background-color: #808080; color: white; border: 2px solid white; border-radius: 4px;}
 .na-btn-add1:hover { background-color: #343a40; border: 1px solid #f8f9fa;}
 .na-count { background-color: #555; padding: 4px 8px; border-radius: 3px; font-weight: bold; }
@@ -445,7 +446,7 @@ body, html {
 .product-id-cell { cursor: pointer; font-size: 15px; color: #084e7d; text-align: center;font-weight: bolder;}
 .supplier-id-cell { cursor: pointer; font-size: 15px; color: #b72312;  text-align: center;font-weight: bolder;}
 .status-tag { padding: 4px 10px; border-radius: 5px; color: white; font-weight: bold; text-align: center; display: inline-block; font-size: 12px; border: 1px solid rgba(0,0,0,0.2); }
-.status-new, .status-returned, .order-restock-table .status-received { background-color: #28a745; }
+/* .status-new, .status-returned, .order-restock-table .status-received { background-color: #28a745; } */
 .status-issue { background-color: #6c757d; }
 .type-tag-purple { background-color: #8e44ad; color: white; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; border: 1px solid rgba(0,0,0,0.2); }
 .empty-row td { height: 38px; }

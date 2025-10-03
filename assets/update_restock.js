@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusSelect = document.getElementById('update-status');
     const idInput = document.getElementById('update-order-id');
     const deliverystatusSelect = document.getElementById('update-delivery-status');
-    // const proofInput = document.getElementById('update-proof');
+    const totalReceivedInput = document.getElementById('update-received');
+    const withIssueInput = document.getElementById('update-issue');
+    const proofInput = document.getElementById('edit-image');
 
     function resetActions() {
         document.querySelectorAll(".update-order-btn").forEach(btn => btn.style.display = "none");
@@ -19,10 +21,13 @@ document.addEventListener('DOMContentLoaded', function () {
             clone.addEventListener('click', function () {
                 modal.style.display = 'block';
                 idInput.value = this.dataset.id || '';
+                totalReceivedInput.value = this.dataset.received || '';
+                withIssueInput.value = this.dataset.issue || '';
                 
                 statusSelect.value = this.dataset.status || '';
                 deliverystatusSelect.value = this.dataset.deliverystatus || '';
-                // proofInput.value = this.dataset.proof || '';
+                proofInput.value = this.dataset.proof || '';
+                
             });
         });
     }

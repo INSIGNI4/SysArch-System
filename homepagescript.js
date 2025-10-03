@@ -23,7 +23,7 @@ let analyticsRowCount = 10;
 let stockAdjustmentRowCount = 7, pulledIdCounter = 1007;
 
 // --- State Variables ---
-let activeReturnsTable = 'supplier';
+let activeReturnsTable = 'customer';
 let activeTransactionSalesView = 'transaction';
 let activeForecastAnalyticsView = 'forecast';
 let activeSalesAggregrationView = 'daily';
@@ -135,7 +135,7 @@ function showContentSection(sectionId) {
     }
 
     if (sectionId === 'sales-aggregation') {
-        showSalesAggregrationView('daily');
+        showSalesAggregrationView('byProduct');
     }
 
 }
@@ -316,31 +316,154 @@ function showForecastAnalyticsView(viewType, tableType = activeTableType) {
 
 }
 
+// function toggleSalesView(viewType) {
+//     activetoggleSalesView = viewType;
+//     const byProductBtn = document.getElementById('byproduct-sales-btn');
+//     const entireBtn = document.getElementById('entire-sales-btn');
 
-function showSalesAggregrationView(viewType) {
+//     const productButtons = document.getElementById('product-toggle-buttons');
+//     const entireButtons = document.getElementById('entire-toggle-buttons');
+
+//     if (viewType === 'byProduct') {
+//         byProductBtn.classList.add('active');
+//         entireBtn.classList.remove('active');
+
+//         productButtons.style.display = 'flex';
+//         entireButtons.style.display = 'none';
+//     } else if (viewType === 'entire') {
+//         entireBtn.classList.add('active');
+//         byProductBtn.classList.remove('active');
+
+//         productButtons.style.display = 'none';
+//         entireButtons.style.display = 'flex';
+//     }
+    
+// }
+
+let activeAggregationType = 'daily'
+
+function showSalesAggregrationView(viewType, tableType = activeAggregationType) {
     activeSalesAggregrationView = viewType;
-    document.getElementById('daily-sales-view-container').style.display = viewType === 'daily' ? 'flex' : 'none';
-    document.getElementById('weekly-sales-view-container').style.display = viewType === 'weekly' ? 'flex' : 'none';
-    document.getElementById('monthly-sales-view-container').style.display = viewType === 'monthly' ? 'flex' : 'none';
-
+    activeAggregationType = tableType;
     
-                                    // <button id="daily-sales-btn" class="toggle-btn active">Daily</button>
-                                    // <button id="weekly-sales-btn" class="toggle-btn ">Weekly</button>
-                                    // <button id="monthly-sales-btn" class="toggle-btn ">Monthly</button>
-    
-    document.getElementById('daily-sales-btn').classList.toggle('active', viewType === 'daily');
-    document.getElementById('weekly-sales-btn').classList.toggle('active', viewType === 'weekly');
-    document.getElementById('monthly-sales-btn').classList.toggle('active', viewType === 'monthly');
+    // const byProductBtn = document.getElementById('byproduct-sales-btn');
+    // const entireBtn = document.getElementById('entire-sales-btn');
 
-    document.getElementById('forecast-analytics-count').textContent = String(viewType === 'forecast' ? forecastRowCount : analyticsRowCount).padStart(2, '0');
+    // const productButtons = document.getElementById('product-toggle-buttons');
+    // const entireButtons = document.getElementById('entire-toggle-buttons');
 
-    // document.getElementById('forecast-add-btn').style.display = viewType === 'forecast' ? 'inline-block' : 'none';
-    // document.getElementById('analytics-add-btn').style.display = viewType === 'analytics' ? 'inline-block' : 'none';
+    // if (viewType === 'byProduct') {
+    //     byProductBtn.classList.add('active');
+    //     entireBtn.classList.remove('active');
 
-    // document.getElementById('daily-forecast-view-container');
-    // document.getElementById('week-forecast-view-container');
-    // document.getElementById('daily-forecast-view-container');
+    //     productButtons.style.display = 'flex';
+    //     entireButtons.style.display = 'none';
+    // } else if (viewType.startsWith('entire')) {
+    //     entireBtn.classList.add('active');
+    //     byProductBtn.classList.remove('active');
+
+    //     productButtons.style.display = 'none';
+    //     entireButtons.style.display = 'flex';
+    // }   
+
+    // const byProductBtn = document.getElementById('byproduct-sales-btn');
+    // const entireBtn = document.getElementById('entire-sales-btn');
+
+
+    // 
+
+    document.getElementById('byproduct-view-container').style.display = viewType === 'byProduct' ? 'flex' : 'none';
+    document.getElementById('entire-view-container').style.display = viewType === 'entire' ? 'flex' : 'none';
+
+    document.getElementById('byproduct-sales-btn').classList.toggle('active', viewType === 'byProduct');
+    document.getElementById('entire-sales-btn').classList.toggle('active', viewType === 'entire');
+
+    // document.getElementById('forecast-analytics-count').textContent = String(viewType === 'forecast' ? forecastRowCount : analyticsRowCount).padStart(2, '0');
+
+    document.getElementById('product-toggle-buttons').style.display = viewType === 'byProduct' ? 'flex' : 'none';
+    document.getElementById('entire-toggle-buttons').style.display = viewType === 'entire' ? 'flex' : 'none';
+
+    document.getElementById('daily-product-btn').classList.toggle('active',   viewType === 'byProduct' && tableType === 'daily');
+    document.getElementById('weekly-product-btn').classList.toggle('active',  viewType === 'byProduct' && tableType === 'weekly');
+    document.getElementById('monthly-product-btn').classList.toggle('active', viewType === 'byProduct' && tableType === 'monthly');
+
+    document.getElementById('daily-entire-btn').classList.toggle('active',   viewType === 'entire' && tableType === 'daily');
+    document.getElementById('weekly-entire-btn').classList.toggle('active',  viewType === 'entire' && tableType === 'weekly');
+    document.getElementById('monthly-entire-btn').classList.toggle('active', viewType === 'entire' && tableType === 'monthly');
+
+    document.getElementById('daily-byProduct-view-container').style.display = (viewType === 'byProduct' && tableType === 'daily')   ? 'block' : 'none';
+    document.getElementById('weekly-byProduct-view-container').style.display  = (viewType === 'byProduct' && tableType === 'weekly')   ? 'block' : 'none';
+    document.getElementById('monthly-byProduct-view-container').style.display = (viewType === 'byProduct' && tableType === 'monthly')   ? 'block' : 'none';
+
+    document.getElementById('daily-entire-view-container').style.display = (viewType === 'entire' && tableType === 'daily')   ? 'block' : 'none';
+    document.getElementById('weekly-entire-view-container').style.display  = (viewType === 'entire' && tableType === 'weekly')   ? 'block' : 'none';
+    document.getElementById('monthly-entire-view-container').style.display = (viewType === 'entire' && tableType === 'monthly')   ? 'block' : 'none';
+
+
+
+
 }
+
+    // 
+
+    // document.getElementById('byproduct-view-container').style.display = viewType === 'byProduct' ? 'flex' : 'none';
+    // document.getElementById('entire-view-container').style.display = viewType === 'entire' ? 'flex' : 'none';
+
+
+    // document.getElementById('byproduct-sales-btn').classList.toggle('active', viewType === 'byProduct');
+    // document.getElementById('entire-sales-btn').classList.toggle('active', viewType === 'entire');
+
+
+
+    // document.getElementById('daily-byProduct-view-container').style.display = (viewType === 'byProduct' && tableType === 'daily')? 'flex' : 'none';
+    // document.getElementById('weekly-byProduct-view-container').style.display = (viewType === 'byProduct' && tableType === 'weekly')? 'flex' : 'none';
+    // document.getElementById('monthly-byProduct-view-container').style.display = (viewType === 'byProduct' && tableType === 'monthly')? 'flex' : 'none';
+    
+    // document.getElementById('daily-product-btn').classList.toggle('active', viewType === 'byProduct' && tableType === 'daily');
+    // document.getElementById('weekly-product-btn').classList.toggle('active', viewType === 'byProduct' && tableType === 'weekly');
+    // document.getElementById('monthly-product-btn').classList.toggle('active', viewType === 'byProduct' && tableType === 'monthly');
+
+    // document.getElementById('daily-entire-view-container').style.display = (viewType === 'entire' && tableType === 'daily') ? 'flex' : 'none';
+    // document.getElementById('weekly-entire-view-container').style.display = (viewType === 'entire' && tableType === 'weekly')? 'flex' : 'none';
+    // document.getElementById('monthly-entire-view-container').style.display = (viewType === 'entire'&& tableType === 'monthly') ? 'flex' : 'none';
+
+    // document.getElementById('daily-entire-btn').classList.toggle('active', viewType === 'entire' && tableType === 'daily');
+    // document.getElementById('weekly-entire-btn').classList.toggle('active', viewType === 'entire' && tableType === 'weekly');
+    // document.getElementById('monthly-entire-btn').classList.toggle('active', viewType === 'entire' && tableType === 'monthly');
+
+
+    // document.getElementById('ntire-sales-view-container').style.display = viewType === 'entire' ? 'flex' : 'none';
+    // document.getElementById('byproduct-sales-view-container').style.display = viewType === 'byproduct' ? 'flex' : 'none';
+
+    // document.getElementById('byproduct-daily-sales-view-container').style.display = viewType === 'dailyProduct' ? 'flex' : 'none';
+    // document.getElementById('byproduct-weekly-sales-view-container').style.display = viewType === 'weeklyProduct' ? 'flex' : 'none';
+    // document.getElementById('byproduct-monthly-sales-view-container').style.display = viewType === 'monthlyProduct' ? 'flex' : 'none';
+
+    // document.getElementById('entire-daily-sales-view-container').style.display = viewType === 'dailyEntire' ? 'flex' : 'none';
+    // document.getElementById('entire-weekly-sales-view-container').style.display = viewType === 'weeklyEntire' ? 'flex' : 'none';
+    // document.getElementById('entire-monthly-sales-view-container').style.display = viewType === 'monthlyEntire' ? 'flex' : 'none';
+
+
+    // document.getElementById('entire-sales-btn').classList.toggle('active', viewType === 'dailyEntire');
+    // document.getElementById('byproduct-sales-btn').classList.toggle('active', viewType === 'dailyProduct');
+
+    // // tool bar buttons
+    // document.getElementById('byproduct-daily-sales-btn').classList.toggle('active', viewType === 'dailyProduct');
+    // document.getElementById('byproduct-weekly-sales-btn').classList.toggle('active', viewType === 'weeklyProduct');
+    // document.getElementById('byproduct-monthly-sales-btn').classList.toggle('active', viewType === 'monthlyProduct');
+
+    // document.getElementById('entire-daily-sales-btn').classList.toggle('active', viewType === 'dailyEntire');
+    // document.getElementById('entire-weekly-sales-btn').classList.toggle('active', viewType === 'weeklyEntire');
+    // document.getElementById('entire-monthly-sales-btn').classList.toggle('active', viewType === 'monthlyEntire');
+
+    // document.getElementById('forecast-analytics-count').textContent = String(viewType === 'forecast' ? forecastRowCount : analyticsRowCount).padStart(2, '0');
+
+
+    
+
+
+
+
 
 
 
@@ -481,9 +604,17 @@ if (sidebarToggle) {
     
     // showSalesAggregrationView
 
-    document.getElementById('daily-sales-btn').addEventListener('click', () => showSalesAggregrationView('daily'));
-    document.getElementById('weekly-sales-btn').addEventListener('click', () => showSalesAggregrationView('weekly'));
-    document.getElementById('monthly-sales-btn').addEventListener('click', () => showSalesAggregrationView('monthly'));
+
+    document.getElementById('byproduct-sales-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'daily'));
+    document.getElementById('entire-sales-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'daily'));
+    
+    document.getElementById('daily-product-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'daily'));
+    document.getElementById('weekly-product-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'weekly'));
+    document.getElementById('monthly-product-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'monthly'));
+
+    document.getElementById('daily-entire-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'daily'));
+    document.getElementById('weekly-entire-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'weekly'));
+    document.getElementById('monthly-entire-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'monthly'));
 
     //forecast & analytics view
     document.getElementById('forecast-view-btn').addEventListener('click', () => showForecastAnalyticsView('forecast', 'daily'));

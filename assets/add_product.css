@@ -78,6 +78,11 @@
     background-color: #a72d04;
 }
 
+.na-btn-update { background-color: #027004; color: white; }
+
+.na-btn-update:hover { background-color: #023003; color: white; }
+
+
 /* Cancel Button */
 .na-btn-cancel {
     background-color: #f44336;

@@ -1,4 +1,4 @@
-const productSelect = document.getElementById('Product_ID');
+const productSelect = document.getElementById('Product_IDSALES');
 const productNameInput = document.getElementById('ProductName');
 const barcodeInput = document.getElementById('Barcode');
 const unitPriceInput = document.getElementById('Unit_Price');

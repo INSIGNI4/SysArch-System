@@ -339,7 +339,9 @@ if(isset($_SESSION['email'])){
 
                         </div>
 
-
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        
+                        <script src="dashboardAssets/stock_avail.js"></script>
                         <script src="dashboardAssets/summary.js"></script>
                         <script src="dashboardAssets/forecast_dh.js"></script>
                         <script src="dashboardAssets/analytics_dh.js"></script>
@@ -2318,18 +2320,18 @@ if(isset($_SESSION['email'])){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($dailyforecast as $index => $dailyf){ ?>
+                                    <?php foreach($dailyforecast as $index => $dailyforecast){ ?>
                                         <tr>
                                             <td><?= $index + 1 ?></td>
-                                            <td class="forecast-id-cell"><?= $dailyf['DailyForecast_ID'] ?></td>
-                                            <td><?= $dailyf['ForecastType'] ?></td>
-                                            <td><span class="type-tag-purple"><?= $dailyf['ProductScope'] ?></span></td>
-                                            <td><?= $dailyf['ForecastPeriod'] ?></td>
-                                            <td><?= date('F d,Y', strtotime($dailyf['ForecastStart'])) ?></td>
-                                            <td><?= date('F d,Y', strtotime($dailyf['ForecastEnd'])) ?></td>
-                                            <td><?= $dailyf['ProjectedSales'] ?></td>
-                                            <td><?= $dailyf['ConfidenceLevel'] ?></td>
-                                            <td><?= $dailyf['Account_ID'] ?></td>
+                                            <td class="forecast-id-cell"><?= $dailyforecast['DailyForecast_ID'] ?></td>
+                                            <td><?= $dailyforecast['ForecastType'] ?></td>
+                                            <td><span class="type-tag-purple"><?= $dailyforecast['ProductScope'] ?></span></td>
+                                            <td><?= $dailyforecast['ForecastPeriod'] ?></td>
+                                            <td><?= date('F d,Y', strtotime($dailyforecast['ForecastStart'])) ?></td>
+                                            <td><?= date('F d,Y', strtotime($dailyforecast['ForecastEnd'])) ?></td>
+                                            <td><?= $dailyforecast['ProjectedSales'] ?></td>
+                                            <td><?= $dailyforecast['ConfidenceLevel'] ?></td>
+                                            <td><?= $dailyforecast['Account_ID'] ?></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
@@ -2354,18 +2356,18 @@ if(isset($_SESSION['email'])){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($weeklyforecast as $index => $weeklyf){ ?>
+                                    <?php foreach($weeklyforecast as $index => $weeklyforecast){ ?>
                                         <tr>
                                             <td><?= $index + 1 ?></td>
-                                            <td class="forecast-id-cell"><?= $weeklyf['WeeklyForecast_ID'] ?></td>
-                                            <td><?= $weeklyf['ForecastType'] ?></td>
-                                            <td><span class="type-tag-purple"><?= $weeklyf['ProductScope'] ?></span></td>
-                                            <td><?= $weeklyf['ForecastPeriod'] ?></td>
-                                            <td><?= date('F d,Y', strtotime($weeklyf['ForecastStart'])) ?></td>
-                                            <td><?= date('F d,Y', strtotime($weeklyf['ForecastEnd'])) ?></td>
-                                            <td><?= $weeklyf['ProjectedSales'] ?></td>
-                                            <td><?= $weeklyf['ConfidenceLevel'] ?></td>
-                                            <td><?= $weeklyf['Account_ID'] ?></td>
+                                            <td class="forecast-id-cell"><?= $weeklyforecast['WeeklyForecast_ID'] ?></td>
+                                            <td><?= $weeklyforecast['ForecastType'] ?></td>
+                                            <td><span class="type-tag-purple"><?= $weeklyforecast['ProductScope'] ?></span></td>
+                                            <td><?= $weeklyforecast['ForecastPeriod'] ?></td>
+                                            <td><?= date('F d,Y', strtotime($weeklyforecast['ForecastStart'])) ?></td>
+                                            <td><?= date('F d,Y', strtotime($weeklyforecast['ForecastEnd'])) ?></td>
+                                            <td><?= $weeklyforecast['ProjectedSales'] ?></td>
+                                            <td><?= $weeklyforecast['ConfidenceLevel'] ?></td>
+                                            <td><?= $weeklyforecast['Account_ID'] ?></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
@@ -2390,18 +2392,18 @@ if(isset($_SESSION['email'])){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($montlyforecast as $index => $monthlyf){ ?>
+                                    <?php foreach($monthlyforecast as $index => $monthlyforecast){ ?>
                                         <tr>
                                             <td><?= $index + 1 ?></td>
-                                            <td class="forecast-id-cell"><?= $monthlyf['MonthlyForecast_ID'] ?></td>
-                                            <td><?= $monthlyf['ForecastType'] ?></td>
-                                            <td><span class="type-tag-purple"><?= $monthlyf['ProductScope'] ?></span></td>
-                                            <td><?= $monthlyf['ForecastPeriod'] ?></td>
-                                            <td><?= date('F d,Y', strtotime($monthlyf['ForecastStart'])) ?></td>
-                                            <td><?= date('F d,Y', strtotime($monthlyf['ForecastEnd'])) ?></td>
-                                            <td><?= $monthlyf['ProjectedSales'] ?></td>
-                                            <td><?= $monthlyf['ConfidenceLevel'] ?></td>
-                                            <td><?= $monthlyf['Account_ID'] ?></td>
+                                            <td class="forecast-id-cell"><?= $monthlyforecast['MonthlyForecast_ID'] ?></td>
+                                            <td><?= $monthlyforecast['ForecastType'] ?></td>
+                                            <td><span class="type-tag-purple"><?= $monthlyforecast['ProductScope'] ?></span></td>
+                                            <td><?= $monthlyforecast['ForecastPeriod'] ?></td>
+                                            <td><?= date('F d,Y', strtotime($monthlyforecast['ForecastStart'])) ?></td>
+                                            <td><?= date('F d,Y', strtotime($monthlyforecast['ForecastEnd'])) ?></td>
+                                            <td><?= $monthlyforecast['ProjectedSales'] ?></td>
+                                            <td><?= $monthlyforecast['ConfidenceLevel'] ?></td>
+                                            <td><?= $monthlyforecast['Account_ID'] ?></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>

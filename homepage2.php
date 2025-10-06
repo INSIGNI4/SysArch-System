@@ -222,8 +222,7 @@ if(isset($_SESSION['email'])){
                 <link rel="stylesheet" href="dashboardAssets/forecast_dh.css">
                 <link rel="stylesheet" href="dashboardAssets/topcustomer_dh.css">
                 <link rel="stylesheet" href="dashboardAssets/summary.css">
-                <link rel="stylesheet" href="dashboardAssets/return_confi_projected.css">
-
+                
                 <div id="home" class="content-section" style=" margin: -25px;">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat; background-size: cover; height: 100px;">
                         <div class="top-bar">
@@ -304,13 +303,11 @@ if(isset($_SESSION['email'])){
                             <div class="return_dashboard">
                                 <h3>Return Summary <span>(MONTH)</span></h3>
                                 <p><b>Returned:</b> <span id="return-count" class="red-text"></span></p>
-                                <p><b>Most Returned:</b> <span id="return-product"></span></p>
+                                <p><b>Most Returned:</b> <span id="return-product"></span></p>  
                                 <p><b>Reason:</b> <span id="return-reason"></span></p>
                             </div>
 
-
                             <div class="products_dashboard">Products</div>
-
 
                             <div class="confidence_dashboard">
                                 <h3>Confidence Level</h3>
@@ -327,6 +324,13 @@ if(isset($_SESSION['email'])){
                                     <div id="progress-fill" class="progress_fill"></div>
                                 </div>
                                 <p><span id="progress-percent"></span></p>
+                            </div>
+
+
+                            <div class="totalproduct_dashboard card">
+                                <div class="card-title">Total Products</div>
+                                <div class="card-value" id="total-products">0</div>
+                                <div class="card-footer" id="update-products">Update --</div>
                             </div>
 
                             <div class="totalproduct_dashboard card">
@@ -360,6 +364,8 @@ if(isset($_SESSION['email'])){
                                 <canvas id="low-stock-list"></canvas>
                             </div>
 
+                            
+
                         </div>
 
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -369,7 +375,6 @@ if(isset($_SESSION['email'])){
                         <script src="dashboardAssets/forecast_dh.js"></script>
                         <script src="dashboardAssets/analytics_dh.js"></script>
                         <script src="dashboardAssets/topcustomer_dh.js"></script>
-                        <script src="dashboardAssets/return_confi_projected.js" defer></script>
 
 
 
@@ -1830,7 +1835,7 @@ if(isset($_SESSION['email'])){
 
                         <link rel="stylesheet" href="assets/add_product.css">
                         <script src="assets/add_transaction.js" defer></script>
-                        <script src="get_productTRANS.js" defer></script>
+                        <!-- <script src="get_productTRANS.js" defer></script> -->
                         <script src="get/get_customerTRANS.js" defer></script>
                         
                         <button id="sales-add-btn" class="na-btn na-btn-add">ADD</button>

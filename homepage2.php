@@ -222,7 +222,8 @@ if(isset($_SESSION['email'])){
                 <link rel="stylesheet" href="dashboardAssets/forecast_dh.css">
                 <link rel="stylesheet" href="dashboardAssets/topcustomer_dh.css">
                 <link rel="stylesheet" href="dashboardAssets/summary.css">
-                
+                <link rel="stylesheet" href="dashboardAssets/return_confi_projected.css">
+
                 <div id="home" class="content-section" style=" margin: -25px;">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat; background-size: cover; height: 100px;">
                         <div class="top-bar">
@@ -300,11 +301,33 @@ if(isset($_SESSION['email'])){
                                 </table>
                             </div>
 
+                            <div class="return_dashboard">
+                                <h3>Return Summary <span>(MONTH)</span></h3>
+                                <p><b>Returned:</b> <span id="return-count" class="red-text"></span></p>
+                                <p><b>Most Returned:</b> <span id="return-product"></span></p>
+                                <p><b>Reason:</b> <span id="return-reason"></span></p>
+                            </div>
 
-                            <div class="return_dashboard">Return Summary</div>
+
                             <div class="products_dashboard">Products</div>
-                            <div class="confidence_dashboard">Confidence Level</div>
-                            <div class="projected_dashboard">Projected Sales</div>
+
+
+                            <div class="confidence_dashboard">
+                                <h3>Confidence Level</h3>
+                                <p><b>Level:</b> <span id="confidence-level"></span>%</p>
+                                <p><b>Interval</b> <span id="confidence-interval"></span></p>
+                                <p><b>Week Sales: ⬆</b> <span id="week-upper"></span></p>
+                                <p><b>Week Sales: ⬇</b> <span id="week-lower"></span></p>
+                            </div>
+                            <div class="projected_dashboard">
+                                <h3>Projected Sales</h3>
+                                <p><b>Projected:</b> <span id="projected-value"></span></p>
+                                <p><b>Current:</b> <span id="current-value"></span></p>
+                                <div class="progress_bar">
+                                    <div id="progress-fill" class="progress_fill"></div>
+                                </div>
+                                <p><span id="progress-percent"></span></p>
+                            </div>
 
                             <div class="totalproduct_dashboard card">
                                 <div class="card-title">Total Products</div>
@@ -346,6 +369,7 @@ if(isset($_SESSION['email'])){
                         <script src="dashboardAssets/forecast_dh.js"></script>
                         <script src="dashboardAssets/analytics_dh.js"></script>
                         <script src="dashboardAssets/topcustomer_dh.js"></script>
+                        <script src="dashboardAssets/return_confi_projected.js" defer></script>
 
 
 

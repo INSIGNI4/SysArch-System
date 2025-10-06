@@ -47,7 +47,7 @@ CREATE TABLE `analytics` (
   `Report_Date` date NOT NULL,
   `SalesMetrics` int NOT NULL,
   `Account_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -61,7 +61,7 @@ CREATE TABLE `customers` (
   `Location` varchar(250) NOT NULL,
   `Email` varchar(100) NOT NULL,
   `PhoneNumber` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `customers`
@@ -82,10 +82,10 @@ CREATE TABLE `customersreturns` (
   `ReferenceNo` varchar(100) NOT NULL,
   `Quantity` int NOT NULL,
   `ReturnedDate` timestamp NOT NULL,
-  `ReasonForReturn` enum('Wrong Item','Damaged','Not Match','Faulty','Missing Parts','Not Fit','Accidental','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ReasonForReturn` enum('Wrong Item','Damaged','Not Match','Faulty','Missing Parts','Not Fit','Accidental','Other') CHARACTER SET utf8mb4,
   `Customer_ID` int DEFAULT NULL,
   `Product_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `customersreturns`
@@ -107,7 +107,7 @@ CREATE TABLE `daily_sales` (
   `Product_ID` int DEFAULT NULL,
   `TotalSales` decimal(10,2) DEFAULT NULL,
   `TotalQuantity` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `daily_sales`
@@ -134,7 +134,7 @@ CREATE TABLE `forecast` (
   `ProjectedSales` int NOT NULL,
   `ConfidenceLevel` int NOT NULL,
   `Account_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -154,7 +154,7 @@ CREATE TABLE `inventory` (
   `ExpirationDate` date DEFAULT NULL,
   `Barcode` varchar(100) NOT NULL,
   `Supplier_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `inventory`
@@ -180,7 +180,7 @@ CREATE TABLE `monthly_sales` (
   `Product_ID` int DEFAULT NULL,
   `TotalSales` decimal(10,2) DEFAULT NULL,
   `TotalQuantity` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `monthly_sales`
@@ -202,11 +202,11 @@ CREATE TABLE `newaddition` (
   `Quantity` int NOT NULL,
   `Date_Added` timestamp NOT NULL,
   `Expiration_Date` date DEFAULT NULL,
-  `Status` enum('New','Returned') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Status` enum('New','Returned') CHARACTER SET utf8mb4 NOT NULL,
   `Supplier_ID` int NOT NULL,
-  `LocationS` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `LocationS` text CHARACTER SET utf8mb4 NOT NULL,
   `LocationR` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `newaddition`
@@ -325,8 +325,8 @@ DELIMITER ;
 
 CREATE TABLE `product` (
   `Product_ID` int NOT NULL,
-  `ProductName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Type` enum('Exhaust','Tires','Brakes','Stand','Forks','Rims','Mirror','Suspension','Box','Oil') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ProductName` varchar(100) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `Type` enum('Exhaust','Tires','Brakes','Stand','Forks','Rims','Mirror','Suspension','Box','Oil') CHARACTER SET utf8mb4 NOT NULL,
   `ReordingPoints` int DEFAULT NULL,
   `UnitsOrdered` int DEFAULT NULL,
   `UnitSold` int DEFAULT NULL,
@@ -336,7 +336,7 @@ CREATE TABLE `product` (
   `Supplier_ID` int NOT NULL,
   `ExpirationDate` date DEFAULT NULL,
   `Barcode` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `product`
@@ -363,7 +363,7 @@ CREATE TABLE `pulledoutitems` (
   `Quantity` int NOT NULL,
   `Reason` text NOT NULL,
   `PulledDate` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -373,15 +373,15 @@ CREATE TABLE `pulledoutitems` (
 
 CREATE TABLE `restock` (
   `Orestock_ID` int NOT NULL,
-  `Type` enum('New','Re-Order') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Type` enum('New','Re-Order') CHARACTER SET utf8mb4 NOT NULL,
   `Quantity` int NOT NULL,
   `OrderDate` timestamp NOT NULL,
   `Product_ID` int NOT NULL,
   `Supplier_ID` int NOT NULL,
-  `Status` enum('Requested','Out-for-Delivery','Cancelled','Received') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Status` enum('Requested','Out-for-Delivery','Cancelled','Received') CHARACTER SET utf8mb4 NOT NULL,
   `Image` blob,
-  `DeliveryStatus` enum('','On-Time','Delayed','Early') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `DeliveryStatus` enum('','On-Time','Delayed','Early') CHARACTER SET utf8mb4 DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `restock`
@@ -411,7 +411,7 @@ CREATE TABLE `sales` (
   `Barcode` varchar(100) NOT NULL,
   `SalesDate` timestamp NOT NULL,
   `Account_ID` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `sales`
@@ -525,13 +525,13 @@ DELIMITER ;
 
 CREATE TABLE `salesaggregration` (
   `Aggregation_ID` int NOT NULL,
-  `PeriodType` enum('daily','weekly','monthly') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `PeriodType` enum('daily','weekly','monthly') CHARACTER SET utf8mb4 NOT NULL,
   `PeriodStart` date NOT NULL,
   `PeriodEnd` date NOT NULL,
   `Product_ID` int NOT NULL,
   `TotalSales` decimal(10,2) NOT NULL,
   `TotalQuantity` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `salesaggregration`
@@ -570,10 +570,10 @@ CREATE TABLE `supplier` (
   `Supplier_ID` int NOT NULL,
   `SupplierName` varchar(100) NOT NULL,
   `Location` varchar(250) NOT NULL,
-  `Email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `PhoneNumber` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `OfferedProductsType` enum('Exhaust','Tires','Brakes','Stand','Forks','Rims','Mirror','Suspension','Box','Oil') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Email` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `PhoneNumber` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `OfferedProductsType` enum('Exhaust','Tires','Brakes','Stand','Forks','Rims','Mirror','Suspension','Box','Oil') CHARACTER SET utf8mb4 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `supplier`
@@ -596,9 +596,9 @@ CREATE TABLE `supplierreturns` (
   `Product_ID` int NOT NULL,
   `Quantity` int NOT NULL,
   `ReturnedDate` date NOT NULL,
-  `Status` enum('Pending','Out for Delivery','Cancelled','Delivered') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Reason` enum('Wrong Item','Damaged','Missing Parts','Accidental','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Status` enum('Pending','Out for Delivery','Cancelled','Delivered') CHARACTER SET utf8mb4 NOT NULL,
+  `Reason` enum('Wrong Item','Damaged','Missing Parts','Accidental','Other') CHARACTER SET utf8mb4 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `supplierreturns`
@@ -617,11 +617,11 @@ CREATE TABLE `transactions` (
   `Transaction_ID` int NOT NULL,
   `Customer_ID` int DEFAULT NULL,
   `ReferenceNo` varchar(100) NOT NULL,
-  `PurchaseType` enum('','Online','Over-the-Counter') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `PaymentMethod` enum('','Cash','eWallet') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `ServiceType` enum('','Pick Up','Delivery') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `PurchaseType` enum('','Online','Over-the-Counter') CHARACTER SET utf8mb4 NOT NULL,
+  `PaymentMethod` enum('','Cash','eWallet') CHARACTER SET utf8mb4 NOT NULL,
+  `ServiceType` enum('','Pick Up','Delivery') CHARACTER SET utf8mb4 NOT NULL,
   `Transaction_Date` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `transactions`
@@ -646,7 +646,7 @@ CREATE TABLE `users` (
   `image` blob,
   `reset_token_hash` varchar(100) DEFAULT NULL,
   `reset_token_expires_at` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
@@ -668,7 +668,7 @@ CREATE TABLE `weekly_sales` (
   `Product_ID` int DEFAULT NULL,
   `TotalSales` decimal(10,2) DEFAULT NULL,
   `TotalQuantity` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `weekly_sales`

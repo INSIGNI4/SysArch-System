@@ -1,9 +1,8 @@
-
 .confidence_dashboard,
 .projected_dashboard,
 .return_dashboard {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 0;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     padding: 20px;
     font-family: "Poppins", sans-serif;
@@ -11,20 +10,21 @@
     transition: transform 0.2s ease;
 }
 
-.confidence_dashboard:hover,
+/* .confidence_dashboard:hover,
 .projected_dashboard:hover,
 .return_dashboard:hover {
     transform: translateY(-4px);
-}
+} */
 
 /* ===== TITLES ===== */
-.confidence_dashboard h4,
-.projected_dashboard h4,
-.return_dashboard h4 {
+.confidence_dashboard h3,
+.projected_dashboard h3,
+.return_dashboard h3 {
     font-size: 1rem;
     font-weight: 600;
     color: #222;
     margin-bottom: 6px;
+    background-color: white;
 }
 
 /* ===== CONTENT TEXT ===== */

@@ -2,6 +2,7 @@
 include('../connect.php');
 header('Content-Type: application/json');
 
+// ✅ Total Stock
 $totalStockQuery = "
     SELECT SUM(i.Inventory) AS totalStock
     FROM inventory i
@@ -11,8 +12,8 @@ $totalStock = $conn->query($totalStockQuery)->fetch_assoc()['totalStock'] ?? 0;
 $chartQuery = "
     SELECT
         SUM(CASE WHEN i.Inventory = 0 THEN 1 ELSE 0 END) AS outOfStock,
-        SUM(CASE WHEN i.Inventory <= p.ReordingPoints AND i.Inventory > 0 THEN 1 ELSE 0 END) AS lowStock,
-        SUM(CASE WHEN i.Inventory > p.ReordingPoints THEN 1 ELSE 0 END) AS available
+        SUM(CASE WHEN i.Inventory <= IFNULL(p.ReordingPoints, 5) AND i.Inventory > 0 THEN 1 ELSE 0 END) AS lowStock,
+        SUM(CASE WHEN i.Inventory > IFNULL(p.ReordingPoints, 5) THEN 1 ELSE 0 END) AS available
     FROM product p
     INNER JOIN inventory i ON p.Product_ID = i.Product_ID
 ";
@@ -22,7 +23,7 @@ $lowStockQuery = "
     SELECT p.ProductName, p.Type, i.Inventory
     FROM product p
     INNER JOIN inventory i ON p.Product_ID = i.Product_ID
-    WHERE i.Inventory <= p.ReordingPoints AND i.Inventory > 0
+    WHERE i.Inventory <= IFNULL(p.ReordingPoints, 5) AND i.Inventory > 0
     ORDER BY i.Inventory ASC
     LIMIT 5
 ";

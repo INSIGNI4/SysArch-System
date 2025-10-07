@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalReceivedInput = document.getElementById('update-received');
     const withIssueInput = document.getElementById('update-issue');
     const proofInput = document.getElementById('edit-image');
+    const dateReceivedInput = document.getElementById('update-datereceived');
 
     function resetActions() {
         document.querySelectorAll(".update-order-btn").forEach(btn => btn.style.display = "none");
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 statusSelect.value = this.dataset.status || '';
                 deliverystatusSelect.value = this.dataset.deliverystatus || '';
+                dateReceivedInput.value = this.dataset.datereceived || '';
                 proofInput.value = this.dataset.proof || '';
                 
             });

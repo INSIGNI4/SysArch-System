@@ -4,7 +4,8 @@ $table_colums_mapping = [
     /// ======= INVENTORY DATABASE ======= ///
     'product' => [
         'Product_ID', 'ProductName', 'Type', 'ReordingPoints', 'UnitsOrdered',
-        'UnitSold', 'StorePrice', 'SupplierPrice', 'Image', 'Supplier_ID', 'ExpirationDate', 'Barcode'
+        'UnitSold', 'StorePrice', 'SupplierPrice', 'Image', 'Supplier_ID', 'ExpirationDate', 'Barcode',
+        'LocationS','LocationR'
     ],
     'inventory' => [
         'Product_ID', 'LocationS','LocationR', 'Price', 'Inventory', 'UnitIN',
@@ -39,7 +40,7 @@ $table_colums_mapping = [
     ],
     'restock' => [
         'Orestock_ID', 'Type', 'Quantity', 'OrderDate', 'Product_ID',
-        'Supplier_ID', 'Status', 'Image', 'DeliveryStatus'
+        'Supplier_ID', 'Status', 'Image', 'DeliveryStatus','Date_Received'
         ,'TotalReceived','withIssue'
     ],
 

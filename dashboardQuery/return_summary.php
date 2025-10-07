@@ -4,12 +4,14 @@ include('../connect.php');
 header('Content-Type: application/json');
 
 $query = "
-    SELECT COUNT(*) AS TotalReturned,
-           p.ProductName,
-           r.ReasonForReturn
+    SELECT 
+        p.ProductName, 
+        SUBSTRING_INDEX(GROUP_CONCAT(r.ReasonForReturn ORDER BY r.ReturnedDate DESC), ',', 1) AS ReasonForReturn, 
+        COUNT(*) AS TotalReturned
     FROM customersreturns r
     JOIN product p ON r.Product_ID = p.Product_ID
-    WHERE MONTH(ReturnedDate) = MONTH(CURDATE())
+    WHERE YEAR(r.ReturnedDate) = YEAR(CURDATE()) 
+      AND MONTH(r.ReturnedDate) = MONTH(CURDATE())
     GROUP BY r.Product_ID
     ORDER BY TotalReturned DESC
     LIMIT 1

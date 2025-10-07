@@ -1,19 +1,27 @@
 .card {
-    background: linear-gradient(#f8f8f8, #d1d1d1);
+    background: #A9A9A9;
     border: 1px solid #bbb;
     border-radius: 4px;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    padding: 8px;
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
 }
 
 .card-title {
+    background-color: #ffffff;
+    color: #333;
     font-size: 13px;
     font-weight: bold;
-    color: #333;
+    padding: 4px 8px;
+    border-bottom: 1px solid #ccc;
+}
+
+.card-body {
+    flex: 1;
+    padding: 6px 8px;
 }
 
 .card-value {
@@ -27,7 +35,9 @@
     font-size: 11px;
     color: #444;
     text-align: right;
+    padding: 0 8px 4px 0;
 }
+
 
 /* Keep your original grid layout */
 .totalproduct_dashboard {

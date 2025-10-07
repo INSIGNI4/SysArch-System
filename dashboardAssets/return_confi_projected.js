@@ -2,9 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("dashboardQuery/return_summary.php")
         .then(res => res.json())
         .then(data => {
-            document.getElementById("return-count").textContent = data.returnCount || 0;
-            document.getElementById("return-product").textContent = data.mostReturned || "N/A";
-            document.getElementById("return-reason").textContent = data.reason || "N/A";
+            document.getElementById("return-count").textContent = data.TotalReturned || 0;
+            document.getElementById("return-product").textContent = data.MostReturned || "N/A";
+            document.getElementById("return-reason").textContent = data.Reason || "N/A";
         })
         .catch(err => console.error("Return summary error:", err));
 

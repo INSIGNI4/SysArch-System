@@ -167,8 +167,14 @@ if(isset($_SESSION['email'])){
     <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="homepagestyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <!-- <meta http-equiv="refresh" content="5"> -->
 
 
+    <!-- <script>
+    setInterval(function() {
+        location.reload('home');
+    }, 8000); // Reloads every 5 seconds (5000 milliseconds)
+    </script> -->
 
 </head>
 <body>
@@ -188,7 +194,7 @@ if(isset($_SESSION['email'])){
                 <a class="nav-link" onclick="showContentSection('home')">Home</a>
                 
                 <a class="nav-link" onclick="showContentSection('inventory')">Inventory</a>
-                <a class="nav-link" onclick="showContentSection('new-additions')">New Additions</a>
+                <!-- <a class="nav-link" onclick="showContentSection('new-additions')">New Additions</a> -->
                 <a class="nav-link" onclick="showContentSection('products')">Products</a>
                 <a class="nav-link" onclick="showContentSection('suppliers')">Suppliers</a>
                 <a class="nav-link" onclick="showContentSection('customer')">Customer</a>
@@ -222,6 +228,8 @@ if(isset($_SESSION['email'])){
                 <link rel="stylesheet" href="dashboardAssets/forecast_dh.css">
                 <link rel="stylesheet" href="dashboardAssets/topcustomer_dh.css">
                 <link rel="stylesheet" href="dashboardAssets/summary.css">
+                <link rel="stylesheet" href="dashboardAssets/stock_avail.css">
+                <link rel="stylesheet" href="dashboardAssets/return.css ">
                 
                 <div id="home" class="content-section" style=" margin: -25px;">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat; background-size: cover; height: 100px;">
@@ -301,10 +309,15 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <div class="return_dashboard">
-                                <h3>Return Summary <span>(MONTH)</span></h3>
-                                <p><b>Returned:</b> <span id="return-count" class="red-text"></span></p>
-                                <p><b>Most Returned:</b> <span id="return-product"></span></p>  
-                                <p><b>Reason:</b> <span id="return-reason"></span></p>
+                                <div class="return_header">
+                                    <h3>Return Summary <span id="return-month">(MONTH)</span></h3>
+                                </div>
+                                <div class="return_content">
+                                    <p><b>Returned:</b> <span id="return-count" class="red-text"></span></p>
+                                    <p><b>Most Returned:</b> <span id="return-product"></span></p>  
+                                    <p><b>Reason:</b> <span id="return-reason"></span></p>
+                                </div>
+                                
                             </div>
 
                             <div class="products_dashboard">Products</div>
@@ -316,6 +329,7 @@ if(isset($_SESSION['email'])){
                                 <p><b>Week Sales: ⬆</b> <span id="week-upper"></span></p>
                                 <p><b>Week Sales: ⬇</b> <span id="week-lower"></span></p>
                             </div>
+                            
                             <div class="projected_dashboard">
                                 <h3>Projected Sales</h3>
                                 <p><b>Projected:</b> <span id="projected-value"></span></p>
@@ -329,52 +343,76 @@ if(isset($_SESSION['email'])){
 
                             <div class="totalproduct_dashboard card">
                                 <div class="card-title">Total Products</div>
-                                <div class="card-value" id="total-products">0</div>
-                                <div class="card-footer" id="update-products">Update --</div>
-                            </div>
+                                <div class="card-body">
+                                    <div class="card-value" id="total-products">0</div>
+                                </div>
 
-                            <div class="totalproduct_dashboard card">
-                                <div class="card-title">Total Products</div>
-                                <div class="card-value" id="total-products">0</div>
                                 <div class="card-footer" id="update-products">Update --</div>
                             </div>
 
                             <div class="growth_dashboard card">
                                 <div class="card-title">Growth Rate</div>
-                                <div class="card-value" id="growth-rate">0%</div>
+                                <div class="card-body">
+                                    <div class="card-value" id="growth-rate">0%</div>
+                                </div>
+
                                 <div class="card-footer" id="update-growth">Update --</div>
                                 </div>
 
                             <div class="totalsold_dashboard card">
                                 <div class="card-title">Total Sold</div>
-                                <div class="card-value" id="total-sold">0</div>
+                                <div class="card-body">
+                                    <div class="card-value" id="total-sold">0</div>
+                                </div>
                                 <div class="card-footer" id="update-sold">Update --</div>
                             </div>
 
                             <div class="totalcustomer_dashboard card">
                                 <div class="card-title">Total Customers</div>
-                                <div class="card-value" id="total-customers">0</div>
+                                <div class="card-body">
+                                    <div class="card-value" id="total-customers">0</div>
+                                </div>
+                                
                                 <div class="card-footer" id="update-customers">Update --</div>
                             </div>
 
-
                             <div class="stock_dashboard">
-                                <h2>Stock Availability</h2>
-                                <div id="total-stock"></div>
-                                <canvas id="low-stock-list"></canvas>
+                                <div class="stock_header">
+                                    <div class="card-title">Stock Availability</div>
+                                </div>
+
+                                <div class="stock-row">
+                                    <div class="stock-left">
+                                        <div class="stock-total">
+                                            <div>Total Stock</div>
+                                            <div id="total-stock" class="stock-number">0</div>
+                                        </div>
+                                        <canvas id="myChart" width="200" height="200"></canvas>
+                                        <div class="stock-legend">
+                                            <span><span class="dot green"></span> Availability</span>
+                                            <span><span class="dot yellow"></span> Low Stock</span>
+                                            <span><span class="dot red"></span> Out of Stock</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="stock-right" id="low-stock-list">
+                                        <h3>Low Stock</h3>
+                                        <ul></ul>
+                                    </div>
+                                </div>
                             </div>
 
-                            
 
+                <!-- END OF DASHBOARD -->
                         </div>
 
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                        
                         <script src="dashboardAssets/stock_avail.js"></script>
                         <script src="dashboardAssets/summary.js"></script>
                         <script src="dashboardAssets/forecast_dh.js"></script>
                         <script src="dashboardAssets/analytics_dh.js"></script>
                         <script src="dashboardAssets/topcustomer_dh.js"></script>
+                        <script src="dashboardAssets/return.js"></script>
 
 
 
@@ -645,6 +683,8 @@ if(isset($_SESSION['email'])){
                                     <td class="supplier-id-cell"><?= $newaddition['Supplier_ID']?></td>
                                     <td><span class="Location-tag shelf"><?= $newaddition['LocationS']?></span></td>
                                     <td><span class="Location-tag row"><?= $newaddition['LocationR']?></span></td>
+
+                                    
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -728,17 +768,19 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Reorder Points:</label>
                                     <input type="number" name="ReordingPoints" required> -->
 
-                                    <!-- <label>Ordered:</label>
-                                    <input type="number" name="UnitsOrdered" required> -->
+                                    
+                                    <input type="hidden" name="UnitsOrdered" value="0">
 
-                                    <!-- <label>Sold:</label>
-                                    <input type="number" name="UnitSold"> -->
+                                    
+                                    <input type="hidden" name="UnitSold" value="0" >
+
+                                    <label>Supplier Price (PHP):</label>
+                                    <input type="number" name="SupplierPrice" required>
 
                                     <label>Store Price (PHP):</label>
                                     <input type="number" name="StorePrice" required>
 
-                                    <label>Supplier Price (PHP):</label>
-                                    <input type="number" name="SupplierPrice" required>
+
 
                                     <label>Image:</label>
                                     <!-- <input type="file" id="profile-upload" accept="image/*" style="display: none;"> -->
@@ -763,6 +805,31 @@ if(isset($_SESSION['email'])){
 
                                     <label>Barcode:</label>
                                     <input type="text" name="Barcode" maxlength="11" required>
+
+
+
+                                    <label>Location:</label>
+                                    <div style="display: flex; justify-content:space-between; align-items:center;">
+                                    <label>Shelf:</label>
+                                    <select class="shelf-row-select" name="LocationS" required>
+                                        <option value="Shelf A">Shelf A</option>
+                                        <option value="Shelf B">Shelf B</option>
+                                        <option value="Shelf C">Shelf C</option>
+                                        <option value="Shelf D">Shelf D</option>
+                                    </select>
+                                    
+                                    <!-- <input type="text" name="LocationS" required> -->
+
+                                    <label>Row:</label>
+
+                                    <select class="shelf-row-select" name="LocationR" required>
+                                        <option value="Row A">Row A</option>
+                                        <option value="Row B">Row B</option>
+                                        <option value="Row C">Row C</option>
+                                        <option value="Row D">Row D</option>
+                                    </select>
+                                    <!-- <input type="text" name="LocationR" required> -->
+                                    </div>
 
                                     
 
@@ -819,11 +886,13 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Sold:</label>
                                     <input type="number" name="UnitSold" id="edit-sold"> -->
 
+                                    <label>Supplier Price (PHP):</label>
+                                    <input type="number" name="SupplierPrice" id="edit-supplierprice">
+
                                     <label>Store Price (PHP):</label>
                                     <input type="number" name="StorePrice" id="edit-storeprice">
 
-                                    <label>Supplier Price (PHP):</label>
-                                    <input type="number" name="SupplierPrice" id="edit-supplierprice">
+
 
                                     <label>Image:</label>
                                     <!-- <input type="file" id="profile-upload" accept="image/*" style="display: none;"> -->
@@ -880,6 +949,7 @@ if(isset($_SESSION['email'])){
                                     <th>Supplier ID</th>
                                     <th>Expiration Date</th>
                                     <th>Barcode</th>
+                                    <th colspan="2">Location</th>
                                     <th>       </th>
                                 </tr>
                             </thead>
@@ -901,13 +971,15 @@ if(isset($_SESSION['email'])){
                                                     <img src="uploads/<?= $products['Image']?>" alt="Product Image" style="max-width: 50px; max-height: 50px; object-fit: cover;">
                                                 </a>
                                             <?php else: ?>
-                                                No Image
+                                                No Image    
                                             <?php endif; ?>
                                         </td>
                                         <td class="supplier-id-cell"><?= $products['Supplier_ID']?></td>
                                         <td style="color: red;"><?= empty($products['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($products['ExpirationDate'])) ?></td>
                                         <!-- <td><?= date('F d,Y', strtotime($products['ExpirationDate']))?></td> -->
                                         <td><?= $products['Barcode']?></td>
+                                        <td><span class="Location-tag shelf"><?= $products['LocationS']?></span></td>
+                                        <td><span class="Location-tag row"><?= $products['LocationR']?></span></td>
                                     
                                             <!-- data-reorder="<?= $products['ReordingPoints'] ?>" -->
                                              <!-- data-unitsordered="<?= $products['UnitsOrdered'] ?>" -->
@@ -1472,7 +1544,7 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Product_ID" required> -->
 
                                     <label for="Product_IDORDRES">Choose Product ID:</label>
-                                    <select id="Product_IDORDRES" name="Product_ID" class="id-select"required>
+                                    <select id="Product_IDORDRES" name="Product_ID" class="id-select" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
@@ -1502,8 +1574,8 @@ if(isset($_SESSION['email'])){
                                     <label>Quantity:</label>
                                     <input type="number" name="Quantity" required>
 
-                                    <label>Order Date:</label>
-                                    <input type="datetime-local" name="OrderDate" required>
+                                    <!-- <label>Order Date:</label>
+                                    <input type="datetime-local" name="OrderDate" required> -->
 
                                     <label>Proof of Transaction:</label>
                                     <input type="file" accept="image/*" name="Image">
@@ -1521,7 +1593,13 @@ if(isset($_SESSION['email'])){
                                         <option value="Cancelled">Cancelled</option>
                                         <option value="Received">Received</option>
 
-                                    </select>                        
+                                    </select>           
+                                    
+                                    <!-- <label>Total Received:</label> -->
+                                    <input type="hidden"  name="TotalReceived" value="0">
+                                    
+                                    <!-- <label>With Issue:</label> -->
+                                    <input type="hidden"  name="withIssue"  value="0">
 
                                     
                                     <!-- <label>Delivery Status:</label>
@@ -1589,6 +1667,9 @@ if(isset($_SESSION['email'])){
                                         <option value="Early">Early</option>
                                     </select>       
 
+                                    <label>Date Received:</label>
+                                    <input type="datetime-local" name="Date_Received" id="update-datereceived">
+
                                     <label>Total Received:</label>
                                     <input type="number"  name="TotalReceived" id="update-received">
                                     
@@ -1629,7 +1710,7 @@ if(isset($_SESSION['email'])){
                                         <th>Status</th>
                                         <th>Delivery Status</th>
                                         
-                                        <th>Total Received</th>
+                                        <th>Received</th>
                                         <th>with Issue</th>
                                         <th></th>
 
@@ -1670,6 +1751,8 @@ if(isset($_SESSION['email'])){
                                                 </span>
                                             </td>
                                             <!-- <td><span class="delivery-status-tag delivery-status-delayed"><?= $restocks['DeliveryStatus']?></span></td> -->
+                                            <!-- <td><?= date('F d, Y h:i A', strtotime($restocks['Date_Received']))?></td> -->
+                                            <td style="color: red;"><?= empty($restocks['Date_Received']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($restocks['Date_Received'])) ?></td>
                                             <td><?= $restocks['TotalReceived'] ?></td>
                                             <td><?= $restocks['withIssue'] ?></td>
 
@@ -1680,6 +1763,7 @@ if(isset($_SESSION['email'])){
                                                 data-proof="<?= $restocks['Image'] ?>"
                                                 data-status="<?= $restocks['Status'] ?>"
                                                 data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
+                                                data-datereceived="<?= $restocks['Date_Received'] ?>"
                                                 data-received="<?= $restocks['TotalReceived'] ?>"
                                                 data-issue="<?= $restocks['withIssue'] ?>">
                                                 
@@ -1812,7 +1896,7 @@ if(isset($_SESSION['email'])){
 
                                     <label>Service Type:</label>
                                     <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
-                                    <select class="payment-method-select" name="DeliveryType" required>
+                                    <select class="payment-method-select" name="ServiceType" required>
                                         <option value="">- - - Choose Service Type - - -</option>
                                         <option value="Pick Up">Pick Up</option>
                                         <option value="Delivery">Delivery</option>
@@ -1820,8 +1904,8 @@ if(isset($_SESSION['email'])){
 
                                     </select>  
 
-                                    <label>Transaction Date:</label>
-                                    <input type="datetime-local" name="Transaction_Date" required>
+                                    <!-- <label>Transaction Date:</label>
+                                    <input type="datetime-local" name="Transaction_Date" required> -->
                                     
 
                                     <div class="modal-buttons">
@@ -1884,8 +1968,8 @@ if(isset($_SESSION['email'])){
                                     <label>Barcode:</label>
                                     <input type="number" name="Barcode" required> -->
 
-                                    <label>Sales Date:</label>
-                                    <input type="datetime-local" name="SalesDate" required>
+                                    <!-- <label>Sales Date:</label>
+                                    <input type="datetime-local" name="SalesDate" required> -->
 
                                     <!-- <label>Account ID:</label>
                                     <input type="text" name="Account_ID" required> -->

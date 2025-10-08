@@ -5,6 +5,7 @@ body, html {
     font-family: Arial, sans-serif;
     background-color: #f0f2f5;
     height: 100%;
+    overflow: hidden;
 }
 
 /* Styles for Login and Registration Pages */
@@ -285,9 +286,10 @@ body, html {
 .content-area {
     flex-grow: 1;
     background-color: #ecf0f1;
-    overflow: auto;
+    overflow: scroll;
     display: flex; 
     flex-direction: column; 
+
 }
 
 
@@ -406,7 +408,11 @@ body, html {
 .na-icon-btn { cursor: pointer; font-size: 18px; }
 
 /* Table Containers */
-.table-container { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; }
+.table-container { 
+    flex-grow: 1; 
+    /* overflow: auto;  */
+    display: block; 
+    flex-direction: column; }
 
 /* General Table Styles */
 .inventory-table, .new-additions-table, .products-table, .suppliers-table, .customer-table, 
@@ -846,7 +852,7 @@ th, td {
   border: 1.9px solid #e1bbbb;
 }
 
-tbody tr:nth-child(even) {
+tbody th:nth-child(even) {
   /* background-color: #d3d3d3; */
   background-color: #ffffff;
 }
@@ -946,6 +952,27 @@ tbody tr:hover {
     margin-top: 10px;
     width: 50%;
     height: 35px;
+}
+
+.sticky-div-1 {
+    position: sticky;
+    top: 0px; 
+    padding: 10px;
+    z-index: 10;
+}
+
+.sticky-div-2 {
+    position: sticky;
+    top: 107px; 
+    padding: 10px;
+    z-index: 10;
+}
+
+.sticky-div {
+    position: sticky;
+    top: 137px; 
+    padding: 10px;
+    z-index: 10;
 }
 
 

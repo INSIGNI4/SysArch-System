@@ -230,6 +230,7 @@ if(isset($_SESSION['email'])){
                 <link rel="stylesheet" href="dashboardAssets/summary.css">
                 <link rel="stylesheet" href="dashboardAssets/stock_avail.css">
                 <link rel="stylesheet" href="dashboardAssets/return.css ">
+                <link rel="stylesheet" href="dashboardAssets/products_summary.css">
                 
                 <div id="home" class="content-section" style=" margin: -25px;">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat; background-size: cover; height: 100px;">
@@ -320,7 +321,36 @@ if(isset($_SESSION['email'])){
                                 
                             </div>
 
-                            <div class="products_dashboard">Products</div>
+                            <div class="products_dashboard">
+                                <div class="products_header">
+                                    <h3>Product</h3>
+                                    <div class="product-controls">
+                                        <select id="time-select">
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly" selected>Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                        </select>
+                                        <select id="sort-select">
+                                            <option value="Bestseller" selected>Bestseller</option>
+                                            <option value="alphabetical">A–Z</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="product-categories">
+                                    <button data-type="All" class="active">All</button>
+                                    <button data-type="Exhaust">Exhaust</button>
+                                    <button data-type="Mirror">Mirror</button>
+                                    <button data-type="Tires">Tires</button>
+                                    <button data-type="Suspensions">Suspensions</button>
+                                    <button data-type="Rims">Rims</button>
+                                    <button data-type="Stands">Stands</button>
+                                </div>
+
+                                <table class="product_table">
+                                    <tbody id="products-body"></tbody>
+                                </table>
+                            </div>
 
                             <div class="confidence_dashboard">
                                 <h3>Confidence Level</h3>
@@ -413,6 +443,7 @@ if(isset($_SESSION['email'])){
                         <script src="dashboardAssets/analytics_dh.js"></script>
                         <script src="dashboardAssets/topcustomer_dh.js"></script>
                         <script src="dashboardAssets/return.js"></script>
+                        <script src="dashboardAssets/products_summary.js"></script>
 
 
 
@@ -1786,7 +1817,7 @@ if(isset($_SESSION['email'])){
                 
 
                 <div id="transaction-sales" class="content-section" >
-                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
                         <div class="top-bar">
                             <div class="tab">TRANSACTIONS & SALES</div>
                             <div class="user-controls">
@@ -1815,7 +1846,7 @@ if(isset($_SESSION['email'])){
                             <div class="na-quick-search">🔍 Quick Search</div>
                         </div>
                     </div>
-                    <div class="toolbar">
+                    <div class="toolbar sticky-div-2">
                         <input type="checkbox">
                         <span id="transaction-sales-count" class="na-count">10</span>
                         <span class="na-icon-btn">📝</span>
@@ -1951,8 +1982,16 @@ if(isset($_SESSION['email'])){
                                     <label>Unit Price (PHP):</label>
                                     <input type="number" step="0.01" id="Unit_Price" name="Unit_Price" readonly>
 
+                        
+                                    <label>Current Stock Quantity:</label>
+                                    <input type="number" id="Current_Stock" readonly>
+                                    
+                                    
+
                                     <label>Quantity:</label>
-                                    <input type="number" id="Quantity" name="Quantity" required>
+                                    <!-- <input type="number" id="Quantity" name="Quantity" required> -->
+                                    <input type="number" id="Quantity" name="Quantity" required min="1">
+
 
                                     <label>Total Price (PHP):</label>
                                     <input type="number" step="0.01" id="TotalPrice" name="TotalPrice" readonly>
@@ -1995,7 +2034,7 @@ if(isset($_SESSION['email'])){
                     <!-- SALES VIEW CONTAINER -->
                     <div id="sales-view-container" class="table-container">
                         <table class="transaction-sales-table">
-                            <thead>
+                            <thead class="sticky-div">
                                 <tr>
                                     <th></th>
                                     <th>Order ID</th>   
@@ -2010,8 +2049,15 @@ if(isset($_SESSION['email'])){
                                     <th>Account ID</th>
                                 </tr>
                             </thead>
+
                             <tbody>
-                                <?php foreach($sales as $index => $sales){ ?>
+                                
+                                <?php 
+                                usort($sales, function ($a, $b) {
+                                    return $b['Order_ID'] <=> $a['Order_ID'];
+                                });
+                                
+                                foreach($sales as $index => $sales){ ?>
                                     <tr>
                                         <td><?= $index + 1?></td>
                                         <td><?= $sales['Order_ID'] ?></td>
@@ -2034,7 +2080,7 @@ if(isset($_SESSION['email'])){
                     <!-- TRANSACTION VIEW CONTAINER -->
                     <div id="transaction-view-container" class="table-container" style="display:none;">
                         <table class="transaction-sales-table">
-                            <thead>
+                            <thead class="sticky-div">
                                 <tr>
                                     <th></th>
                                     <th>Transaction ID</th>
@@ -2051,7 +2097,11 @@ if(isset($_SESSION['email'])){
                                 </tr>
                             </thead>
                            <tbody>
-                                <?php foreach($transaction as $index => $transaction){ ?>
+                                <?php 
+                                usort($transaction, function ($a, $b) {
+                                    return $b['Transaction_ID'] <=> $a['Transaction_ID'];
+                                });
+                                foreach($transaction as $index => $transaction){ ?>
                                     <tr>
                                         <td><?= $index + 1?></td>
                                         <td><?= $transaction['Transaction_ID'] ?></td>

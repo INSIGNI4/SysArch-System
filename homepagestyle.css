@@ -440,12 +440,13 @@ body, html {
 .inventory-table thead, .new-additions-table thead, .products-table thead, .suppliers-table thead, 
 .customer-table thead, .returns-table thead, .order-restock-table thead, .transaction-sales-table thead,
 .sales-aggregation-table thead, .forecast-table thead, .analytics-table thead, .stock-adjustments-table thead {
-    background-color: #e9ecef;
+    
     font-weight: bold;
-    color: #495057;
-    position: sticky;
+    color: #023364;
+    /* position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 8; 
+    background-color: #e9ecef;*/
 }
 
 /* Specific Table Cell Styles */
@@ -970,9 +971,10 @@ tbody tr:hover {
 
 .sticky-div {
     position: sticky;
-    top: 137px; 
+    background: rgba(244, 244, 244, 0.9);
+    top: 161px; 
     padding: 10px;
-    z-index: 10;
+    z-index: 9;
 }
 
 

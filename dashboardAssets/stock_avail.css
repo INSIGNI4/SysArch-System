@@ -3,7 +3,7 @@
     grid-row: span 3 / span 3;
     grid-column-start: 5;
     grid-row-start: 6;
-    background: beige;
+    background: whitesmoke;
     padding: 0;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     display: flex;

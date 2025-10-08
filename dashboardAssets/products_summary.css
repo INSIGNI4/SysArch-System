@@ -100,20 +100,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 4px;
+    padding: 4px 6px;
     width: 100%;
     box-sizing: border-box;
 }
 
 .product_table td {
     vertical-align: middle;
-    padding: 4px;
+    padding: 0;
 }
 
+/* Force both columns to stay in one horizontal line */
+.product_table td:first-child,
+.product_table td:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Product Info Layout */
 .product-item {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex: 1;
 }
 
 .product-rank {
@@ -149,10 +160,12 @@
     font-size: 11px;
 }
 
+/* Product Price and Sold Section */
 .product-order {
     text-align: right;
     font-size: 12px;
     padding-right: 5px;
+    flex-shrink: 0;
 }
 
 .product-order .price {

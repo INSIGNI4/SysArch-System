@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         products.forEach((p, i) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>
+                <tr>
                     <div class="product-item">
                         <span class="product-rank">${i + 1}.</span>
                         <img src="${p.Image}" alt="${p.ProductName}">
@@ -32,13 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
                             <strong>${p.ProductName}</strong> <small>${p.Type}</small>
                         </div>
                     </div>
-                </td>
-                <td>
+                </tr>
+                <tr>
                     <div class="product-order">
                         Price: <span class="price">PHP${p.StorePrice}</span><br>
                         Sold: <span class="sold">${p.UnitSold}</span>
                     </div>
-                </td>
+                </tr>
             `;
             productsBody.appendChild(row);
         });

@@ -222,7 +222,7 @@ if(isset($_SESSION['email'])){
         
 
         <div class="main-content">
-            <div class="content-area" style="background:linear-gradient(to top,rgba(70, 70, 70, 1),rgba(255, 252, 252, 1));">
+            <div class="content-area" style="background:linear-gradient(to top,rgba(192, 190, 190, 1),rgba(110, 110, 110, 1));">
                 <link rel="stylesheet" href="assets/dashboard.css">
                 <link rel="stylesheet" href="dashboardAssets/analytics_dh.css">
                 <link rel="stylesheet" href="dashboardAssets/forecast_dh.css">
@@ -2080,7 +2080,7 @@ if(isset($_SESSION['email'])){
                     <!-- TRANSACTION VIEW CONTAINER -->
                     <div id="transaction-view-container" class="table-container" style="display:none;">
                         <table class="transaction-sales-table">
-                            <thead class="sticky-div">
+                            <thead>
                                 <tr>
                                     <th></th>
                                     <th>Transaction ID</th>
@@ -2148,8 +2148,8 @@ if(isset($_SESSION['email'])){
 
                                     <!-- <button id="byproduct-sales-btn" class="toggle-btn active">By Product</button> -->
                                     <!-- <button id="entire-sales-btn" class="toggle-btn">Entire</button> -->
-                                    <button id="byproduct-sales-btn" class="toggle-btn active" >By Product</button>
-                                    <button id="entire-sales-btn" class="toggle-btn" >Entire</button>
+                                    <button id="byproduct-sales-btn" class="toggle-btn active" >By Product Sales</button>
+                                    <button id="entire-sales-btn" class="toggle-btn" >Entire Sales</button>
 
                                     <!-- <button id="daily-sales-btn" class="toggle-btn">Daily</button>
                                     <button id="weekly-sales-btn" class="toggle-btn ">Weekly</button>
@@ -2166,15 +2166,15 @@ if(isset($_SESSION['email'])){
                         <span class="na-icon-btn">🖨️</span>
                         
                         <div class="toggle-buttons" id="product-toggle-buttons">
-                            <button id="daily-product-btn" class="toggle-btn active">Daily Product</button>
-                            <button id="weekly-product-btn" class="toggle-btn">Weekly Product</button>
-                            <button id="monthly-product-btn" class="toggle-btn">Monthly Product</button>
+                            <button id="daily-product-btn" class="toggle-btn active">Daily Product Sales</button>
+                            <button id="weekly-product-btn" class="toggle-btn">Weekly Product Sales</button>
+                            <button id="monthly-product-btn" class="toggle-btn">Monthly Product Sales</button>
                         </div>
                         
                         <div class="toggle-buttons" id="entire-toggle-buttons" style="display: none;">
-                            <button id="daily-entire-btn" class="toggle-btn active">Daily Entire</button>
-                            <button id="weekly-entire-btn" class="toggle-btn">Weekly Entire</button>
-                            <button id="monthly-entire-btn" class="toggle-btn">Monthly Entire</button>
+                            <button id="daily-entire-btn" class="toggle-btn active">Daily Entire Sales</button>
+                            <button id="weekly-entire-btn" class="toggle-btn">Weekly Entire Sales</button>
+                            <button id="monthly-entire-btn" class="toggle-btn">Monthly Entire Sales</button>
                         </div>
                     
                     

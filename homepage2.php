@@ -200,10 +200,10 @@ if(isset($_SESSION['email'])){
                 <a class="nav-link" onclick="showContentSection('customer')">Customer</a>
                 <a class="nav-link has-dropdown" onclick="showContentSection('returns')">Returns</a>
 
-                <a class="nav-link" onclick="showContentSection('order-restock')">Order & Restock</a>
+                <a class="nav-link" onclick="showContentSection('order-restock')">Restock</a>
                 <a class="nav-link has-dropdown" onclick="showContentSection('transaction-sales')">Transaction & Sales</a>
 
-                <a class="nav-link" onclick="showContentSection('sales-aggregation')">Sales Aggregation</a>
+                <!-- <a class="nav-link" onclick="showContentSection('sales-aggregation')">Sales Aggregation</a> -->
                 <a class="nav-link has-dropdown" onclick="showContentSection('forecast-analytics')">Forecast & Analytics</a>
 
                 <a class="nav-link" onclick="showContentSection('stock-adjustments')">Stock Adjustments</a>
@@ -451,7 +451,7 @@ if(isset($_SESSION['email'])){
 
                 <div id="inventory" class="content-section">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; height: 100px;">
-                         <div class="top-bar">
+                        <div class="top-bar">
                             <div class="tab">INVENTORY</div>
                             <div class="user-controls">
                                 <div>
@@ -488,54 +488,62 @@ if(isset($_SESSION['email'])){
                     <div class="toolbar" style="display: flex; justify-content:space-between;">
                         <div>
                             <div class="stock-info" style="background-color: transparent;">
-                                <span></span>
-                                <span class="in-stock-label">In Stock</span>
+                                <?php 
+                                $totalRows = count($inventory);
+                                ?>
+                                <span id="products-count" class="na-count"><?= $totalRows ?></span>
+                                <!-- <span style="background-color: cadetblue; padding: .5rem;"><?= $totalRows ?></span> -->
+                                <!-- <span class="in-stock-label">In Stock: </span> -->
                             </div>
                         </div>
                         <div style="display: flex; justify-content:space-between;" >
-                            <div class="center-controls"><button class="last-updated-button">🔄 Last Updated</button></div>
+                            <!-- <div class="center-controls"><button class="last-updated-button">🔄 Last Updated</button></div> -->
                             <div class="na-quick-search">🔍 Quick Search</div>
                         </div>
                     </div>
                     <div class="table-container">
                         <table class="inventory-table">
+
                             <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Product ID</th>
                                 <th colspan="2">Location</th>
-                                <th>Price</th>
+                                <!-- <th>Price</th> -->
                                 <th>Inventory</th>
                                 <th>Unit In</th>
                                 <th>Unit Out</th>
                                 <th>Status</th>
                                 <th>Expiration Date</th>
-                                <th>BarCode</th>
+                                <!-- <th>BarCode</th> -->
                                 <th>Supplier ID</th>
                                 
                             </tr>
                             </thead>
                             <tbody>
 
-                                <?php foreach($inventory as $index => $inventory){ ?>
+
+                                <?php 
+                                foreach($inventory as $index => $inventory){ ?>
                                     <tr>
                                     <td><?= $index + 1?></td>
                                     <td class="product-id-cell"><?= $inventory['Product_ID']?></td>
                                     <td><span class="Location-tag shelf"><?= $inventory['LocationS']?></span></td>
                                     <td><span class="Location-tag row"><?= $inventory['LocationR']?></span></td>
-                                    <td><?= $inventory['Price']?></td>
+                                    <!-- <td><?= $inventory['Price']?></td> -->
                                     <td><?= $inventory['Inventory']?></td>
-                                    <td><?= date('F d, Y h:i A', strtotime($inventory['UnitIN']))?></td>
+                                    <td style="color: green;"><?= empty($inventory['UnitIN']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($inventory['UnitIN'])) ?></td>
+                                    <!-- <td><?= date('F d, Y h:i A', strtotime($inventory['UnitIN']))?></td> -->
                                     <!-- <td><?= date('F d, Y h:i A', strtotime($inventory['UnitOut']))?></td> -->
                                     <td style="color: red;"><?= empty($inventory['UnitOut']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($inventory['UnitOut'])) ?></td>
                                     <!-- <td><?= $inventory['Status']?></td> -->
                                     <td><span class="inventory-status status-<?= strtolower($inventory['Status']) ?>">
                                                                         <?= htmlspecialchars($inventory['Status']) ?>
                                         </span>
-                            
+                                    
                                     </td>
                                     <td style="color: red;"><?= empty($inventory['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($inventory['ExpirationDate'])) ?></td>
-                                    <td><?= $inventory['Barcode']?></td>
+                                    <!-- <td><?= $inventory['Barcode']?></td> -->
                                     <td class="supplier-id-cell"><?= $inventory['Supplier_ID']?></td>
                                     
 
@@ -750,13 +758,19 @@ if(isset($_SESSION['email'])){
                             </div>
                             <div class="actions">
                                 <!-- <div><b>Total Units :</b></div> -->
+                                 
                                 <div class="na-quick-search">🔍 Quick Search</div>
                             </div>
                         </div>
                     </div>
                     <div class="toolbar">
-                        <input type="checkbox">
-                        <span id="products-count" class="na-count">21</span>
+                        <?php 
+                        $totalRows = count($product);
+                        ?>
+                    
+                        <!-- <input type="checkbox"> -->
+
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span>
                         <button id="edit-product-btn" class="na-btn na-btn-add1" type="button">📝</button>
                         <button id="delete-product-btn" class="na-btn na-btn-add1" type="button">🗑️</button>
                         <!-- <span class="na-icon-btn">📝</span>
@@ -825,11 +839,20 @@ if(isset($_SESSION['email'])){
                                         <option disabled selected>Loading...</option>
                                     </select>
 
+                                    <label>With Expiration? :</label>
+                                    <div style="display: flex; justify-content:space-between; align-items:center;">
+                                    <!-- <label>With Expiration?:</label>
+                                    <select class="status-select" name="LocationS" id="Expiration_Status" required>
+                                        <option value="yes">Yes</option>
+                                        <option value="no ">No</option>
+                                    </select> -->
+
                                     <label>Expiration Date:
-                                        <button type="button" id="toggleNullBtn">NULL?</button>
-                                        <button type="button" id="toggleNotNullBtn" style="display: none;">NOT NULL?</button>
+                                        <button type="button" id="toggleNullBtn" style="color: red;">NO ?</button>
+                                        <button type="button" id="toggleNotNullBtn" style="display: none;">YES ?</button>
                                     </label>
-                                    <input type="date" name="ExpirationDate" id="expiration_date">
+                                    <input type="date" name="ExpirationDate" id="expiration_date" style="width: 50%;">
+                                    </div>
 
                                     <!-- <label>Expiration Date:</label>
                                     <input type="date" name="ExpirationDate"> -->
@@ -874,6 +897,7 @@ if(isset($_SESSION['email'])){
                         <link rel="stylesheet" href="assets/add_product.css">
                         <script src="assets/add_product.js" defer></script>
                         <script src="get/get_supplierPROD.js" defer></script>
+                        
 
                     
 
@@ -1072,8 +1096,13 @@ if(isset($_SESSION['email'])){
                         </div>
                     </div>
                     <div class="toolbar">
-                        <input type="checkbox">
-                        <span id="suppliers-count" class="na-count">13</span>
+                        <?php 
+                        $totalRows = count($supplier);
+                        ?>
+                    
+                        <!-- <input type="checkbox"> -->
+
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span>
                         <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span>
                         <span class="na-icon-btn">🖨️</span>
@@ -1213,8 +1242,13 @@ if(isset($_SESSION['email'])){
                         </div>
                     </div>
                     <div class="toolbar">
-                        <input type="checkbox">
-                        <span id="customer-count" class="na-count">13</span>
+                        <?php 
+                        $totalRows = count($customers);
+                        ?>
+                    
+                        <!-- <input type="checkbox"> -->
+
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span> 
                         <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
                         
                         <button id="customer-add-btn" class="na-btn na-btn-add">ADD</button>
@@ -1313,8 +1347,14 @@ if(isset($_SESSION['email'])){
                         </div>
                     </div>
                     <div class="toolbar">
-                        <input type="checkbox">
-                        <span id="returns-count" class="na-count">07</span>
+                                                <?php 
+                        $totalRows = count($customers);
+                        ?>
+                    
+                        <!-- <input type="checkbox"> -->
+
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span> 
+
                         <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span>
                         <span class="na-icon-btn">🖨️</span>
@@ -1350,8 +1390,8 @@ if(isset($_SESSION['email'])){
                                     <label>Quantity:</label>
                                     <input type="number" name="Quantity" required>
 
-                                    <label>Returned Date:</label>
-                                    <input type="datetime-local" name="ReturnedDate" required>
+                                    <!-- <label>Returned Date:</label>
+                                    <input type="datetime-local" name="ReturnedDate" required> -->
 
                                     <!-- <label>Reason For Return:</label>
                                     <input type="text" name="ReasonForReturn" required> -->
@@ -1534,7 +1574,7 @@ if(isset($_SESSION['email'])){
                 <div id="order-restock" class="content-section">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
                         <div class="top-bar">
-                            <div class="tab">ORDER / RESTOCK</div>
+                            <div class="tab">RESTOCK</div>
                             <div class="user-controls">
                                 <div>      
                                 <?php
@@ -1558,8 +1598,13 @@ if(isset($_SESSION['email'])){
                         </div>
                     </div>
                     <div class="toolbar">
-                        <input type="checkbox">
-                        <span id="order-restock-count" class="na-count">05</span>
+                        <?php 
+                        $totalRows = count($restock);
+                        ?>
+                    
+                        <!-- <input type="checkbox"> -->
+
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span> 
                         <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
                         
                         <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
@@ -1582,7 +1627,7 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Order Type</label>
                                     <input type="text" name="Type" required> -->
 
-                                    <label>Order Type::</label>
+                                    <!-- <label>Order Type::</label>
                                     <div style="display: flex; justify-content:space-between; align-items:center;">                                                       
                                     <select class="status-select" name="Type" required>
                                         <option value="">...</option>
@@ -1590,7 +1635,7 @@ if(isset($_SESSION['email'])){
                                         <option value="Re-Order">Re-Order</option>
 
                                     </select>                        
-                                    </div>
+                                    </div> -->
 
                                     
                                     <!-- <label>Select Supplier ID</label>
@@ -1698,8 +1743,24 @@ if(isset($_SESSION['email'])){
                                         <option value="Early">Early</option>
                                     </select>       
 
-                                    <label>Date Received:</label>
-                                    <input type="datetime-local" name="Date_Received" id="update-datereceived">
+                                    <label style="color: red;">With Expiration? :</label>
+                                    <div style="display: flex; justify-content:space-between; align-items:center;">
+                                    <!-- <label>With Expiration?:</label>
+                                    <select class="status-select" name="LocationS" id="Expiration_Status" required>
+                                        <option value="yes">Yes</option>
+                                        <option value="no ">No</option>
+                                    </select> -->
+
+                                    <label>Expiration Date:
+                                        <button type="button" id="toggleNullBtnOrder_restock" style="color: red;">NO ?</button>
+                                        <button type="button" id="toggleNotNullBtnOrder_restock" style="display: none;">YES ?</button>
+                                    </label>
+                                    <input type="date" name="ExpirationDate" id="update-datereceived" style="width: 50%;">
+                                    </div>
+
+                                    
+                                    <!-- <label>Expiration Date:</label>
+                                    <input type="datetime-local" name="Date_Received" id="update-datereceived"> -->
 
                                     <label>Total Received:</label>
                                     <input type="number"  name="TotalReceived" id="update-received">
@@ -1733,14 +1794,14 @@ if(isset($_SESSION['email'])){
                                         <th></th>
                                         <th>ORESTOCK ID</th>
                                         <th>Product ID</th>
-                                        <th>Order Type</th>
                                         <th>Supplier ID</th>
+                                        <!-- <th>Order Type</th> -->
                                         <th>Ordered Quantity</th>
                                         <th>Order Date</th>
                                         <th>Proof of Transaction</th>
                                         <th>Status</th>
                                         <th>Delivery Status</th>
-                                        
+                                        <th>Date Received</th>
                                         <th>Received</th>
                                         <th>with Issue</th>
                                         <th></th>
@@ -1749,13 +1810,19 @@ if(isset($_SESSION['email'])){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($restock as $index => $restocks){ ?>
+                                    <?php 
+                                        usort($restock, function ($a, $b) {
+                                        return $b['Orestock_ID'] <=> $a['Orestock_ID'];
+                                    });
+
+
+                                    foreach($restock as $index => $restocks){ ?>
                                         <tr>
                                             <td><?= $index + 1?></td>
                                             <td><?= $restocks['Orestock_ID'] ?></td>
                                             <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td>
-                                            <td><span class="order-type-tag order-type-new"><?= $restocks['Type'] ?></span></td>
                                             <td class="supplier-id-cell"><?= $restocks['Supplier_ID'] ?></td>
+                                            <!-- <td><span class="order-type-tag order-type-new"><?= $restocks['Type'] ?></span></td> -->
                                             <td><?= $restocks['Quantity'] ?></td>
                                             <td><?= date('F d, Y h:i A', strtotime($restocks['OrderDate']))?></td>
                                             <!-- <td class="proof-icon"><?= $restocks['ProofOfTransaction'] ?></td> -->
@@ -1794,7 +1861,7 @@ if(isset($_SESSION['email'])){
                                                 data-proof="<?= $restocks['Image'] ?>"
                                                 data-status="<?= $restocks['Status'] ?>"
                                                 data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
-                                                data-datereceived="<?= $restocks['Date_Received'] ?>"
+                                                data-datereceived="<?= $restocks['ExpirationDate'] ?>"
                                                 data-received="<?= $restocks['TotalReceived'] ?>"
                                                 data-issue="<?= $restocks['withIssue'] ?>">
                                                 
@@ -1847,8 +1914,9 @@ if(isset($_SESSION['email'])){
                         </div>
                     </div>
                     <div class="toolbar sticky-div-2">
-                        <input type="checkbox">
-                        <span id="transaction-sales-count" class="na-count">10</span>
+                        
+   
+                        
                         <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span>
                         <span class="na-icon-btn">🖨️</span>
@@ -1973,6 +2041,20 @@ if(isset($_SESSION['email'])){
                                         <option disabled selected>Loading...</option>
                                     </select>
 
+                                    <!-- <label for="Product_ID">Choose Batch ID:</label>
+                                    <select id="Product_IDSALES_Batch" name="Product_ID" class="id-select" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select> -->
+
+                                    <label for="BatchNum">Choose Batch ID:</label>
+                                    <select id="Product_IDSALES_Batch" name="BatchNum" class="id-select" required>
+                                    <option disabled selected>Loading...</option>
+                                    </select>
+
+
+
+
+
                                     <label>Product Name:</label>
                                     <input type="text" id="ProductName" name="ProductName" readonly>
 
@@ -1983,8 +2065,8 @@ if(isset($_SESSION['email'])){
                                     <input type="number" step="0.01" id="Unit_Price" name="Unit_Price" readonly>
 
                         
-                                    <label>Current Stock Quantity:</label>
-                                    <input type="number" id="Current_Stock" readonly>
+                                    <label id="Current_Stock_label">Current Stock Quantity:</label>
+                                    <input type="number" id="Current_Stock" style="font-weight: bolder;" readonly>
                                     
                                     
 
@@ -2027,6 +2109,7 @@ if(isset($_SESSION['email'])){
                         <script src="assets/add_sales.js" defer></script>
                         <script src="get/get_productSALES.js" defer></script>
                         <script src="get_product_details.js" defer></script>
+                        <!-- <script src="get_batches.php" defer></script> -->
                         <script src="get/get_transactionSALES.js" defer></script>
 
                     </div>
@@ -2065,7 +2148,7 @@ if(isset($_SESSION['email'])){
                                         <td class="product-id-cell"><?= $sales['Product_ID'] ?></td>
                                         <td><?= $sales['ProductName'] ?></td>
                                         <td><?= $sales['Quantity'] ?></td>
-                                        <td>PHP<?= $sales['Unit_Price'] ?></td>
+                                        <td>PHP <?= $sales['Unit_Price'] ?></td>
                                         <td>PHP <?= $sales['TotalPrice'] ?></td>
                                         <td><?= $sales['Barcode'] ?></td>
                                         <!-- <td><?= date('F d,Y', strtotime($sales['SalesDate']))?></td> -->
@@ -2094,6 +2177,7 @@ if(isset($_SESSION['email'])){
                                     <th>Payment Method</th>
                                     <th>Service Type</th>
                                     <th>Transaction Date</th>
+                                    <th>Total Price</th>
                                 </tr>
                             </thead>
                            <tbody>
@@ -2115,6 +2199,7 @@ if(isset($_SESSION['email'])){
                                         <td><?= $transaction['PaymentMethod'] ?></td>
                                         <td><span class="delivery-type-tag delivery-type-delivery"><?= $transaction['ServiceType']?></span></td>
                                         <td style="color: red;"><?= empty($transaction['Transaction_Date']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($transaction['Transaction_Date'])) ?></td>
+                                        <td>PHP <?= $transaction['Total_Price'] ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -3024,7 +3109,71 @@ if(isset($_SESSION['email'])){
                 </div>
 
 
-                <div id="settings" class="content-section"><h2>Settings</h2><!-- Settings content goes here --></div>
+                <div id="settings" class="content-section">
+                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                        <div class="top-bar"><div class="tab">Report</div>
+                            <div class="user-controls">
+                                <div>      
+                                <?php
+                                    echo $row['userName'];                        
+                                ?>
+                                </div>
+                                <div class="user-icon">👤</div>
+                                <div class="header-icons">
+                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="report-content" class="report-cards">
+                        <div class="report-card">
+                            <h3>Newly Added Products</h3>
+                            <div class="export-buttons">
+                                <a href="exports/export_newproducts_excel.php?type=daily" class="export-btn excel">EXCEL</a>
+                                <a href="exports/export_newproducts_pdf.php?type=daily" class="export-btn pdf">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <h3>Inventory Summary</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_inventory_excel.php?type=daily" class="export-btn excel">EXCEL</a>
+                                <a href="reports/export_inventory_pdf.php?type=daily" class="export-btn pdf">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <h3>Sales Report</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_sales_excel.php?type=daily" class="export-btn excel">EXCEL</a>
+                                <a href="reports/export_sales_pdf.php?type=daily" class="export-btn pdf">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <h3>Returns</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_returns_excel.php?type=daily" class="export-btn excel">EXCEL</a>
+                                <a href="reports/export_returns_pdf.php?type=daily" class="export-btn pdf">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <h3>Restock Report</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_restock_excel.php?type=daily" class="export-btn excel">EXCEL</a>
+                                <a href="reports/export_restock_pdf.php?type=daily" class="export-btn pdf">PDF</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                <!-- end of settings -->
+                </div>
+
+
+
             </div>
         </div>
     </div>

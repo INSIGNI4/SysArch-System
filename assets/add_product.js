@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-
 const nulltoggleBtn = document.getElementById('toggleNullBtn');
 const expInput = document.getElementById('expiration_date');
 const notnulltoggleBtn = document.getElementById('toggleNotNullBtn');

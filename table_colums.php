@@ -17,10 +17,11 @@ $table_colums_mapping = [
     ],
     'sales' => [
         'Order_ID', 'Transaction_ID', 'Product_ID','ProductName','Unit_Price', 'Quantity', 'TotalPrice',
-        'Barcode', 'SalesDate', 'Account_ID'
+        'Barcode', 'SalesDate', 'Account_ID','BatchNum'
     ],
     'transactions' => [
-        'Transaction_ID', 'Customer_ID', 'ReferenceNo', 'PurchaseType', 'PaymentMethod', 'ServiceType','Transaction_Date'
+        'Transaction_ID', 'Customer_ID', 'ReferenceNo', 'PurchaseType', 'PaymentMethod', 'ServiceType',
+        'Transaction_Date','Total_Price'
     ],
     'customers' => [
         'Customer_ID', 'CustomerName', 'Location', 'Email', 'PhoneNumber'
@@ -41,7 +42,7 @@ $table_colums_mapping = [
     'restock' => [
         'Orestock_ID', 'Type', 'Quantity', 'OrderDate', 'Product_ID',
         'Supplier_ID', 'Status', 'Image', 'DeliveryStatus','Date_Received'
-        ,'TotalReceived','withIssue'
+        ,'TotalReceived','withIssue','ExpirationDate'
     ],
 
 

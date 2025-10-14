@@ -24,30 +24,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 idInput.value = this.dataset.id || '';
                 totalReceivedInput.value = this.dataset.received || '';
                 withIssueInput.value = this.dataset.issue || '';
-                
                 statusSelect.value = this.dataset.status || '';
                 deliverystatusSelect.value = this.dataset.deliverystatus || '';
                 dateReceivedInput.value = this.dataset.datereceived || '';
                 proofInput.value = this.dataset.proof || '';
-                
             });
         });
     }
 
     // ✅ Toolbar "UPDATE" button click
     const updateOrderBtn = document.getElementById("update-restock-status-btn");
-    updateOrderBtn.addEventListener("click", () => {
-        resetActions();
-        document.querySelectorAll(".update-order-btn").forEach(btn => {
-            btn.style.display = "inline-block";
+    if (updateOrderBtn) {
+        updateOrderBtn.addEventListener("click", () => {
+            resetActions();
+            document.querySelectorAll(".update-order-btn").forEach(btn => {
+                btn.style.display = "inline-block";
+            });
+            bindUpdateButtons();
         });
-        bindUpdateButtons();
-    });
+    }
 
     // ✅ Cancel modal
-    document.getElementById('updateorder-cancel-btn').addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
+    const cancelBtn = document.getElementById('updateorder-cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function () {
+            modal.style.display = 'none';
+        });
+    }
 
     // ✅ Click outside to close
     window.addEventListener('click', function (event) {
@@ -55,4 +58,58 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'none';
         }
     });
+
+const nulltoggleBtn = document.getElementById('toggleNullBtnOrder_restock');
+const notnulltoggleBtn = document.getElementById('toggleNotNullBtnOrder_restock');
+const expInput = document.getElementById('update-datereceived');
+
+nulltoggleBtn.addEventListener('click', () => {
+    nulltoggleBtn.style.display = 'none';
+    notnulltoggleBtn.style.display = 'inline-block';
+    notnulltoggleBtn.style.color = 'blue';
+    expInput.disabled = true;
 });
+
+notnulltoggleBtn.addEventListener('click', () => {
+    notnulltoggleBtn.style.display = 'none';
+    nulltoggleBtn.style.display = 'inline-block';
+    nulltoggleBtn.style.color = 'red';
+    expInput.disabled = false;
+});
+
+});
+    
+    // // document.addEventListener('click', function () {
+    //     const notnulltoggleBtn = document.getElementById('toggleNotNullBtn1');
+    //     const nulltoggleBtn = document.getElementById('toggleNullBtn1');
+    //     const expInput = document.getElementById('update-datereceived');
+
+    //     // if (e.target.id === 'toggleNullBtn1') {
+    //     //     nulltoggleBtn.style.display = 'none';
+    //     //     notnulltoggleBtn.style.display = 'inline-block';
+    //     //     notnulltoggleBtn.style.color = 'blue';
+    //     //     expInput.disabled = true;
+    //     // }
+
+    //     // if (e.target.id === 'toggleNotNullBtn1') {
+    //     //     notnulltoggleBtn.style.display = 'none';
+    //     //     nulltoggleBtn.style.display = 'inline-block';
+    //     //     nulltoggleBtn.style.color = 'red';
+    //     //     expInput.disabled = false;
+    //     // }
+            
+    //     nulltoggleBtn.addEventListener('click', function () {
+    //         nulltoggleBtn.style.display = 'none';
+    //         notnulltoggleBtn.style.display = 'inline-block';
+    //         notnulltoggleBtn.style.color = 'blue';
+    //         expInput.disabled = true;
+            
+    //     })
+
+    //     notnulltoggleBtn.addEventListener('click', function () {
+    //         notnulltoggleBtn.style.display = 'none';
+    //         nulltoggleBtn.style.display = 'inline-block';
+    //         nulltoggleBtn.style.color = 'red';
+    //         expInput.disabled = false;
+    //     })
+    // // });

@@ -16,8 +16,9 @@ let customerRowCount = 13, customerIdCounter = 1013;
 let sReturnsRowCount = 5, sReturnsIdCounter = 1005;
 let cReturnsRowCount = 7, cReturnsIdCounter = 1007;
 let orestockRowCount = 5, orestockIdCounter = 1005;
-let transactionRowCount = 10;
-let salesRowCount = 6;
+// const totalRows = <?= json_encode($totalRows) ?>; 
+//     let transactionRowCount = totalRows;
+//     let salesRowCount = totalRows;
 let forecastRowCount = 10;
 let analyticsRowCount = 10;
 let stockAdjustmentRowCount = 7, pulledIdCounter = 1007;
@@ -261,11 +262,24 @@ function showTransactionSalesView(viewType) {
     document.getElementById('transaction-view-btn').classList.toggle('active', viewType === 'transaction');
     document.getElementById('sales-view-btn').classList.toggle('active', viewType === 'sales');
 
-    document.getElementById('transaction-sales-count').textContent = String(viewType === 'transaction' ? transactionRowCount : salesRowCount).padStart(2, '0');
+    // document.getElementById('transaction-sales-count').textContent = String(viewType === 'transaction' ? transactionRowCount : salesRowCount).padStart(2, '0');
+
 
     document.getElementById('transaction-add-btn').style.display = viewType === 'transaction' ? 'inline-block' : 'none';
     document.getElementById('sales-add-btn').style.display = viewType === 'sales' ? 'inline-block' : 'none';
 }
+
+
+// function updateRowCount() {
+//     const rows = document.querySelectorAll('tbody tr'); // count visible rows
+//     const visibleCount = Array.from(rows).filter(r => r.style.display !== 'none').length;
+
+//     document.getElementById('transaction-sales-count').textContent = 
+//         String(visibleCount).padStart(2, '0');
+// }
+
+// // Call it once on load
+// updateRowCount();
 
 let activeTableType = 'daily'
 
@@ -744,7 +758,6 @@ if (sidebarToggle) {
 const nulltoggleBtn = document.getElementById('toggleNullBtn');
 const expInput = document.getElementById('expiration_date');
 const expInputClass = document.getElementById('edit-expirationdate');
-
 const notnulltoggleBtn = document.getElementById('toggleNotNullBtn');
 
 

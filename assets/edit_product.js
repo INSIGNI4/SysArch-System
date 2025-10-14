@@ -177,8 +177,6 @@ const expInput = document.getElementById('edit-expirationdate');
 
 const notnulltoggleBtn = document.getElementById('toggleNotNullBtn1');
 
-
-
 nulltoggleBtn.addEventListener('click',function(){
 
     nulltoggleBtn.style.display = 'none';
@@ -188,8 +186,6 @@ nulltoggleBtn.addEventListener('click',function(){
     expInput.value = "";
     
     // expInputClass.disabled = true;
-    
-
 
 })
 
@@ -200,7 +196,6 @@ notnulltoggleBtn.addEventListener('click',function(){
     nulltoggleBtn.style.color = 'red'; 
     expInput.disabled = false;
     // expInputClass.disabled = false;
-
 
 })
 

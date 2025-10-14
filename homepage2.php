@@ -2124,6 +2124,7 @@ if(isset($_SESSION['email'])){
                                     <th>Transaction ID</th>
                                     <th>Product ID</th>
                                     <th>Product Name</th>
+                                    <th>Batch Number</th>
                                     <th>Total Quantity</th>
                                     <th>Store Price</th>
                                     <th>Total Price</th>
@@ -2147,6 +2148,10 @@ if(isset($_SESSION['email'])){
                                         <td><?= $sales['Transaction_ID'] ?></td>
                                         <td class="product-id-cell"><?= $sales['Product_ID'] ?></td>
                                         <td><?= $sales['ProductName'] ?></td>
+                                        <!-- <td><?= $sales['BatchNum'] ?></td> -->
+                                        <td style="color: red;">
+                                        <?= empty($sales['BatchNum']) ? '- - - N/A - - -' : $sales['BatchNum']; ?>
+                                        </td>
                                         <td><?= $sales['Quantity'] ?></td>
                                         <td>PHP <?= $sales['Unit_Price'] ?></td>
                                         <td>PHP <?= $sales['TotalPrice'] ?></td>

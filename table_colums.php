@@ -2,6 +2,12 @@
 
 $table_colums_mapping = [
     /// ======= INVENTORY DATABASE ======= ///
+    
+    'forecast' => [
+        'Forecast_ID', 'ForecastType', 'Product_ID', 'ForecastPeriod',
+        'ForecastStart', 'ForecastEnd', 'ProjectedSales', 'ConfidenceLevel'
+    ],
+
     'product' => [
         'Product_ID', 'ProductName', 'Type', 'ReordingPoints', 'UnitsOrdered',
         'UnitSold', 'StorePrice', 'SupplierPrice', 'Image', 'Supplier_ID', 'ExpirationDate', 'Barcode',
@@ -48,6 +54,9 @@ $table_colums_mapping = [
 
     
     // /// ======= FORECASTING & ANALYTICS DATABASE ======= ///
+
+
+
     'daily_forecast' => [
         'DailyForecast_ID', 'ForecastType', 'ProductScope', 'ForecastPeriod',
         'ForecastStart', 'ForecastEnd', 'ProjectedSales', 'ConfidenceLevel', 'Account_ID'

@@ -28,6 +28,9 @@ $supplierreturns = fetchTableData($conn, 'supplierreturns');
 $sales = fetchTableData($conn, 'sales');
 $transaction = fetchTableData($conn, 'transactions');
 
+$forecast = fetchTableData($conn, 'forecast');
+
+
 $pulledoutitems = fetchTableData($conn, 'pulledoutitems');
 $salesaggregration = fetchTableData($conn, 'salesaggregration');
 $newaddition = fetchTableData($conn, 'newaddition');
@@ -85,15 +88,19 @@ if (!is_array($transaction)) {
     $transaction = [];  
 }
 
-if (!is_array($dailyforecast)) {
-    $dailyforecast = [];  
+if (!is_array($forecast)) {
+    $forecast = [];  
 }
-if (!is_array($weeklyforecast)) {
-    $weeklyforecast = [];  
-}
-if (!is_array($monthlyforecast)) {
-    $monthlyforecast = [];  
-}
+
+// if (!is_array($dailyforecast)) {
+//     $dailyforecast = [];  
+// }
+// if (!is_array($weeklyforecast)) {
+//     $weeklyforecast = [];  
+// }
+// if (!is_array($monthlyforecast)) {
+//     $monthlyforecast = [];  
+// }
 
 
 if (!is_array($analytics)) {
@@ -289,6 +296,11 @@ if(isset($_SESSION['email'])){
 
                             <div class="forecast_dashboard">
                                 <figure class="highcharts-figure">
+                                    <select id="aggSelector">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
                                     <div id="container1"></div>
                                 </figure>
                             </div>
@@ -1653,29 +1665,30 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Order Date:</label>
                                     <input type="datetime-local" name="OrderDate" required> -->
 
-                                    <label>Proof of Transaction:</label>
-                                    <input type="file" accept="image/*" name="Image">
+                                    <!-- <label>Proof of Transaction:</label>
+                                    <input type="file" accept="image/*" name="Image"> -->
                                     
                                     <!-- <label>Status:</label>
                                     <input type="text" name="Status" required> -->
 
 
-                                    <label>Status::</label>
                                     <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
+                                    <!-- <label>Status::</label>
                                     <select class="status-select" name="Status" required>
                                         <option value="">...</option>
                                         <option value="Requested">Requested</option>
                                         <option value="Out for Delivery">Out for Delivery</option>
                                         <option value="Cancelled">Cancelled</option>
                                         <option value="Received">Received</option>
-
-                                    </select>           
+                                        
+                                    </select>            -->
+                                    <input type="hidden"  name="Status" value="Requested">
                                     
                                     <!-- <label>Total Received:</label> -->
-                                    <input type="hidden"  name="TotalReceived" value="0">
+                                    <!-- <input type="hidden"  name="TotalReceived" value="0"> -->
                                     
                                     <!-- <label>With Issue:</label> -->
-                                    <input type="hidden"  name="withIssue"  value="0">
+                                    <!-- <input type="hidden"  name="withIssue"  value="0"> -->
 
                                     
                                     <!-- <label>Delivery Status:</label>
@@ -1762,6 +1775,9 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Expiration Date:</label>
                                     <input type="datetime-local" name="Date_Received" id="update-datereceived"> -->
 
+                                    <label>Ordered Quantity:</label>
+                                    <input type="number" name="Quantity" id="update-orderedQuantity" readonly>
+
                                     <label>Total Received:</label>
                                     <input type="number"  name="TotalReceived" id="update-received">
                                     
@@ -1782,6 +1798,8 @@ if(isset($_SESSION['email'])){
                         <script src="assets/add_order.js" defer></script>
                         <script src="assets/update_restock.js" defer></script>
                         <script src="get/get_productORDRES.js" defer></script>
+                        <script src="compare_quantity.js" defer></script>
+                        
 
 
 
@@ -1862,6 +1880,7 @@ if(isset($_SESSION['email'])){
                                                 data-status="<?= $restocks['Status'] ?>"
                                                 data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
                                                 data-datereceived="<?= $restocks['ExpirationDate'] ?>"
+                                                data-quantity="<?= $restocks['Quantity'] ?>"
                                                 data-received="<?= $restocks['TotalReceived'] ?>"
                                                 data-issue="<?= $restocks['withIssue'] ?>">
                                                 
@@ -2528,141 +2547,74 @@ if(isset($_SESSION['email'])){
                         <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span>
 
-                        <!-- Forecast ADD buttons -->
+                        <!-- Forecast ADD buttons
                         <button id="daily-forecast-add-btn" class="na-btn na-btn-add">ADD</button>
                         <button id="weekly-forecast-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
                         <button id="monthly-forecast-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
 
-                        <!-- Analytics ADD buttons -->
+                        Analytics ADD buttons
                         <button id="daily-analytics-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
                         <button id="weekly-analytics-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
                         <button id="monthly-analytics-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
 
-                        <!-- Forecast toggle buttons -->
+                        Forecast toggle buttons
                         <div class="toggle-buttons" id="forecast-toggle-buttons" style="margin-bottom:10px; display:block;">
                             <button id="daily-forecast-view-btn" class="toggle-btn active">Daily</button>
                             <button id="weekly-forecast-view-btn" class="toggle-btn">Weekly</button>
                             <button id="monthly-forecast-view-btn" class="toggle-btn">Monthly</button>
                         </div>
 
-                        <!-- Analytics toggle buttons -->
+                        Analytics toggle buttons
                         <div class="toggle-buttons" id="analytics-toggle-buttons" style="margin-bottom:10px; display:none;">
                             <button id="daily-analytics-view-btn" class="toggle-btn active">Daily</button>
                             <button id="weekly-analytics-view-btn" class="toggle-btn">Weekly</button>
                             <button id="monthly-analytics-view-btn" class="toggle-btn">Monthly</button>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Forecast view container -->
                     <div id="forecast-view-container" style="display:flex; flex-direction:column; gap:10px;">
                         <!-- DAILY FORECAST -->
-                        <div id="daily-forecast-view-container" class="table-container" style="display:block;">
+                        <div id="forecast-view-container" class="table-container" style="display:block;">
                             <table class="forecast-table">
                                 <thead>
                                     <tr>
                                         <th></th>
                                         <th>Forecast ID</th>
                                         <th>Forecast Type</th>
-                                        <th>Product Scope</th>
+                                        <th>Product ID</th>
                                         <th>Forecast Period</th>
                                         <th>Forecast Start</th>
                                         <th>Forecast End</th>
                                         <th>Projected Sales</th>
                                         <th>Confidence Level</th>
-                                        <th>Account ID</th>
+                                        <!-- <th>Account ID</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($dailyforecast as $index => $dailyforecast){ ?>
+                                    <?php foreach($forecast as $index => $forecast){ ?>
                                         <tr>
                                             <td><?= $index + 1 ?></td>
-                                            <td class="forecast-id-cell"><?= $dailyforecast['DailyForecast_ID'] ?></td>
-                                            <td><?= $dailyforecast['ForecastType'] ?></td>
-                                            <td><span class="type-tag-purple"><?= $dailyforecast['ProductScope'] ?></span></td>
-                                            <td><?= $dailyforecast['ForecastPeriod'] ?></td>
-                                            <td><?= date('F d,Y', strtotime($dailyforecast['ForecastStart'])) ?></td>
-                                            <td><?= date('F d,Y', strtotime($dailyforecast['ForecastEnd'])) ?></td>
-                                            <td><?= $dailyforecast['ProjectedSales'] ?></td>
-                                            <td><?= $dailyforecast['ConfidenceLevel'] ?></td>
-                                            <td><?= $dailyforecast['Account_ID'] ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- WEEKLY FORECAST -->
-                        <div id="weekly-forecast-view-container" class="table-container" style="display:none;">
-                             <table class="forecast-table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Forecast ID</th>
-                                        <th>Forecast Type</th>
-                                        <th>Product Scope</th>
-                                        <th>Forecast Period</th>
-                                        <th>Forecast Start</th>
-                                        <th>Forecast End</th>
-                                        <th>Projected Sales</th>
-                                        <th>Confidence Level</th>
-                                        <th>Account ID</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($weeklyforecast as $index => $weeklyforecast){ ?>
-                                        <tr>
-                                            <td><?= $index + 1 ?></td>
-                                            <td class="forecast-id-cell"><?= $weeklyforecast['WeeklyForecast_ID'] ?></td>
-                                            <td><?= $weeklyforecast['ForecastType'] ?></td>
-                                            <td><span class="type-tag-purple"><?= $weeklyforecast['ProductScope'] ?></span></td>
-                                            <td><?= $weeklyforecast['ForecastPeriod'] ?></td>
-                                            <td><?= date('F d,Y', strtotime($weeklyforecast['ForecastStart'])) ?></td>
-                                            <td><?= date('F d,Y', strtotime($weeklyforecast['ForecastEnd'])) ?></td>
-                                            <td><?= $weeklyforecast['ProjectedSales'] ?></td>
-                                            <td><?= $weeklyforecast['ConfidenceLevel'] ?></td>
-                                            <td><?= $weeklyforecast['Account_ID'] ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- MONTHLY FORECAST -->
-                        <div id="monthly-forecast-view-container" class="table-container" style="display:none;">
-                             <table class="forecast-table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Forecast ID</th>
-                                        <th>Forecast Type</th>
-                                        <th>Product Scope</th>
-                                        <th>Forecast Period</th>
-                                        <th>Forecast Start</th>
-                                        <th>Forecast End</th>
-                                        <th>Projected Sales</th>
-                                        <th>Confidence Level</th>
-                                        <th>Account ID</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($monthlyforecast as $index => $monthlyforecast){ ?>
-                                        <tr>
-                                            <td><?= $index + 1 ?></td>
-                                            <td class="forecast-id-cell"><?= $monthlyforecast['MonthlyForecast_ID'] ?></td>
-                                            <td><?= $monthlyforecast['ForecastType'] ?></td>
-                                            <td><span class="type-tag-purple"><?= $monthlyforecast['ProductScope'] ?></span></td>
-                                            <td><?= $monthlyforecast['ForecastPeriod'] ?></td>
-                                            <td><?= date('F d,Y', strtotime($monthlyforecast['ForecastStart'])) ?></td>
-                                            <td><?= date('F d,Y', strtotime($monthlyforecast['ForecastEnd'])) ?></td>
-                                            <td><?= $monthlyforecast['ProjectedSales'] ?></td>
-                                            <td><?= $monthlyforecast['ConfidenceLevel'] ?></td>
-                                            <td><?= $monthlyforecast['Account_ID'] ?></td>
+                                            <td class="forecast-id-cell"><?= $forecast['Forecast_ID'] ?></td>
+                                            <td><?= $forecast['ForecastType'] ?></td>
+                                            <td>
+                                                <span class="type-tag-purple">
+                                                    <?= ($forecast['Product_ID'] === null) ? 'All' : $forecast['Product_ID'] ?>
+                                                </span>
+                                            </td>
+                                            <td><?= $forecast['ForecastPeriod'] ?></td>
+                                            <td><?= date('F d,Y', strtotime($forecast['ForecastStart'])) ?></td>
+                                            <td><?= date('F d,Y', strtotime($forecast['ForecastEnd'])) ?></td>
+                                            <td><?= $forecast['ProjectedSales'] ?></td>
+                                            <td><?= $forecast['ConfidenceLevel']?></td>
+                                            <!-- <td><?= $forecast['Account_ID'] ?></td> -->
                                         </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
 
                     <!-- Analytics view container -->
                     <div id="analytics-view-container" style="display:none; flex-direction:column; gap:10px;">
@@ -2694,64 +2646,9 @@ if(isset($_SESSION['email'])){
                             </table>
                         </div>
 
-                        <!-- WEEKLY ANALYTICS -->
-                        <div id="weekly-analytics-view-container" class="table-container" style="display:none;">
-                            <table class="analytics-table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Analytics ID</th>
-                                        <th>Forecast ID</th>
-                                        <th>Sales Metrics</th>
-                                        <th>Stock Metrics</th>
-                                        <th>Account ID</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($analytics as $index => $analytics){ ?>
-                                        <tr>
-                                            <td><?= $index + 1 ?></td>
-                                            <td class="analytics-id-cell"><?= $analytics['AnalyticsID'] ?></td>
-                                            <td class="forecast-id-cell"><?= $analytics['Forecast_ID'] ?></td>
-                                            <td><?= $analytics['SalesMetrics'] ?></td>
-                                            <td class="analytics-id-cell"><?= $analytics['Inventory_ID'] ?></td>
-                                            <td class="forecast-id-cell"><?= $analytics['Account_ID'] ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- MONTHLY ANALYTICS -->
-                        <div id="monthly-analytics-view-container" class="table-container" style="display:none;">
-                            <table class="analytics-table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Analytics ID</th>
-                                        <th>Forecast ID</th>
-                                        <th>Sales Metrics</th>
-                                        <th>Stock Metrics</th>
-                                        <th>Account ID</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($analytics as $index => $analytics){ ?>
-                                        <tr>
-                                            <td><?= $index + 1 ?></td>
-                                            <td class="analytics-id-cell"><?= $analytics['AnalyticsID'] ?></td>
-                                            <td class="forecast-id-cell"><?= $analytics['Forecast_ID'] ?></td>
-                                            <td><?= $analytics['SalesMetrics'] ?></td>
-                                            <td class="analytics-id-cell"><?= $analytics['Inventory_ID'] ?></td>
-                                            <td class="forecast-id-cell"><?= $analytics['Account_ID'] ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
 
-                    <!-- Forecast & Analytics Modals -->
+                    <!-- Forecast & Analytics Modals
                     <div id="daily-addForecastModal" class="modal" aria-hidden="true">
                         <div class="modal-content">
                             <h3>Add Daily New Forecast</h3>
@@ -2778,7 +2675,6 @@ if(isset($_SESSION['email'])){
                             <h3>Add Weekly New Forecast</h3>
                             <form id="weekly-forecastForm" action="add.php" method="POST">
                             <input type="hidden" name="table" value="weekly_forecast">
-                            <!-- same fields -->
                             <label>Forecast Type:</label><input type="text" name="ForecastType" required>
                             <label>Product Scope:</label><input type="number" name="ProductScope" required>
                             <label>Forecast Period:</label><input type="text" name="ForecastPeriod" required>
@@ -2800,7 +2696,6 @@ if(isset($_SESSION['email'])){
                             <h3>Add Monthly New Forecast</h3>
                             <form id="monthly-forecastForm" action="add.php" method="POST">
                             <input type="hidden" name="table" value="monthly_forecast">
-                            <!-- same fields -->
                             <label>Forecast Type:</label><input type="text" name="ForecastType" required>
                             <label>Product Scope:</label><input type="number" name="ProductScope" required>
                             <label>Forecast Period:</label><input type="text" name="ForecastPeriod" required>
@@ -2817,7 +2712,6 @@ if(isset($_SESSION['email'])){
                         </div>
                         </div>
 
-                        <!-- Analytics modals -->
                         <div id="daily-addAnalyticsModal" class="modal" aria-hidden="true">
                         <div class="modal-content">
                             <h3>Add Daily New Analytics</h3>
@@ -2867,14 +2761,16 @@ if(isset($_SESSION['email'])){
                             </div>
                             </form>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
+<!-- END OF FORECAST & ANALYTICS -->
+                
 
-                <script src="assets/add_forecast.js"></script>
-                <script src="assets/add_analytics.js"></script>
+                <!-- <script src="assets/add_forecast.js"></script>
+                <script src="assets/add_analytics.js"></script>  -->
 
                         
-<!-- END OF FORECAST & ANALYTICS -->
+
 
                 <div id="stock-adjustments" class="content-section">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">

@@ -9,9 +9,9 @@ session_start();
 // }
 
 include('table_colums.php');
-include('connect.php'); // ✅ MySQLi connection
+include('connect.php'); // MySQLi connection
 
-// ✅ Get table name directly from POST instead of session
+// Get table name directly from POST instead of session
 if (!isset($_POST['table']) || empty($_POST['table'])) {
     $_SESSION['response'] = [
         'success' => false,
@@ -23,7 +23,7 @@ if (!isset($_POST['table']) || empty($_POST['table'])) {
 
 $table_name = $_POST['table'];
 
-// ✅ Check if table mapping exists
+// Check if table mapping exists
 if (!isset($table_colums_mapping[$table_name])) {
     $_SESSION['response'] = [
         'success' => false,
@@ -35,7 +35,7 @@ if (!isset($table_colums_mapping[$table_name])) {
 
 $columns = $table_colums_mapping[$table_name];
 
-// ✅ Collect data dynamically based on mapping
+// Collect data dynamically based on mapping
 $db_arr = [];
 foreach ($columns as $col) {
     if (isset($_POST[$col])) {
@@ -70,7 +70,7 @@ if (in_array("Image", $columns) && isset($_FILES['Image']) && !empty($_FILES['Im
 // PROFF OF TRANSACTION STARTS HERE
 $columns = $table_colums_mapping[$table_name];
 
-// ✅ Collect data dynamically based on mapping
+// Collect data dynamically based on mapping
 $db_arr = [];
 foreach ($columns as $col) {
     if (isset($_POST[$col])) {
@@ -109,7 +109,7 @@ if (in_array("ProofOfTransaction", $columns) && isset($_FILES['ProofOfTransactio
 
 
 
-// ✅ Stop if no data to insert
+// Stop if no data to insert
 if (empty($db_arr)) {
     $_SESSION['response'] = [
         'success' => false,
@@ -119,12 +119,12 @@ if (empty($db_arr)) {
     exit;
 }
 
-// ✅ Build SQL dynamically
+// Build SQL dynamically
 $table_properties = implode(", ", array_keys($db_arr));
 $placeholders = implode(", ", array_fill(0, count($db_arr), "?"));
 $sql = "INSERT INTO `$table_name` ($table_properties) VALUES ($placeholders)";
 
-// ✅ Prepare statement
+// Prepare statement
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     $_SESSION['response'] = [
@@ -135,17 +135,23 @@ if (!$stmt) {
     exit;
 }
 
-// ✅ Bind parameters dynamically
+//  Bind parameters dynamically
 $types = str_repeat("s", count($db_arr));
 $stmt->bind_param($types, ...array_values($db_arr));
 
-// ✅ Execute and set response
+// Execute and set response
 if ($stmt->execute()) {
     $tableLabel = ucfirst($table_name);
     $_SESSION['response'] = [
         'success' => true,
         'message' => "$tableLabel added successfully!"
     ];
+
+    // REAL TIME FORECAST UPDATE
+    // if ($table_name === 'sales') {
+    //     include('forecast_update.php');
+    // }
+    
 } else {
     $_SESSION['response'] = [
         'success' => false,
@@ -156,7 +162,7 @@ if ($stmt->execute()) {
 $stmt->close();
 $conn->close();
 
-// ✅ Redirect back
+// Redirect back
 header('Location: ' . $_SERVER['HTTP_REFERER']);
 exit;
 

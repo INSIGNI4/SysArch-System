@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusSelect = document.getElementById('update-status');
     const idInput = document.getElementById('update-order-id');
     const deliverystatusSelect = document.getElementById('update-delivery-status');
+    const orderedQtys = document.getElementById('update-orderedQuantity');
     const totalReceivedInput = document.getElementById('update-received');
     const withIssueInput = document.getElementById('update-issue');
     const proofInput = document.getElementById('edit-image');
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             clone.addEventListener('click', function () {
                 modal.style.display = 'block';
                 idInput.value = this.dataset.id || '';
+                orderedQtys.value = this.dataset.quantity || '';
                 totalReceivedInput.value = this.dataset.received || '';
                 withIssueInput.value = this.dataset.issue || '';
                 statusSelect.value = this.dataset.status || '';

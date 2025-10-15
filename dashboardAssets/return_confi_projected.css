@@ -1,6 +1,5 @@
 .confidence_dashboard,
-.projected_dashboard,
-.return_dashboard {
+.projected_dashboard {
     background: #ffffff;
     border-radius: 0;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
@@ -18,8 +17,7 @@
 
 /* ===== TITLES ===== */
 .confidence_dashboard h3,
-.projected_dashboard h3,
-.return_dashboard h3 {
+.projected_dashboard h3 {
     font-size: 1rem;
     font-weight: 600;
     color: #222;
@@ -29,8 +27,7 @@
 
 /* ===== CONTENT TEXT ===== */
 .confidence_dashboard p,
-.projected_dashboard p,
-.return_dashboard p {
+.projected_dashboard p {
     font-size: 0.85rem;
     color: #555;
     margin: 3px 0;

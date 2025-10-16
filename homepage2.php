@@ -268,10 +268,13 @@ if(isset($_SESSION['email'])){
                                 <span class="icon-wrapper">🔔<span class="badge">3</span></span>
                                 <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
                             </div>
+
+
                         </div>
+
                     </div>
 
-                        <div class="parent_dashboard">
+                        <div class="parent_dashboard" style="background-color: black;">
                             <!-- ANALYTICS DASHBOARD JS -->
                             <script src="https://code.highcharts.com/highcharts.js"></script>
                             <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -295,13 +298,150 @@ if(isset($_SESSION['email'])){
                             <script src="https://code.highcharts.com/themes/adaptive.js"></script>
 
                             <div class="forecast_dashboard">
+   
                                 <figure class="highcharts-figure">
-                                    <select id="aggSelector">
+                                    <!-- <div id="container1"></div> -->
+
+                                    <div style="position: relative;">
+                                    <div id="salesChart"></div>
+                                    <select id="forecastType" 
+                                            style="
+                                                position: absolute;
+                                                top: 10px;
+                                                left: 20px;
+                                                z-index: 10;
+                                                padding: 5px;
+                                                border-radius: 6px;
+                                            ">
                                         <option value="daily">Daily</option>
                                         <option value="weekly">Weekly</option>
                                         <option value="monthly">Monthly</option>
                                     </select>
-                                    <div id="container1"></div>
+                                    </div>
+
+
+                                    <div id="salesChart"></div>
+
+                                    <script src="https://code.highcharts.com/highcharts.js"></script>
+                                    <script>
+                                    function loadForecast(type = 'daily') {
+                                    fetch('get_sales_forecast.php?type=' + type)
+                                        .then(res => res.json())
+                                        .then(data => {
+                                        const actual = data.map(r => parseFloat(r.TotalQuantity));
+                                        const forecast = data.map(r => parseFloat(r.MovingAverage3));
+                                        const categories = data.map(r => r.Period);
+
+                                        Highcharts.chart('salesChart', {
+                                            chart: { type: 'line' },
+                                            title: { text: `Store Sales Forecast (${type.charAt(0).toUpperCase() + type.slice(1)} 3-Moving Average)` },
+                                            subtitle: { text: 'Actual Sales vs Forecasted Trend' },
+                                            xAxis: {
+                                            categories: categories,
+                                            title: { text: type === 'daily' ? 'Date' : type === 'weekly' ? 'Week' : 'Month' }
+                                            },
+                                            yAxis: { title: { text: 'Total Quantity Sold' } },
+                                            legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' },
+                                            tooltip: { shared: true, valueSuffix: ' units' },
+                                            series: [
+                                            { name: 'Actual Sales', data: actual, color: '#007bff' },
+                                            { name: '3-Moving Average', data: forecast, dashStyle: 'ShortDot', color: '#28a745' }
+                                            ]
+                                        });
+                                        });
+                                    }
+
+                                    document.getElementById('forecastType').addEventListener('change', function() {
+                                    loadForecast(this.value);
+                                    });
+
+                                    loadForecast(); // load daily by default
+                                    </script>
+
+
+
+
+
+
+
+
+
+
+                                    <!-- <select id="forecastSelector">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                    <div id="salesChart" style="width: 100%; height: 400px;">
+                                    </div>
+
+
+                                    <script src="https://code.highcharts.com/highcharts.js"></script>
+                                    <script>
+                                    // Fetch data from PHP
+                                    fetch('get_sales_forecast.php')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                        if (!Array.isArray(data) || data.length === 0) {
+                                            console.error("No data received or invalid JSON.");
+                                            return;
+                                        }
+
+                                        // Prepare arrays for Highcharts
+                                        const actual = data.map(row => [row.SalesDate, row.DailyTotalQuantity]);
+                                        const forecast = data.map(row => [row.SalesDate, row.MovingAverage3]);
+
+                                        // Render chart
+                                        Highcharts.chart('salesChart', {
+                                            chart: {
+                                            type: 'line'
+                                            },
+                                            title: {
+                                            text: 'Store Sales Forecast (3-Day Moving Average)'
+                                            },
+                                            subtitle: {
+                                            text: 'Actual Sales vs Forecasted Trend'
+                                            },
+                                            xAxis: {
+                                            categories: data.map(row => row.SalesDate),
+                                            title: { text: 'Date' },
+                                            labels: {
+                                            step: 0 // show one date label every 2 points (try 3 or 4 for more spacing)
+                                            }
+                                            // crosshair: true
+                                            },
+                                            yAxis: {
+                                            title: { text: 'Total Quantity Sold' },
+                                            min: 0
+                                            },
+                                            tooltip: {
+                                            shared: true,
+                                            valueSuffix: ' units'
+                                            
+                                            },
+                                            legend: {
+                                            layout: 'horizontal',
+                                            align: 'center',
+                                            verticalAlign: 'bottom'
+
+                                            },
+                                            series: [
+                                            {
+                                                name: 'Actual Sales',
+                                                data: actual.map(item => item[1]), // only the y-values
+                                                color: '#007bff'
+                                            },
+                                            {
+                                                name: '3-Day Moving Average',
+                                                data: forecast.map(item => item[1]),
+                                                dashStyle: 'ShortDot',
+                                                color: '#28a745'
+                                            }
+                                            ]
+                                        });
+                                        })
+                                        .catch(error => console.error('Error loading chart data:', error));
+                                    </script> -->
                                 </figure>
                             </div>
 
@@ -481,9 +621,9 @@ if(isset($_SESSION['email'])){
                         </div>
                         <div class="controls-bar">
                             <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select><option></option></select></div>
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select><option></option></select></div>
                                 <div class="control-group"><label>⇅ Sort by:</label><select><option></option></select></div>
-                                <button class="status-button">STATUS</button>
+                                <button class="status-button">STATUS</button> -->
                                 <!-- <div class="stock-info"><span>30</span><span class="in-stock-label">In Stock</span></div> -->
                             </div>
 
@@ -765,8 +905,8 @@ if(isset($_SESSION['email'])){
                         </div>
                         <div class="controls-bar">
                             <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>PRODUCT ID</option></select></div>
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>PRODUCT ID</option></select></div> -->
                             </div>
                             <div class="actions">
                                 <!-- <div><b>Total Units :</b></div> -->
@@ -1007,7 +1147,7 @@ if(isset($_SESSION['email'])){
                                     <th>Product ID</th>
                                     <th>Product Name</th>
                                     <th>Type</th>
-                                    <th>Reorder Points</th>
+                                    <!-- <th>Reorder Points</th> -->
                                     <th>Ordered</th>
                                     <th>Sold</th>
                                     <th>Price</th>
@@ -1015,7 +1155,7 @@ if(isset($_SESSION['email'])){
                                     <th>Image</th>
                                     <th>Supplier ID</th>
                                     <th>Expiration Date</th>
-                                    <th>Barcode</th>
+                                    <!-- <th>Barcode</th> -->
                                     <th colspan="2">Location</th>
                                     <th>       </th>
                                 </tr>
@@ -1027,7 +1167,7 @@ if(isset($_SESSION['email'])){
                                         <td class="product-id-cell"><?= $products['Product_ID']?></td>
                                         <td><?= $products['ProductName']?></td>
                                         <td><span class="type-tag-purple"><?= $products['Type']?></span></td>
-                                        <td><?= $products['ReordingPoints']?></td>
+                                        <!-- <td><?= $products['ReordingPoints']?></td> -->
                                         <td class="units-ordered"><?= $products['UnitsOrdered']?></td>
                                         <td class="units-sold"><?= $products['UnitSold']?></td>
                                         <td><?= $products['StorePrice']?></td>
@@ -1044,7 +1184,7 @@ if(isset($_SESSION['email'])){
                                         <td class="supplier-id-cell"><?= $products['Supplier_ID']?></td>
                                         <td style="color: red;"><?= empty($products['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($products['ExpirationDate'])) ?></td>
                                         <!-- <td><?= date('F d,Y', strtotime($products['ExpirationDate']))?></td> -->
-                                        <td><?= $products['Barcode']?></td>
+                                        <!-- <td><?= $products['Barcode']?></td> -->
                                         <td><span class="Location-tag shelf"><?= $products['LocationS']?></span></td>
                                         <td><span class="Location-tag row"><?= $products['LocationR']?></span></td>
                                     
@@ -1465,8 +1605,8 @@ if(isset($_SESSION['email'])){
                                     <label>Quantity:</label>
                                     <input type="number" name="Quantity" required>
 
-                                    <label>Returned Date:</label>
-                                    <input type="date" name="ReturnedDate" required>
+                                    <!-- <label>Returned Date:</label>
+                                    <input type="datetime-local" name="ReturnedDate"> -->
 
                                     <!-- <label>Status:</label>
                                     <input type="text" name="Status" required> -->
@@ -2147,7 +2287,7 @@ if(isset($_SESSION['email'])){
                                     <th>Total Quantity</th>
                                     <th>Store Price</th>
                                     <th>Total Price</th>
-                                    <th>Barcode</th>
+                                    <!-- <th>Barcode</th> -->
                                     <th>Sales Date</th>
                                     <th>Account ID</th>
                                 </tr>
@@ -2174,7 +2314,7 @@ if(isset($_SESSION['email'])){
                                         <td><?= $sales['Quantity'] ?></td>
                                         <td>PHP <?= $sales['Unit_Price'] ?></td>
                                         <td>PHP <?= $sales['TotalPrice'] ?></td>
-                                        <td><?= $sales['Barcode'] ?></td>
+                                        <!-- <td><?= $sales['Barcode'] ?></td> -->
                                         <!-- <td><?= date('F d,Y', strtotime($sales['SalesDate']))?></td> -->
                                         <td style="color: red;"><?= empty($sales['SalesDate']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($sales['SalesDate'])) ?></td>
                                         <td><?= $sales['Account_ID'] ?></td>
@@ -3009,15 +3149,15 @@ if(isset($_SESSION['email'])){
                     </div>
                 </div>
 
-
                 <div id="settings" class="content-section">
+                    <link rel="stylesheet" href="reports/reports-page.css">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
-                        <div class="top-bar"><div class="tab">Report</div>
+                        
+                        <div class="top-bar">
+                            <div class="tab">Report</div>
                             <div class="user-controls">
-                                <div>      
-                                <?php
-                                    echo $row['userName'];                        
-                                ?>
+                                <div>
+                                    <?php echo $row['userName']; ?>
                                 </div>
                                 <div class="user-icon">👤</div>
                                 <div class="header-icons">
@@ -3027,19 +3167,27 @@ if(isset($_SESSION['email'])){
                         </div>
                     </div>
 
+                    <!-- Time range selector -->
+                    <div class="report-filter">
+                        <label for="reportType">Report Type:</label>
+                        <select id="reportType" onchange="updateReportLinks()">
+                            <option value="daily" selected>Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+
                     <div id="report-content" class="report-cards">
                         <div class="report-card">
                             <h3>Newly Added Products</h3>
                             <div class="export-buttons">
-                                <a href="exports/export_newproducts_excel.php?type=daily" class="export-btn excel">EXCEL</a>
-                                <a href="exports/export_newproducts_pdf.php?type=daily" class="export-btn pdf">PDF</a>
+                                <a href="reports/export_newproducts_pdf.php?type=daily" class="export-btn pdf">PDF</a>
                             </div>
                         </div>
 
                         <div class="report-card">
                             <h3>Inventory Summary</h3>
                             <div class="export-buttons">
-                                <a href="reports/export_inventory_excel.php?type=daily" class="export-btn excel">EXCEL</a>
                                 <a href="reports/export_inventory_pdf.php?type=daily" class="export-btn pdf">PDF</a>
                             </div>
                         </div>
@@ -3047,7 +3195,6 @@ if(isset($_SESSION['email'])){
                         <div class="report-card">
                             <h3>Sales Report</h3>
                             <div class="export-buttons">
-                                <a href="reports/export_sales_excel.php?type=daily" class="export-btn excel">EXCEL</a>
                                 <a href="reports/export_sales_pdf.php?type=daily" class="export-btn pdf">PDF</a>
                             </div>
                         </div>
@@ -3055,7 +3202,6 @@ if(isset($_SESSION['email'])){
                         <div class="report-card">
                             <h3>Returns</h3>
                             <div class="export-buttons">
-                                <a href="reports/export_returns_excel.php?type=daily" class="export-btn excel">EXCEL</a>
                                 <a href="reports/export_returns_pdf.php?type=daily" class="export-btn pdf">PDF</a>
                             </div>
                         </div>
@@ -3063,22 +3209,30 @@ if(isset($_SESSION['email'])){
                         <div class="report-card">
                             <h3>Restock Report</h3>
                             <div class="export-buttons">
-                                <a href="reports/export_restock_excel.php?type=daily" class="export-btn excel">EXCEL</a>
                                 <a href="reports/export_restock_pdf.php?type=daily" class="export-btn pdf">PDF</a>
                             </div>
                         </div>
                     </div>
-
-
-                <!-- end of settings -->
                 </div>
+                <script>
+                function updateReportLinks() {
+                    const type = document.getElementById("reportType").value;
+                    const links = document.querySelectorAll(".export-btn");
+
+                    links.forEach(link => {
+                        const newHref = link.href.replace(/type=(daily|weekly|monthly)/, `type=${type}`);
+                        link.href = newHref;
+                    });
+                }
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    updateReportLinks();
+                    document.getElementById("reportType").addEventListener("change", updateReportLinks);
+                });
+                </script>
 
 
 
-            </div>
-        </div>
-    </div>
-    
     <!-- MODALS -->
     <div id="calendarModal" class="modal-overlay">
         <div class="modal-content">

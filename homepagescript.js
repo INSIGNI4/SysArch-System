@@ -247,7 +247,7 @@ function showReturnsTable(viewType) {
     document.getElementById('supplier-returns-btn').classList.toggle('active', viewType === 'supplier');
 
 
-    document.getElementById('returns-count').textContent = String(viewType === 'supplier' ? sReturnsRowCount : cReturnsRowCount).padStart(2, '0');
+    // document.getElementById('returns-count').textContent = String(viewType === 'supplier' ? sReturnsRowCount : cReturnsRowCount).padStart(2, '0');
 
     document.getElementById('cusreturns-add-btn').style.display = viewType === 'customer' ? 'inline-block' : 'none';
     document.getElementById('supreturns-add-btn').style.display = viewType === 'supplier' ? 'inline-block' : 'none';

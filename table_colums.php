@@ -10,7 +10,8 @@ $table_colums_mapping = [
 
     'product' => [
         'Product_ID', 'ProductName', 'Type', 'ReordingPoints', 'UnitsOrdered',
-        'UnitSold', 'StorePrice', 'SupplierPrice', 'Image', 'Supplier_ID', 'ExpirationDate', 'Barcode',
+        'UnitSold', 'StorePrice', 'SupplierPrice', 'Image', 'Supplier_ID', 'ExpirationDate', 
+        'Barcode',
         'LocationS','LocationR'
     ],
     'inventory' => [
@@ -23,7 +24,8 @@ $table_colums_mapping = [
     ],
     'sales' => [
         'Order_ID', 'Transaction_ID', 'Product_ID','ProductName','Unit_Price', 'Quantity', 'TotalPrice',
-        'Barcode', 'SalesDate', 'Account_ID','BatchNum'
+        'Barcode',
+         'SalesDate', 'Account_ID','BatchNum'
     ],
     'transactions' => [
         'Transaction_ID', 'Customer_ID', 'ReferenceNo', 'PurchaseType', 'PaymentMethod', 'ServiceType',

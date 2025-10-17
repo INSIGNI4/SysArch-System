@@ -1,4 +1,10 @@
 <?php
+// Debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+if (!isset($_SESSION)) session_start();
+include('connect.php');
 
 $email = $_SESSION['email'] ?? null;
 if (!$email) {
@@ -6,21 +12,28 @@ if (!$email) {
     exit;
 }
 
-// Fetch logged-in user's ID
+// Get logged-in user's ID
 $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-$id = $user['id'] ?? null;
+$user_id = $user['id'] ?? null;
 
-if (!$id) {
+if (!$user_id) {
     echo "<tr><td colspan='4'>User not found.</td></tr>";
     exit;
 }
 
-
-$stmt = $conn->prepare("SELECT Order_ID, SalesDate, Product_ID, Quantity FROM sales WHERE user_id = ? ORDER BY SalesDate DESC LIMIT 10");
+// Fetch recent sales for this user
+$stmt = $conn->prepare("
+    SELECT s.Order_ID, s.SalesDate, p.ProductName, s.Quantity 
+    FROM sales s
+    LEFT JOIN product p ON s.Product_ID = p.Product_ID
+    WHERE s.user_id = ? 
+    ORDER BY s.SalesDate DESC 
+    LIMIT 10
+");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $sales_result = $stmt->get_result();
@@ -32,7 +45,7 @@ if ($sales_result->num_rows === 0) {
         echo "<tr>";
         echo "<td>" . htmlspecialchars($sale['Order_ID']) . "</td>";
         echo "<td>" . htmlspecialchars($sale['SalesDate']) . "</td>";
-        echo "<td>" . htmlspecialchars($sale['Product_ID']) . "</td>";
+        echo "<td>" . htmlspecialchars($sale['ProductName']) . "</td>";
         echo "<td>" . htmlspecialchars($sale['Quantity']) . "</td>";
         echo "</tr>";
     }
@@ -40,6 +53,4 @@ if ($sales_result->num_rows === 0) {
 
 $stmt->close();
 $conn->close();
-
-
 ?>

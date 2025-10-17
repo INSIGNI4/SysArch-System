@@ -3358,7 +3358,7 @@ if(isset($_SESSION['email'])){
                                 <div class="user-icon">👤</div>
                                 <div class="header-icons">
                                     <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper">🖨️</span>
+                                    <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
                                     <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
                                 </div>
                             </div>
@@ -3431,42 +3431,21 @@ if(isset($_SESSION['email'])){
                                     </div>
                                 </div>
                             </div>
-                            <div class="account-info-right">
+                            <!-- <div class="account-info-right">
                                 <div class="recent-sales-card">
                                     <h3>Recent Sales</h3>
                                     <div class="recent-sales-table-container">
                                         <table class="recent-sales-table">
                                             <thead>
-                                                <tr>
-                                                    <th>Sales ID</th>
-                                                    <th>Date</th>
-                                                    <th>Product</th>
-                                                    <th>Quantity</th>
-                                                </tr>
+                                                <tr><th>Sales ID</th><th>Date</th><th>Product</th><th>Quantity</th></tr>
                                             </thead>
                                             <tbody>
-                                                <?php include 'recent_sales_users.php'?>
+                                                <td colspan="4" style="text-align: center;">No recent sales</td>
                                             </tbody>
                                         </table>
                                     </div>
                                     <div class="account-footer">
-                                        <h3>Deleted Files 🗑️</h3>
-                                        <div class="recent-sales-table-container">
-                                            <table class="recent-sales-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Sales ID</th>
-                                                        <th>Date</th>
-                                                        <th>Product</th>
-                                                        <th>Quantity</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php include 'recent_deleted_users.php'?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- <span>Deleted Files 🗑️</span> -->
+                                        <span>Deleted Files 🗑️</span>
                                     </div>
                                 </div>
                                 <div class="bottom-links">
@@ -3474,7 +3453,7 @@ if(isset($_SESSION['email'])){
                                     <a href="#">Languages</a>
                                     <a href="#">Help</a>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -3491,6 +3470,7 @@ if(isset($_SESSION['email'])){
                                 </div>
                                 <div class="user-icon">👤</div>
                                 <div class="header-icons">
+                                    <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
                                     <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
                                 </div>
                             </div>

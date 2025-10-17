@@ -1,17 +1,37 @@
 <?php
 session_start();
-
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     echo "<pre>";
-//     print_r($_POST);
-//     echo "</pre>";
-//     exit;
-// }
-
 include('table_colums.php');
 include('connect.php'); // MySQLi connection
 
-// Get table name directly from POST instead of session
+// Get logged-in user ID
+$email = $_SESSION['email'] ?? null;
+if (!$email) {
+    $_SESSION['response'] = [
+        'success' => false,
+        'message' => 'You must be logged in to add data.'
+    ];
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    exit;
+}
+
+// Fetch user ID from database
+$query = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$query->bind_param("s", $email);
+$query->execute();
+$result = $query->get_result();
+$user = $result->fetch_assoc();
+$id = $user['id'] ?? null;
+
+if (!$id) {
+    $_SESSION['response'] = [
+        'success' => false,
+        'message' => 'User not found.'
+    ];
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    exit;
+}
+
+// Check table name
 if (!isset($_POST['table']) || empty($_POST['table'])) {
     $_SESSION['response'] = [
         'success' => false,
@@ -35,7 +55,7 @@ if (!isset($table_colums_mapping[$table_name])) {
 
 $columns = $table_colums_mapping[$table_name];
 
-// Collect data dynamically based on mapping
+// Collect POST data dynamically
 $db_arr = [];
 foreach ($columns as $col) {
     if (isset($_POST[$col])) {
@@ -43,13 +63,15 @@ foreach ($columns as $col) {
     }
 }
 
+// Assign logged-in user for sales table
+if ($table_name === 'sales') {
+    $db_arr['id'] = $id;
+}
 
-
+// Handle image upload if column exists
 if (in_array("Image", $columns) && isset($_FILES['Image']) && !empty($_FILES['Image']['name'])) {
     $uploadDir = "uploads/";
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0775, true);
-    }
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0775, true);
 
     $fileName = uniqid() . "_" . basename($_FILES['Image']['name']);
     $targetFile = $uploadDir . $fileName;
@@ -65,49 +87,6 @@ if (in_array("Image", $columns) && isset($_FILES['Image']) && !empty($_FILES['Im
         exit;
     }
 }
-
-
-// PROFF OF TRANSACTION STARTS HERE
-$columns = $table_colums_mapping[$table_name];
-
-// Collect data dynamically based on mapping
-$db_arr = [];
-foreach ($columns as $col) {
-    if (isset($_POST[$col])) {
-        $db_arr[$col] = $_POST[$col];
-    }
-}
-
-
-
-
-if (in_array("ProofOfTransaction", $columns) && isset($_FILES['ProofOfTransaction']) && !empty($_FILES['ProofOfTransaction']['name'])) {
-    $uploadDir = "proofs/";
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0775, true);
-    }
-
-    $fileName = uniqid() . "_" . basename($_FILES['ProofOfTransaction']['name']);
-    $targetFile = $uploadDir . $fileName;
-
-    if (move_uploaded_file($_FILES['ProofOfTransaction']['tmp_name'], $targetFile)) {
-        $db_arr['ProofOfTransaction'] = $fileName;
-    } else {
-        $_SESSION['response'] = [
-            'success' => false,
-            'message' => "Failed to upload image"
-        ];
-        header('Location:' . $_SERVER['HTTP_REFERER']);
-        exit;
-    }
-}
-
-// PROFF OF TRANSACTION ENDS HERE
-
-
-
-
-
 
 // Stop if no data to insert
 if (empty($db_arr)) {
@@ -135,7 +114,7 @@ if (!$stmt) {
     exit;
 }
 
-//  Bind parameters dynamically
+// Bind parameters dynamically (all strings for simplicity)
 $types = str_repeat("s", count($db_arr));
 $stmt->bind_param($types, ...array_values($db_arr));
 
@@ -146,12 +125,6 @@ if ($stmt->execute()) {
         'success' => true,
         'message' => "$tableLabel added successfully!"
     ];
-
-    // REAL TIME FORECAST UPDATE
-    // if ($table_name === 'sales') {
-    //     include('forecast_update.php');
-    // }
-    
 } else {
     $_SESSION['response'] = [
         'success' => false,
@@ -165,10 +138,4 @@ $conn->close();
 // Redirect back
 header('Location: ' . $_SERVER['HTTP_REFERER']);
 exit;
-
-
-
-
 ?>
-
-

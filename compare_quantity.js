@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (total !== ordered) {
             alert("Invalid Quantity: Total Received + With Issue must equal Ordered Quantity.");
             receivedInput.value = "";
-            issueInput.value = 0;
+            issueInput.value = "";
             receivedInput.focus();
             }
         }

@@ -2,7 +2,6 @@
 include('../connect.php');
 header('Content-Type: application/json');
 
-// ✅ Total Stock
 $totalStockQuery = "
     SELECT SUM(i.Inventory) AS totalStock
     FROM inventory i
@@ -20,12 +19,20 @@ $chartQuery = "
 $chartData = $conn->query($chartQuery)->fetch_assoc();
 
 $lowStockQuery = "
-    SELECT p.ProductName, p.Type, i.Inventory
+    SELECT 
+        p.ProductName, 
+        p.Type, 
+        i.Inventory,
+        CASE 
+            WHEN i.Inventory = 0 THEN 'Out of Stock'
+            WHEN i.Inventory <= IFNULL(p.ReordingPoints, 5) THEN 'Low Stock'
+            ELSE 'Available'
+        END AS StockStatus
     FROM product p
     INNER JOIN inventory i ON p.Product_ID = i.Product_ID
-    WHERE i.Inventory <= IFNULL(p.ReordingPoints, 5) AND i.Inventory > 0
+    WHERE i.Inventory <= IFNULL(p.ReordingPoints, 5)
     ORDER BY i.Inventory ASC
-    LIMIT 5
+    LIMIT 10
 ";
 $lowStockResult = $conn->query($lowStockQuery);
 
@@ -34,7 +41,8 @@ while ($row = $lowStockResult->fetch_assoc()) {
     $lowStock[] = [
         'ProductName' => $row['ProductName'],
         'Type' => $row['Type'],
-        'Units' => $row['Inventory']
+        'Units' => (int)$row['Inventory'],
+        'Status' => $row['StockStatus']
     ];
 }
 

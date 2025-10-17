@@ -2,6 +2,10 @@
 
 $table_colums_mapping = [
     /// ======= INVENTORY DATABASE ======= ///
+
+    'users' => [
+        'id', 'userName', 'email', 'password', 'phone', 'image', 'reset_token_harsh', 'reset_token_expires_at'
+    ],
     
     'forecast' => [
         'Forecast_ID', 'ForecastType', 'Product_ID', 'ForecastPeriod',
@@ -25,7 +29,7 @@ $table_colums_mapping = [
     'sales' => [
         'Order_ID', 'Transaction_ID', 'Product_ID','ProductName','Unit_Price', 'Quantity', 'TotalPrice',
         'Barcode',
-         'SalesDate', 'Account_ID','BatchNum'
+         'SalesDate', 'id','BatchNum'
     ],
     'transactions' => [
         'Transaction_ID', 'Customer_ID', 'ReferenceNo', 'PurchaseType', 'PaymentMethod', 'ServiceType',

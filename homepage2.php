@@ -54,7 +54,7 @@ $monthlysalesE = fetchTableData($conn, 'monthly_total_sales');
 
 $analytics = fetchTableData($conn, 'analytics');
 
-// $users = fetchTableData($conn, 'users');
+$users = fetchTableData($conn, 'users');
 
 if (!is_array($product)) {
     $product = [];  
@@ -148,6 +148,10 @@ if (!is_array($monthlysalesE)) {
     $monthlysalesE = [];  
 }
 
+if (!is_array($users)) {
+    $users = [];  
+}
+
 
 
 
@@ -211,7 +215,7 @@ if(isset($_SESSION['email'])){
                 <a class="nav-link has-dropdown" onclick="showContentSection('transaction-sales')">Transaction & Sales</a>
 
                 <!-- <a class="nav-link" onclick="showContentSection('sales-aggregation')">Sales Aggregation</a> -->
-                <a class="nav-link has-dropdown" onclick="showContentSection('forecast-analytics')">Forecast & Analytics</a>
+                <!-- <a class="nav-link has-dropdown" onclick="showContentSection('forecast-analytics')">Forecast & Analytics</a> -->
 
                 <a class="nav-link" onclick="showContentSection('stock-adjustments')">Stock Adjustments</a>
                 <a class="nav-link" onclick="showContentSection('account')">Account</a>
@@ -238,12 +242,14 @@ if(isset($_SESSION['email'])){
                 <link rel="stylesheet" href="dashboardAssets/stock_avail.css">
                 <link rel="stylesheet" href="dashboardAssets/return.css ">
                 <link rel="stylesheet" href="dashboardAssets/products_summary.css">
+                <link rel="stylesheet" href="dashboardAssets/confidence.css">
+                <link rel="stylesheet" href="dashboardAssets/projected.css">
                 
                 <div id="home" class="content-section" style=" margin: -25px;">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat; background-size: cover; height: 100px;">
                         <div class="top-bar">
                             <div class="tab">HOME</div>
-                            <div class="user-controls">
+                            <!-- <div class="user-controls">
                                 <div>
                                 <?php         
 
@@ -251,22 +257,25 @@ if(isset($_SESSION['email'])){
                             
                                 ?></div>
                                 <div class="user-icon">👤</div>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="home-header" style="display: flex; justify-content:space-between;font-weight:bolder;">
+
+
+                        
                             <div style="display: flex;">
-                            <p style="font-display: none; margin: 20px; font-size:20px;">Welcome Back!                                 
+                            <p style="font-display: none; margin: 20px; font-size:30px;">Welcome Back!                                 
                             </p>
-                            <p style="font-display: none; margin: 13px; margin-left: -5px; font-size:24px; font-weight:bolder;color:beige;">
+                            <p style="font-display: none; margin: 13px; margin-left: -5px; margin-top: 20px; font-size:30px; font-weight:bolder;color:beige;">
                             <?php
                                 echo $row['userName'];
                             ?>
                             </p>
                             </div>
-                            <div class="header-icons" style="margin-top: 10px; margin-right: 1rem;">
-                                <span class="icon-wrapper">🖨️</span>
-                                <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
+                            <div class="header-icons" style="margin-top: 20px; margin-right: 1rem;">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
                             </div>
 
 
@@ -355,7 +364,7 @@ if(isset($_SESSION['email'])){
                                     loadForecast(this.value);
                                     });
 
-                                    loadForecast(); // load daily by default
+                                    loadForecast(); // 
                                     </script>
 
 
@@ -497,6 +506,7 @@ if(isset($_SESSION['email'])){
                                     <button data-type="Suspensions">Suspensions</button>
                                     <button data-type="Rims">Rims</button>
                                     <button data-type="Stands">Stands</button>
+                                    <button data-type="Oil">Oil</button>
                                 </div>
 
                                 <table class="product_table">
@@ -505,22 +515,131 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <div class="confidence_dashboard">
-                                <h3>Confidence Level</h3>
-                                <p><b>Level:</b> <span id="confidence-level"></span>%</p>
-                                <p><b>Interval</b> <span id="confidence-interval"></span></p>
-                                <p><b>Week Sales: ⬆</b> <span id="week-upper"></span></p>
-                                <p><b>Week Sales: ⬇</b> <span id="week-lower"></span></p>
+                                <div class="confidenceInterval">
+                                    <select id="confiType" 
+                                        style="
+                                            position: absolute;
+                                            top: 10px;
+                                            left: 20px;
+                                            z-index: 10;
+                                            padding: 5px;
+                                            border-radius: 6px;
+                                        ">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+
+                                    <div class="confidence-header">
+                                        <p>Confidence Level:</p>
+                                        <span id="confidence-level">--</span>%
+                                    </div>
+
+                                    <div class="interval-row">
+                                        <div class="interval-value">
+                                            Interval: <span id="confidence-interval">--</span>
+                                        </div>
+
+                                        <div class="week-box">
+                                            <div class="week-up">
+                                                Week Sales ⬆: <span id="week-upper">--</span>
+                                            </div>
+                                            <div class="week-down">
+                                                Week Sales ⬇: <span id="week-lower">--</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const confiType = document.getElementById('confiType');
+
+                                function fetchConfidenceData(type = 'daily') {
+                                    fetch(`get_confidence.php?type=${type}`)
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            if (data.error) {
+                                                console.error(data.error);
+                                                return;
+                                            }
+
+                                            document.getElementById('confidence-level').textContent = `${data.confidenceLevel}%`;
+                                            document.getElementById('confidence-interval').textContent = data.interval;
+                                            document.getElementById('week-upper').textContent = data.upper;
+                                            document.getElementById('week-lower').textContent = data.lower;
+                                        })
+                                        .catch(err => console.error('Error fetching confidence data:', err));
+                                }
+
+                                fetchConfidenceData(confiType.value);
+
+                                confiType.addEventListener('change', function() {
+                                    fetchConfidenceData(confiType.value);
+                                });
+                            });
+                            </script>
+
                             
                             <div class="projected_dashboard">
-                                <h3>Projected Sales</h3>
-                                <p><b>Projected:</b> <span id="projected-value"></span></p>
-                                <p><b>Current:</b> <span id="current-value"></span></p>
-                                <div class="progress_bar">
-                                    <div id="progress-fill" class="progress_fill"></div>
+                                <div class="projected-sales">
+                                    <h3>Projected Sales: <span id="projected-value"></h3>
+                                    <select id="salesType" style="
+                                            position: absolute;
+                                            top: 10px;
+                                            left: 20px;
+                                            z-index: 10;
+                                            padding: 5px;
+                                            border-radius: 6px;
+                                        ">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+
+                                    <!-- <p><b>Projected:</b> --</span></p> -->
+                                    <p><b>Current:</b> <span id="current-value">--</span></p>
+
+                                    <div class="progress_bar">
+                                        <div id="progress-fill" class="progress_fill"></div>
+                                    </div>
+
+                                    <p><span id="progress-percent">0%</span></p>
                                 </div>
-                                <p><span id="progress-percent"></span></p>
                             </div>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    const typeSelect = document.getElementById('salesType');
+                                    loadProjectedSales(typeSelect.value);
+
+                                    typeSelect.addEventListener('change', function() {
+                                        loadProjectedSales(this.value);
+                                    });
+                                });
+
+                                function loadProjectedSales(type) {
+                                    fetch(`get_sales_forecast.php?type=${type}`)
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            if (!data.length) return;
+
+                                            const latest = data[data.length - 1];
+                                            const projected = parseFloat(latest.MovingAverage3);
+                                            const current = parseFloat(latest.TotalQuantity);
+                                            const percent = projected > 0 ? ((current / projected) * 100).toFixed(1) : 0;
+
+                                            document.getElementById('projected-value').textContent = projected.toLocaleString();
+                                            document.getElementById('current-value').textContent = current.toLocaleString();
+                                            document.getElementById('progress-percent').textContent = percent + '%';
+
+                                            const fill = document.getElementById('progress-fill');
+                                            fill.style.width = percent + '%';
+                                        })
+                                        .catch(err => console.error('Error fetching projected sales:', err));
+                                }
+                            </script>
 
 
                             <div class="totalproduct_dashboard card">
@@ -585,7 +704,7 @@ if(isset($_SESSION['email'])){
                             </div>
 
 
-                <!-- END OF DASHBOARD -->
+                            <!-- END OF DASHBOARD -->
                         </div>
 
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -602,7 +721,8 @@ if(isset($_SESSION['email'])){
                 </div>
 
                 <div id="inventory" class="content-section">
-                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; height: 100px;">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; 
+                    height: 80px;">
                         <div class="top-bar">
                             <div class="tab">INVENTORY</div>
                             <div class="user-controls">
@@ -612,11 +732,6 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <!-- <div class="header-icons">
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper">🖨️</span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div> -->
                             </div>
                         </div>
                         <div class="controls-bar">
@@ -628,25 +743,24 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <div class="header-icons">
-                                <span class="icon-wrapper">🖨️</span>
-                                <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge"></span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
                             </div>
-
                         </div>
 
                     </div>
 
-                    <div class="toolbar" style="display: flex; justify-content:space-between;">
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
                         <div>
-                            <div class="stock-info" style="background-color: transparent;">
+                            
                                 <?php 
                                 $totalRows = count($inventory);
                                 ?>
                                 <span id="products-count" class="na-count"><?= $totalRows ?></span>
                                 <!-- <span style="background-color: cadetblue; padding: .5rem;"><?= $totalRows ?></span> -->
                                 <!-- <span class="in-stock-label">In Stock: </span> -->
-                            </div>
+                            
                         </div>
                         <div style="display: flex; justify-content:space-between;" >
                             <!-- <div class="center-controls"><button class="last-updated-button">🔄 Last Updated</button></div> -->
@@ -656,9 +770,9 @@ if(isset($_SESSION['email'])){
                     <div class="table-container">
                         <table class="inventory-table">
 
-                            <thead>
+                            <thead class="sticky-div">
                             <tr>
-                                <th>#</th>
+                                <!-- <th>#</th> -->
                                 <th>Product ID</th>
                                 <th colspan="2">Location</th>
                                 <!-- <th>Price</th> -->
@@ -676,9 +790,14 @@ if(isset($_SESSION['email'])){
 
 
                                 <?php 
+                                usort($inventory, function ($a, $b) {
+                                    return $a['Inventory'] <=> $b['Inventory'];
+                                }
+                                );
+
                                 foreach($inventory as $index => $inventory){ ?>
                                     <tr>
-                                    <td><?= $index + 1?></td>
+                                    <!-- <td><?= $index + 1?></td> -->
                                     <td class="product-id-cell"><?= $inventory['Product_ID']?></td>
                                     <td><span class="Location-tag shelf"><?= $inventory['LocationS']?></span></td>
                                     <td><span class="Location-tag row"><?= $inventory['LocationR']?></span></td>
@@ -886,7 +1005,8 @@ if(isset($_SESSION['email'])){
 
                 <!--- PRODUCTS SECTION --->
                 <div id="products" class="content-section" >
-                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
+                    height: 80px;">
                         <div class="top-bar">
                             <div class="tab">PRODUCTS</div>
                             <div class="user-controls">
@@ -896,26 +1016,27 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span>🖨️</span>
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
                             </div>
                         </div>
+
                         <div class="controls-bar">
                             <div class="controls">
-                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>PRODUCT ID</option></select></div> -->
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select><option></option></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option></option></select></div>
+                                <button class="status-button">STATUS</button> -->
+                                <!-- <div class="stock-info"><span>30</span><span class="in-stock-label">In Stock</span></div> -->
                             </div>
-                            <div class="actions">
-                                <!-- <div><b>Total Units :</b></div> -->
-                                 
-                                <div class="na-quick-search">🔍 Quick Search</div>
+                            <div class="header-icons">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
                             </div>
                         </div>
                     </div>
-                    <div class="toolbar">
+
+
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <div>
                         <?php 
                         $totalRows = count($product);
                         ?>
@@ -923,12 +1044,17 @@ if(isset($_SESSION['email'])){
                         <!-- <input type="checkbox"> -->
 
                         <span id="products-count" class="na-count"><?= $totalRows ?></span>
-                        <button id="edit-product-btn" class="na-btn na-btn-add1" type="button">📝</button>
-                        <button id="delete-product-btn" class="na-btn na-btn-add1" type="button">🗑️</button>
+                        <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
                         <!-- <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span> -->
-                        <span class="na-icon-btn">🖨️</span>
+                        <!-- <span class="na-icon-btn">🖨️</span> -->
                         <button id="products-add-btn" class="na-btn na-btn-add" type="button">ADD</button>
+                        </div>
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div>            
+
                         <div id="addProductModal" class="modal">
                             <div class="modal-content">
                                 <h3>Add New Product</h3>
@@ -1141,9 +1267,9 @@ if(isset($_SESSION['email'])){
                 
                     <div class="table-container products-table-container">
                         <table class="products-table">
-                            <thead>
+                            <thead class="sticky-div">
                                 <tr>
-                                    <th>#</th>
+                                    <!-- <th>#</th> -->
                                     <th>Product ID</th>
                                     <th>Product Name</th>
                                     <th>Type</th>
@@ -1163,7 +1289,7 @@ if(isset($_SESSION['email'])){
                             <tbody>
                                 <?php foreach($product as $index => $products){ ?>
                                     <tr>
-                                        <td><?= $index + 1?></td>
+                                        <!-- <td><?= $index + 1?></td> -->
                                         <td class="product-id-cell"><?= $products['Product_ID']?></td>
                                         <td><?= $products['ProductName']?></td>
                                         <td><span class="type-tag-purple"><?= $products['Type']?></span></td>
@@ -1221,8 +1347,10 @@ if(isset($_SESSION['email'])){
                         </table>
                     </div>
                 </div>
+
                 <div id="suppliers" class="content-section">
-                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
+                    height: 80px;">
                         <div class="top-bar">
                             <div class="tab">SUPPLIERS</div>
                             <div class="user-controls">
@@ -1232,35 +1360,50 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span>🖨️</span>
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
                             </div>
                         </div>
                         <div class="controls-bar">
                             <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>SUPPLIER ID</option></select></div>
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>SUPPLIER ID</option></select></div> -->
                             </div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
+                            <div class="header-icons">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="toolbar">
+                    <!-- <div class="toolbar">
                         <?php 
                         $totalRows = count($supplier);
-                        ?>
-                    
-                        <!-- <input type="checkbox"> -->
-
+                        ?>            
                         <span id="products-count" class="na-count"><?= $totalRows ?></span>
                         <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span>
                         <span class="na-icon-btn">🖨️</span>
 
-                        <button id="sup-add-btn" class="na-btn na-btn-add" type="button">ADD</button>
+                        <button id="sup-add-btn" class="na-btn na-btn-add" type="button">ADD</button> -->
                                    
+
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <div>
+                            <?php 
+                            $totalRows = count($supplier);
+                            ?>
+
+                            <span id="products-count" class="na-count"><?= $totalRows ?></span>
+                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <!-- <span class="na-icon-btn">🖨️</span> -->
+                            <button id="sup-add-btn" class="na-btn na-btn-add" type="button">ADD</button>
+                        </div>
+
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div>      
+
+
                         <div id="addSupplierModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Add New Supplier</h3>
@@ -1338,9 +1481,9 @@ if(isset($_SESSION['email'])){
 
                     <div class="table-container suppliers-table-container">
                         <table class="suppliers-table">
-                           <thead>
+                           <thead class="sticky-div">
                                 <tr>
-                                    <th>#</th>
+                                    <!-- <th>#</th> -->
                                     <th>Supplier ID</th>
                                     <th>Supplier Name</th>
                                     <th>LOCATION</th>
@@ -1353,7 +1496,7 @@ if(isset($_SESSION['email'])){
                             <tbody>
                                 <?php foreach($supplier as $index => $supplier){ ?>
                                     <tr>
-                                        <td><?= $index + 1?></td>
+                                        <!-- <td><?= $index + 1?></td> -->
                                         <td class="supplier-id-cell"><?= $supplier['Supplier_ID']?></td>
                                         <td><?= $supplier['SupplierName']?></td>
                                         <td><?= $supplier['Location']?></td>
@@ -1368,7 +1511,8 @@ if(isset($_SESSION['email'])){
                 </div>
 
                 <div id="customer" class="content-section">
-                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
+                    height: 80px;">
                         <div class="top-bar">
                             <div class="tab">CUSTOMERS</div>
                             <div class="user-controls">
@@ -1378,32 +1522,49 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper">🖨️</span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
+
                             </div>
                         </div>
                         <div class="controls-bar">
-                             <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>CUSTOMER ID</option></select></div>
+                            <div class="controls">
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>SUPPLIER ID</option></select></div> -->
                             </div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
+                            <div class="header-icons">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="toolbar">
+                    <!-- <div class="toolbar">
                         <?php 
                         $totalRows = count($customers);
                         ?>
-                    
-                        <!-- <input type="checkbox"> -->
-
                         <span id="products-count" class="na-count"><?= $totalRows ?></span> 
                         <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
                         
-                        <button id="customer-add-btn" class="na-btn na-btn-add">ADD</button>
+                        <button id="customer-add-btn" class="na-btn na-btn-add">ADD</button> -->
+
+
+
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <div>
+                            <?php 
+                            $totalRows = count($customers);
+                            ?>
+
+                            <span id="products-count" class="na-count"><?= $totalRows ?></span>
+                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <!-- <span class="na-icon-btn">🖨️</span> -->
+
+                            <button id="customer-add-btn" class="na-btn na-btn-add" type="button">ADD</button>
+                        </div>
+
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div>  
                         
                         <div id="addCustomerModal" class="modal" style="display: none;">
                             <div class="modal-content">
@@ -1441,9 +1602,9 @@ if(isset($_SESSION['email'])){
                     
                     <div class="table-container customer-table-container">
                         <table class="customer-table">
-                            <thead>
+                            <thead class="sticky-div">
                                 <tr>
-                                    <th>#</th>
+                                    <!-- <th>#</th> -->
                                     <th>Customer ID</th>
                                     <th>Customer Name</th>
                                     <th>LOCATION</th>
@@ -1454,7 +1615,7 @@ if(isset($_SESSION['email'])){
                             <tbody>
                                 <?php foreach($customers as $index => $customers){ ?>
                                     <tr>
-                                        <td><?= $index + 1?></td>
+                                        <!-- <td><?= $index + 1?></td> -->
                                         <td><?= $customers['Customer_ID'] ?></td>
                                         <td><?= $customers['CustomerName']?></td>
                                         <td><?= $customers['Location']?></td>
@@ -1469,7 +1630,8 @@ if(isset($_SESSION['email'])){
                 </div>
                 
                 <div id="returns" class="content-section">
-                    <div class="custom-header"  style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                    <div class="custom-header sticky-div-1"  style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
+                    height: 80px;">
                         <div class="top-bar">
                             <div class="tab">RETURNS</div>
                             <div class="user-controls">
@@ -1479,39 +1641,82 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper">🖨️</span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
                             </div>
                         </div>
                         <div class="controls-bar">
-                             <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div>
+
+                            <div class="controls">
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>SUPPLIER ID</option></select></div> -->
                                 <div class="toggle-buttons">
                                     <button id="customer-returns-btn" class="toggle-btn active">Customer</button>
                                     <button id="supplier-returns-btn" class="toggle-btn ">Supplier</button>
                                 </div>
                             </div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
+
+                            <div class="header-icons">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                            </div>
+
+
+
                         </div>
                     </div>
-                    <div class="toolbar">
-                                                <?php 
+                    <!-- <div class="toolbar">
+                        <?php 
                         $totalRows = count($customers);
                         ?>
-                    
-                        <!-- <input type="checkbox"> -->
+
 
                         <span id="products-count" class="na-count"><?= $totalRows ?></span> 
 
                         <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span>
                         <span class="na-icon-btn">🖨️</span>
+
                         
                         <button id="cusreturns-add-btn" class="na-btn na-btn-add" style="display: flex;">ADD</button>
+
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div>   -->
+
+
+
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <div>
+                            <?php 
+                            $totalRows = count($customers);
+                            ?>
+
+                            <!-- <span id="products-count" class="na-count"><?= $totalRows ?></span> -->
+                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <!-- <span class="na-icon-btn">🖨️</span> -->
+
+                            <button id="cusreturns-add-btn" class="na-btn na-btn-add" style="display: flex;">ADD</button>
+                            <button id="supreturns-add-btn" class="na-btn na-btn-add" style="display: flex;">ADD</button>
+                        </div>
+
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div>  
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        
                         <div id="addCusReturnsModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Add New Customer Returns</h3>
@@ -1552,12 +1757,12 @@ if(isset($_SESSION['email'])){
                                     <div style="display: flex; justify-content:space-between; align-items:center;">
                                     <select class="creturns-reason-select" name="ReasonForReturn" required>
                                         <option value="">-- Reason --</option>
-                                        <option value="Wrong Item">Wrong Item</option>
+                                        <option value="Wrong-Item">Wrong Item</option>
                                         <option value="Damaged">Damaged</option>
-                                        <option value="Not Match">Not Match</option>
+                                        <option value="Not-Match">Not Match</option>
                                         <option value="Faulty">Faulty</option>
-                                        <option value="Missing Parts">Missing Parts</option>
-                                        <option value="Not Fit">Not Fit</option>
+                                        <option value="Missing-Parts">Missing Parts</option>
+                                        <option value="Not-Fit">Not Fit</option>
                                         <option value="Accidental">Accidental</option>
                                         <option value="Other">Other</option>
                                     </select>
@@ -1579,7 +1784,7 @@ if(isset($_SESSION['email'])){
                         <script src="get/get_customerRETURN.js" defer></script>
                         <script src="get/get_productCRETURN.js" defer></script>
                         
-                        <button id="supreturns-add-btn" class="na-btn na-btn-add" style="display: flex;">ADD</button>
+                        
                         <div id="addSupReturnsModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Add New Supplier Returns</h3>
@@ -1616,7 +1821,7 @@ if(isset($_SESSION['email'])){
                                     <select class="creturns-reason-select" name="Status" required>
                                         <option value="">-- Status --</option>
                                         <option value="Pending">Pending</option>
-                                        <option value="Out for Delivery">Out for Delivery</option>
+                                        <option value="Out-for-Delivery">Out for Delivery</option>
                                         <option value="Cancelled">Cancelled</option>
                                         <option value="Delivered">Delivered</option>
                                         
@@ -1634,9 +1839,9 @@ if(isset($_SESSION['email'])){
                                     <div style="display: flex; justify-content:space-between; align-items:center;">
                                     <select class="creturns-reason-select" name="Reason" required>
                                         <option value="">-- Reason --</option>
-                                        <option value="Wrong Item">Wrong Item</option>
+                                        <option value="Wrong-Item">Wrong Item</option>
                                         <option value="Damaged">Damaged</option>
-                                        <option value="Missing Parts">Missing Parts</option>
+                                        <option value="Missing-Parts">Missing Parts</option>
                                         <option value="Accidental">Accidental</option>
                                         <option value="Other">Other</option>
                                     </select>
@@ -1658,13 +1863,15 @@ if(isset($_SESSION['email'])){
                         <script src="get/get_productSRETURN.js" defer></script>
 
                         
+
+                        
                     </div>
 
                     <div id="supplier-returns-table-container" class="table-container returns-table-container">
                         <table class="returns-table">
-                            <thead>
+                            <thead class="sticky-div">
                                 <tr>
-                                    <th>#</th>
+                                    <!-- <th>#</th> -->
                                     <th>SRETURNS ID</th>
                                     <th>Supplier ID</th>
                                     <th>Product ID</th>
@@ -1683,8 +1890,22 @@ if(isset($_SESSION['email'])){
                                         <td class="product-id-cell"><?= $supplierreturns['Product_ID']?></td>
                                         <td><?= $supplierreturns['Quantity']?></td>
                                         <td><?= date('F d,Y', strtotime($supplierreturns['ReturnedDate']))?></td>
-                                        <td><span class="status-tag status-pending"><?= $supplierreturns['Status']?></span></td>
-                                        <td><span class="reason-tag reason-defective"><?= $supplierreturns['Reason']?></span></td>
+                                        <!-- <td><span class="status-tag status-pending"><?= $supplierreturns['Status']?></span></td> -->
+
+                                        <td><span class="status-tag status-<?= strtolower($supplierreturns['Status']) ?>">
+                                                                            <?= htmlspecialchars($supplierreturns['Status']) ?>
+                                            </span>
+                                        
+                                        </td>
+
+
+                                        <td><span class="reason-tag reason-<?= strtolower($supplierreturns['Reason']) ?>">
+                                                                            <?= htmlspecialchars($supplierreturns['Reason']) ?>
+                                            </span>
+                                        
+                                        </td>
+
+                                        <!-- <td><span class="reason-tag reason-defective"><?= $supplierreturns['Reason']?></span></td> -->
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -1693,7 +1914,7 @@ if(isset($_SESSION['email'])){
 
                     <div id="customer-returns-table-container" class="table-container returns-table-container" style="display:none;">
                         <table class="returns-table">
-                            <thead>
+                            <thead class="sticky-div">
                                 <tr>
                                     <th>#</th>
                                     <th>CRETURNS ID</th>
@@ -1715,7 +1936,12 @@ if(isset($_SESSION['email'])){
                                         <td class="procduct-id-cell"><?= $customersreturns['Product_ID']?></td>
                                         <td><?= $customersreturns['Quantity']?></td>
                                         <td><?= date('F d, Y h:i A', strtotime($customersreturns['ReturnedDate']))?></td>
-                                        <td><span class="reason-tag reason-incompatible"><?= $customersreturns['ReasonForReturn']?></span></td>
+                                        <!-- <td><span class="reason-tag reason-incompatible"><?= $customersreturns['ReasonForReturn']?></span></td> -->
+                                        <td><span class="reason-tag reason-<?= strtolower($customersreturns['ReasonForReturn']) ?>">
+                                                                            <?= htmlspecialchars($customersreturns['ReasonForReturn']) ?>
+                                            </span>
+                                        
+                                        </td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -1724,7 +1950,8 @@ if(isset($_SESSION['email'])){
                 </div>
 
                 <div id="order-restock" class="content-section">
-                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; 
+                    height: 80px; ">
                         <div class="top-bar">
                             <div class="tab">RESTOCK</div>
                             <div class="user-controls">
@@ -1734,34 +1961,57 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper">🖨️</span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
                             </div>
                         </div>
                         <div class="controls-bar">
                              <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div>
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div> -->
                             </div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
+                            <!-- <div class="na-quick-search">🔍 Quick Search</div> -->
+                            <div class="header-icons">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="toolbar">
+                    <!-- <div class="toolbar">
                         <?php 
                         $totalRows = count($restock);
                         ?>
                     
-                        <!-- <input type="checkbox"> -->
+                        
 
                         <span id="products-count" class="na-count"><?= $totalRows ?></span> 
                         <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
                         
                         <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
                         <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
-                        
+                         -->
+
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <div>
+                            <?php 
+                            $totalRows = count($restock);
+                            ?>
+
+                            <span id="products-count" class="na-count"><?= $totalRows ?></span>
+                            <button id="edit-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <!-- <span class="na-icon-btn">🖨️</span> -->
+                             
+                            <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
+                            <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
+                        </div>
+
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div>  
+
+
+                                <!-- //ADD RESTOCK -->
+
                         <div id="addOrderRestockModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Add New Order/Restock</h3>
@@ -1858,6 +2108,56 @@ if(isset($_SESSION['email'])){
                         <script src="get/get_productORDRES.js" defer></script>
 
 
+                                <!-- //EDIT RESTOCK -->
+
+                        <div id="editRestockModal" class="modal" style="display: none;">
+                            <div class="modal-content">
+                                <h3>Edit Restock</h3>
+                                <form id="restockForm" action="update.php" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="table" value="restock">
+                                    <input type="number" name="id" id="edit-order-id" readonly>
+
+                                    <!-- <label>Select Product ID</label>
+                                    <input type="text" name="Product_ID" required> -->
+
+                                    <label for="Product_IDORDRES">Choose Product ID:</label>
+                                    <select id="edit-productidRESTOCK" name="Product_ID" class="id-select" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select>
+
+                                    <label for="Supplier_IDORDRES">Choose Supplier ID:</label>
+                                    <select id="edit-supplieridRESTOCK" name="Supplier_ID" class="id-select" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select>
+
+
+                                    <label>Quantity:</label>
+                                    <input type="number" name="Quantity" id="edit-quantity" required>
+
+
+                                    <input type="hidden"  name="Status" value="Requested">
+                                    
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-add">Save</button>
+                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
+                                        <button type="button" id="editorder-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <link rel="stylesheet" href="assets/add_product.css">
+                            <script src="assets/edit_restock.js"></script>
+                            <script src="get/edit_supplierRESTOCK.js"></script>
+                            <script src="get/edit_productRESTOCK.js"></script>
+                        </div>
+                        
+                        <!-- <script src="assets/add_order.js" defer></script>
+                        
+                        <script src="get/get_supplierORDRES.js" defer></script>
+                        <script src="get/get_productORDRES.js" defer></script> -->
+
+
+
 
 
 
@@ -1868,7 +2168,7 @@ if(isset($_SESSION['email'])){
                                 <h3>Update Order/Restock</h3>
                                 <form action="update.php" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="table" value="restock">
-                                    <input type="hidden" name="id" id="update-order-id">
+                                    <input type="number" name="id" id="update-order-id">
 
 
                                     <label>Proof of Transaction:</label>
@@ -1918,7 +2218,7 @@ if(isset($_SESSION['email'])){
                                     <label>Ordered Quantity:</label>
                                     <input type="number" name="Quantity" id="update-orderedQuantity" readonly>
 
-                                    <label>Total Received:</label>
+                                    <label>Without Issue:</label>
                                     <input type="number"  name="TotalReceived" id="update-received">
                                     
                                     <label>With Issue:</label>
@@ -1947,9 +2247,9 @@ if(isset($_SESSION['email'])){
                     </div>
                         <div class="table-container order-restock-table-container">
                             <table class="order-restock-table">
-                                <thead>
+                                <thead class="sticky-div">
                                     <tr>
-                                        <th></th>
+                                        <!-- <th><?= $totalRows ?></th> -->
                                         <th>ORESTOCK ID</th>
                                         <th>Product ID</th>
                                         <th>Supplier ID</th>
@@ -1960,7 +2260,7 @@ if(isset($_SESSION['email'])){
                                         <th>Status</th>
                                         <th>Delivery Status</th>
                                         <th>Date Received</th>
-                                        <th>Received</th>
+                                        <th>Without Issue</th>
                                         <th>with Issue</th>
                                         <th></th>
 
@@ -1976,7 +2276,9 @@ if(isset($_SESSION['email'])){
 
                                     foreach($restock as $index => $restocks){ ?>
                                         <tr>
-                                            <td><?= $index + 1?></td>
+                                            <!-- <td>
+                                                <?= $index + 1?>
+                                            </td> -->
                                             <td><?= $restocks['Orestock_ID'] ?></td>
                                             <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td>
                                             <td class="supplier-id-cell"><?= $restocks['Supplier_ID'] ?></td>
@@ -2014,26 +2316,32 @@ if(isset($_SESSION['email'])){
 
                                             <td class="action-cell" >
                                             <!-- edit & delete action -->
-                                            <button style="display: none;" class="update-order-btn"
-                                                data-id="<?= $restocks['Orestock_ID'] ?>"
-                                                data-proof="<?= $restocks['Image'] ?>"
-                                                data-status="<?= $restocks['Status'] ?>"
-                                                data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
-                                                data-datereceived="<?= $restocks['ExpirationDate'] ?>"
-                                                data-quantity="<?= $restocks['Quantity'] ?>"
-                                                data-received="<?= $restocks['TotalReceived'] ?>"
-                                                data-issue="<?= $restocks['withIssue'] ?>">
-                                                
-                                                
-                                                📝 Update
-                                            </button>
+                                                <button style="display: none;" class="edit-order-btn"
+                                                    data-id="<?= $restocks['Orestock_ID'] ?>"
+                                                    data-quantity="<?= $restocks['Quantity'] ?>"                                                                                                        
+                                                    data-productid="<?= $restocks['Product_ID'] ?>"
+                                                    data-supplierid="<?= $restocks['Supplier_ID'] ?>">
+                                                    📝 Edit
+                                                </button>
 
-                                            <form style="display: none;" id="display-delete" action="delete.php" class="delete-product-form" method="POST" style="display: inline;">
-                                                <input type="hidden" name="table" value="product">
-                                                <input type="hidden" name="id" value="<?= $restocks['Orestock_ID']?>">
-                                                <button type="submit"  onclick="return confirm('Delete this product?')">🗑️ Delete</button>
-                                            </form>
-                                        </td>
+                                                <button style="display: none;" class="update-order-btn"
+                                                    data-id="<?= $restocks['Orestock_ID'] ?>"
+                                                    data-proof="<?= $restocks['Image'] ?>"
+                                                    data-status="<?= $restocks['Status'] ?>"
+                                                    data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
+                                                    data-datereceived="<?= $restocks['ExpirationDate'] ?>"
+                                                    data-quantity="<?= $restocks['Quantity'] ?>"
+                                                    data-received="<?= $restocks['TotalReceived'] ?>"
+                                                    data-issue="<?= $restocks['withIssue'] ?>">                                                                                    
+                                                    📝 Update
+                                                </button>
+
+                                                <form style="display: none;" id="display-delete" action="delete.php" class="delete-product-form" method="POST" style="display: inline;">
+                                                    <input type="hidden" name="table" value="restock">
+                                                    <input type="hidden" name="id" value="<?= $restocks['Orestock_ID']?>">
+                                                    <button type="submit"  onclick="return confirm('Delete this product?')">🗑️ Delete</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
@@ -2053,34 +2361,54 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper">🖨️</span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
                             </div>
                         </div>
+
+
                         <div class="controls-bar">
+
                             <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div>
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>SUPPLIER ID</option></select></div> -->
                                 <div class="toggle-buttons">
                                     <button id="transaction-view-btn" class="toggle-btn active">Transaction</button>
                                     <button id="sales-view-btn" class="toggle-btn">Sales</button>
                                 </div>
                             </div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
+
+                            <div class="header-icons">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                            </div>
+
+
+
                         </div>
                     </div>
-                    <div class="toolbar sticky-div-2">
-                        
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <div>
+
+                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <!-- <span class="na-icon-btn">🖨️</span> -->
+                             
+                            <button id="transaction-add-btn" class="na-btn na-btn-add">ADD</button>
+                            <button id="sales-add-btn" class="na-btn na-btn-add">ADD</button>
+                            
+                        </div>
+
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div> 
+
+
    
                         
-                        <span class="na-icon-btn">📝</span>
-                        <span class="na-icon-btn">🗑️</span>
-                        <span class="na-icon-btn">🖨️</span>
+                            <!-- <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
                         
-                        <button id="transaction-add-btn" class="na-btn na-btn-add">ADD</button>
+                        <button id="transaction-add-btn" class="na-btn na-btn-add">ADD</button> -->
                         <div id="addTransactionModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Add New Transaction</h3>
@@ -2180,7 +2508,7 @@ if(isset($_SESSION['email'])){
                         <!-- <script src="get_productTRANS.js" defer></script> -->
                         <script src="get/get_customerTRANS.js" defer></script>
                         
-                        <button id="sales-add-btn" class="na-btn na-btn-add">ADD</button>
+                        
                         <div id="addSalesModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Add New Sales</h3>
@@ -2284,11 +2612,11 @@ if(isset($_SESSION['email'])){
                                     <th>Product ID</th>
                                     <th>Product Name</th>
                                     <th>Batch Number</th>
+                                    <th>Unit Price</th>
                                     <th>Total Quantity</th>
-                                    <th>Store Price</th>
                                     <th>Total Price</th>
                                     <!-- <th>Barcode</th> -->
-                                    <th>Sales Date</th>
+                                    <!-- <th>Sales Date</th> -->
                                     <th>Account ID</th>
                                 </tr>
                             </thead>
@@ -2311,13 +2639,23 @@ if(isset($_SESSION['email'])){
                                         <td style="color: red;">
                                         <?= empty($sales['BatchNum']) ? '- - - N/A - - -' : $sales['BatchNum']; ?>
                                         </td>
+                                        <!-- <td>PHP <?= $sales['Unit_Price'] ?></td> -->
+                                        <td >
+                                            <span style="color: darkgreen; font-weight: bolder; float:left">PHP </span> 
+                                            <?= number_format($sales['Unit_Price'], 2) ?>
+                                        </td>
                                         <td><?= $sales['Quantity'] ?></td>
-                                        <td>PHP <?= $sales['Unit_Price'] ?></td>
-                                        <td>PHP <?= $sales['TotalPrice'] ?></td>
+
+                                        <td >
+                                            <span style="color: darkgreen; font-weight: bolder; float:left">PHP </span> 
+                                            <?= number_format($sales['TotalPrice'], 2) ?>
+                                        </td>
+
+                                        <!-- <td style="color: green; font-weight: bolder;">PHP <?= $sales['TotalPrice'] ?></td> -->
                                         <!-- <td><?= $sales['Barcode'] ?></td> -->
                                         <!-- <td><?= date('F d,Y', strtotime($sales['SalesDate']))?></td> -->
-                                        <td style="color: red;"><?= empty($sales['SalesDate']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($sales['SalesDate'])) ?></td>
-                                        <td><?= $sales['Account_ID'] ?></td>
+                                        <!-- <td style="color: red;"><?= empty($sales['SalesDate']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($sales['SalesDate'])) ?></td> -->
+                                        <td><?= $sales['id'] ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -2363,7 +2701,10 @@ if(isset($_SESSION['email'])){
                                         <td><?= $transaction['PaymentMethod'] ?></td>
                                         <td><span class="delivery-type-tag delivery-type-delivery"><?= $transaction['ServiceType']?></span></td>
                                         <td style="color: red;"><?= empty($transaction['Transaction_Date']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($transaction['Transaction_Date'])) ?></td>
-                                        <td>PHP <?= $transaction['Total_Price'] ?></td>
+                                        <!-- <td>PHP <?= $transaction['Total_Price'] ?></td> -->
+                                        <td >
+                                            <span style="color: darkgreen; font-weight: bolder; float:left">PHP </span> <?= number_format($transaction['Total_Price'], 2) ?>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -2915,7 +3256,7 @@ if(isset($_SESSION['email'])){
                 <div id="stock-adjustments" class="content-section">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
                         <div class="top-bar">
-                            <div class="tab">STOCK ADJUSTMENTS</div>
+                            <div class="tab">Daily Reports</div>
                             <div class="user-controls">
                                 <div>      
                                 <?php
@@ -2923,27 +3264,26 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper">🖨️</span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
+
                             </div>
                         </div>
-                        <div class="controls-bar">
+                        <div class="controls-bar" style="height: 30px;">
                              <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div>
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div> -->
                             </div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
+                            <!-- <div class="na-quick-search">🔍 Quick Search</div> -->
                         </div>
                     </div>
-                    <div class="toolbar">
-                        <input type="checkbox">
+                    <div class="toolbar" >
+                        <!-- <input type="checkbox">
                         <span id="stock-adjustments-count" class="na-count">07</span>
-                        <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
+                        <span class="na-icon-btn">📝</span>
+                        <span class="na-icon-btn">🗑️</span> -->
+                        <button id="printBtn">🖨️</button>
+                        <!-- <span class="na-icon-btn">🖨️</span> -->
                         
-                        <button id="adjustments-add-btn" class="na-btn na-btn-add">ADD</button>
+                        <!-- <button id="adjustments-add-btn" class="na-btn na-btn-add">ADD</button>
                         <div id="addAdjustmentModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Add New Stock Adjustment</h3>
@@ -2968,47 +3308,43 @@ if(isset($_SESSION['email'])){
 
                                     <div class="modal-buttons">
                                         <button type="submit" class="na-btn na-btn-add">Save</button>
-                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
+                                        <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button>
                                         <button type="button" id="adjustment-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
                                     </div>
                                 </form>
                             </div>
+                        </div> -->
+
+                        <!-- <link rel="stylesheet" href="assets/add_product.css">
+                        <script src="assets/add_adjustment.js" defer></script> -->
+                    </div>
+                    <link rel="stylesheet" href="assets/daily_reports.css">
+                    <div class="report-container">
+                        <div class="report-card">
+                            <div class="report-header">Today's Newly Added Products</div>
+                            <iframe id="pdf1" src="reports/export_newproducts_pdf.php?type=daily"></iframe>
                         </div>
 
-                        <link rel="stylesheet" href="assets/add_product.css">
-                        <script src="assets/add_adjustment.js" defer></script>
+                        <div class="report-card">
+                            <div class="report-header">Today's Sales</div>
+                            <iframe id="pdf2" src="reports/export_sales_pdf.php?type=daily"></iframe>
+                        </div>
 
+                        <div class="report-card">
+                            <div class="report-header">Today's Returns</div>
+                            <iframe id="pdf3" src="reports/export_returns_pdf.php?type=daily"></iframe>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-header">Upcoming Restock</div>
+                            <iframe id="pdf4" src="reports/export_restock_pdf.php?type=daily"></iframe>
+                        </div>
                     </div>
-                    <div class="table-container">
-                        <table class="stock-adjustments-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Pulled ID</th>
-                                    <th>Product ID</th>
-                                    <th>Supplier ID</th>
-                                    <th>Quantity</th>
-                                    <th>Reason</th>
-                                    <th>Pulled Date</th>
-                                    <th>Account ID</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach($pulledoutitems as $index => $pulledoutitems){ ?>
-                                    <tr>
-                                        <td><?= $index + 1?></td>
-                                        <td class="analytics-id-cell"><?= $pulledoutitems['Pulled_ID']?></td>
-                                        <td class="forecast-id-cell"><?= $pulledoutitems['Product_ID']?></td>
-                                        <td class="forecast-id-cell"><?= $pulledoutitems['Supplier_ID']?></td>
-                                        <td><?= $pulledoutitems['Quantity']?></td>
-                                        <td><?= $pulledoutitems['Reason']?></td>
-                                        <td><?= date('F d,Y', strtotime($pulledoutitems['PulledDate']))?></td>                              
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
+
+
+            <!-- END OF STOCK ADJUSTMENT -->
                 </div>
+                <script src="reports/daily_reports.js"></script>
 
                 <div id="account" class="content-section">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
@@ -3030,6 +3366,7 @@ if(isset($_SESSION['email'])){
                         </div>
                         <div style="height: 50px;"></div>
                     </div>
+                    
                     <div class="account-page-container">
                         <div class="account-card">
                             <div class="account-info-left">
@@ -3041,29 +3378,6 @@ if(isset($_SESSION['email'])){
                                             <div class="profile-pic-display">
                                                 <span>👤</span>
                                             </div>
-
-                                <!-- <form id="customerForm" action="add.php" method="POST">
-                                    <input type="hidden" name="table" value="customers">
-
-                                    <label>Customer Name:</label>
-                                    <input type="text" name="CustomerName" required>
-
-                                    <label>Location:</label>
-                                    <input type="text" name="Location" required>
-
-                                    <label>Email:</label>
-                                    <input type="text" name="Email" required>
-                                    
-                                    <label>Phone Number:</label>
-                                    <input type="tel" name="PhoneNumber" required maxlength=11>
-
-                                    <div class="modal-buttons">
-                                        <button type="submit" class="na-btn na-btn-add">Save</button>
-                                        
-                                        <button type="button" id="cus-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                                    </div>
-                                </form> -->
-                                        
                                             <div class="upload-links">
                                             <form id="userimage" action="userimage.php" method="POST" >
                                                 <input type="hidden" name="table" value="users">
@@ -3077,11 +3391,11 @@ if(isset($_SESSION['email'])){
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Name</span>
-                                        <span class="info-value">Juan Dela Cruz <span>&rsaquo;</span></span>
+                                        <span class="info-value"><?php echo $row['userName'];?><span>&rsaquo;</span></span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Date of Birth</span>
-                                        <span class="info-value">December 24, 1990 <span>&rsaquo;</span></span>
+                                        <span class="info-value">December 24, 1900<span>&rsaquo;</span></span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Gender</span>
@@ -3089,22 +3403,27 @@ if(isset($_SESSION['email'])){
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Email</span>
-                                        <span class="info-value">DelaCruzJuan2419@gmail.com <span>&rsaquo;</span></span>
+                                        <span class="info-value"><?php echo $row['email'];?><span>&rsaquo;</span></span>
                                     </div>
                                 </div>
                                 <div class="info-section">
                                     <h3>Account Info</h3>
                                     <div class="info-row">
                                         <span class="info-label">Account ID</span>
-                                        <span class="info-value">1001 <span>&rsaquo;</span></span>
+                                        <span class="info-value"><?php echo $row['id'];?> <span>&rsaquo;</span></span>
                                     </div>
                                     <div class="info-row">
-                                        <span class="info-label">Username</span>
-                                        <span class="info-value">Manager 1 <span>&rsaquo;</span></span>
+                                        <span class="info-label">Contact</span>
+                                        <span class="info-value"><?php echo $row['phone'];?><<span>&rsaquo;</span></span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Password</span>
-                                        <span class="info-value">****************** <span>&rsaquo;</span></span>
+                                        <span class="info-value">
+                                        <?php 
+                                            $passwordLength = strlen($row['password']);
+                                            echo str_repeat('•', $passwordLength); 
+                                        ?>
+                                        <span>&rsaquo;</span></span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">User Type</span>
@@ -3118,25 +3437,36 @@ if(isset($_SESSION['email'])){
                                     <div class="recent-sales-table-container">
                                         <table class="recent-sales-table">
                                             <thead>
-                                                <tr><th>Sales ID</th><th>Date</th><th>Product</th><th>Quantity</th></tr>
+                                                <tr>
+                                                    <th>Sales ID</th>
+                                                    <th>Date</th>
+                                                    <th>Product</th>
+                                                    <th>Quantity</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                                <tr><td>1030</td><td>2025-05-05</td><td>1001</td><td>3</td></tr>
-                                                <tr><td>1029</td><td>2025-05-05</td><td>1002</td><td>3</td></tr>
-                                                <tr><td>1028</td><td>2025-05-05</td><td>1003</td><td>3</td></tr>
-                                                <tr><td>1027</td><td>2025-05-05</td><td>1001</td><td>3</td></tr>
-                                                <tr><td>1026</td><td>2025-05-05</td><td>1001</td><td>3</td></tr>
-                                                <tr><td>1025</td><td>2025-05-05</td><td>1004</td><td>3</td></tr>
-                                                <tr><td>1024</td><td>2025-05-05</td><td>1005</td><td>3</td></tr>
-                                                <tr><td>1023</td><td>2025-05-05</td><td>1001</td><td>3</td></tr>
-                                                <tr><td>1022</td><td>2025-05-05</td><td>1007</td><td>3</td></tr>
-                                                <tr><td>1021</td><td>2025-05-05</td><td>1002</td><td>3</td></tr>
-                                                <tr><td>1020</td><td>2025-05-05</td><td>1001</td><td>3</td></tr>
+                                                <?php include 'recent_sales_users.php'?>
                                             </tbody>
                                         </table>
                                     </div>
                                     <div class="account-footer">
-                                        <span>Deleted Files 🗑️</span>
+                                        <h3>Deleted Files 🗑️</h3>
+                                        <div class="recent-sales-table-container">
+                                            <table class="recent-sales-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sales ID</th>
+                                                        <th>Date</th>
+                                                        <th>Product</th>
+                                                        <th>Quantity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php include 'recent_deleted_users.php'?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- <span>Deleted Files 🗑️</span> -->
                                     </div>
                                 </div>
                                 <div class="bottom-links">
@@ -3230,10 +3560,23 @@ if(isset($_SESSION['email'])){
                     document.getElementById("reportType").addEventListener("change", updateReportLinks);
                 });
                 </script>
+            </div>
 
 
 
     <!-- MODALS -->
+    <link rel="stylesheet" href="assets/notifs.css">
+    <div id="notificationModal" class="modal">
+        <div class="notif-modal-content">
+            <span class="close-btn" onclick="closeNotifications()">&times;</span>
+            <h2>Notifications</h2>
+            <ul class="notification-list" id="notifList">
+                <li>Loading notifications...</li>
+            </ul>
+        </div>
+        <span id="notifBadge">0</span>
+    </div>
+
     <div id="calendarModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">

@@ -4,13 +4,7 @@
 // ==========================
 
 // Database connection settings
-$host="localhost";
-$user="root";
-$pass="12345QWERT";
-
-$db="login"; // Change this to your actual database name
-
-header('Content-Type: application/json');
+include 'connect.php';
 
 try {
     // Connect to MySQL

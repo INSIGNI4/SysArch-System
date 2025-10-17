@@ -38,21 +38,21 @@
     grid-column: span 4 / span 4;
     grid-row: span 2 / span 2;
     grid-row-start: 5;
-    background: #e2c4f3;
+    background: whitesmoke;
 }
 
 .confidence_dashboard {
     grid-column: span 3 / span 3;
     grid-column-start: 5;
     grid-row-start: 5;
-    background: #c4f3f1;
+    background: whitesmoke;
 }
 
 .projected_dashboard {
     grid-column: span 3 / span 3;
     grid-column-start: 8;
     grid-row-start: 5;
-    background: #f3c4e4;
+    background: whitesmoke;
 }
 
 .totalproduct_dashboard {

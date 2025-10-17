@@ -79,6 +79,50 @@ notnulltoggleBtn.addEventListener('click', () => {
     expInput.disabled = false;
 });
 
+
+
+
+
+
+const updateORDERtbtn = document.getElementById("update-restock-status-btn");
+const deleteproductbtn = document.getElementById("delete-restock-btn");
+const displaydeletebtn = document.getElementById("display-delete");
+
+
+function resetActions() {
+	document.querySelectorAll(".edit-order-btn").forEach(btn => btn.style.display = "none");
+	document.querySelectorAll(".delete-product-form").forEach(form => form.style.display = "none");
+    
+}
+
+updateORDERtbtn.addEventListener("click", () => {
+	resetActions();
+	document.querySelectorAll(".update-order-btn").forEach(btn => btn.style.display = "inline-block");
+});
+deleteproductbtn.addEventListener("click", () => {
+	resetActions();
+	document.querySelectorAll(".delete-product-form").forEach(btn => btn.style.display = "inline-block");
+    
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
     
     // // document.addEventListener('click', function () {

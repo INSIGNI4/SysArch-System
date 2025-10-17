@@ -47,9 +47,8 @@ $result = $conn->query($query);
 
 $products = [];
 while ($row = $result->fetch_assoc()) {
-    // ✅ Handle null or empty image
     if (empty($row['Image']) || $row['Image'] === 'null') {
-        $row['Image'] = 'assets/no_image.png'; // <-- change to your fallback path
+        $row['Image'] = 'uploads/no_image.png'; // <-- change to your fallback path
     }
     $products[] = $row;
 }

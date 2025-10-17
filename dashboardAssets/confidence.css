@@ -1,0 +1,86 @@
+.confidence_dashboard {
+    grid-column: span 3 / span 3;
+    grid-column-start: 5;
+    grid-row-start: 5;
+    background: whitesmoke;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    padding: 18px 20px;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+    position: relative;
+}
+
+.confidence-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #222;
+}
+
+.confidence-header p {
+    margin: 0;
+}
+
+.confidence-header span {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.interval-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.interval-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+.week-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px; /* increased from 6px */
+}
+
+.week-up,
+.week-down {
+    border: 3px solid;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.week-up:hover,
+.week-down:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+}
+
+.week-up {
+    border-color: #28a745;
+    color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.week-down {
+    border-color: #dc3545;
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+

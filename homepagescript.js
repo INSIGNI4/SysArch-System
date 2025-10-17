@@ -482,6 +482,50 @@ function showSalesAggregrationView(viewType, tableType = activeAggregationType) 
 
 
 // --- Calendar and Modal Functions ---
+
+function openNotifications() {
+    document.getElementById('notificationModal').style.display = 'block';
+    loadNotifications();
+}
+
+function closeNotifications() {
+    document.getElementById('notificationModal').style.display = 'none';
+}
+
+function loadNotifications() {
+    fetch('notifications.php')
+        .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json();
+        })
+        .then(data => {
+            const list = document.getElementById('notifList');
+            const badge = document.getElementById('notifBadge');
+            
+            list.innerHTML = ''; // clear list
+
+            if (!data || data.length === 0) {
+                list.innerHTML = '<li>No new notifications 🎉</li>';
+                badge.textContent = '0';
+            } else {
+                data.forEach(n => {
+                    const li = document.createElement('li');
+                    li.textContent = n.message;
+                    li.style.color = n.type === 'out' ? 'red' : 'orange';
+                    list.appendChild(li);
+                });
+                badge.textContent = data.length;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('notifList').innerHTML = '<li>Error loading notifications.</li>';
+            document.getElementById('notifBadge').textContent = '!';
+        });
+}
+
+
+
 function openCalendarModal() { calendarModal.style.display = 'flex'; generateCalendar(); }
 function closeCalendarModal() { calendarModal.style.display = 'none'; }
 function prevMonth() { currentDate.setMonth(currentDate.getMonth() - 1); generateCalendar(); }

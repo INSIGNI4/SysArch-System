@@ -3356,11 +3356,7 @@ if(isset($_SESSION['email'])){
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
-                                <div class="header-icons">
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                                </div>
+
                             </div>
                             
                         </div>

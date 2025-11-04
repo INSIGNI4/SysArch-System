@@ -484,44 +484,91 @@ function showSalesAggregrationView(viewType, tableType = activeAggregationType) 
 // --- Calendar and Modal Functions ---
 
 function openNotifications() {
-    document.getElementById('notificationModal').style.display = 'block';
-    loadNotifications();
+  document.getElementById('notificationModal').style.display = 'block';
+  loadNotifications();
 }
 
 function closeNotifications() {
-    document.getElementById('notificationModal').style.display = 'none';
+  document.getElementById('notificationModal').style.display = 'none';
 }
 
 function loadNotifications() {
-    fetch('notifications.php')
-        .then(res => {
-            if (!res.ok) throw new Error('Network response was not ok');
-            return res.json();
-        })
-        .then(data => {
-            const list = document.getElementById('notifList');
-            const badge = document.getElementById('notifBadge');
-            
-            list.innerHTML = ''; // clear list
+  fetch('notifications.php')
+    .then(res => {
+      if (!res.ok) throw new Error('Network response was not ok');
+      return res.json();
+    })
+    .then(data => {
+      const list = document.getElementById('notifList');
+      const badge = document.getElementById('notifBadge');
+      list.innerHTML = ''; // clear old notifs
 
-            if (!data || data.length === 0) {
-                list.innerHTML = '<li>No new notifications 🎉</li>';
-                badge.textContent = '0';
-            } else {
-                data.forEach(n => {
-                    const li = document.createElement('li');
-                    li.textContent = n.message;
-                    li.style.color = n.type === 'out' ? 'red' : 'orange';
-                    list.appendChild(li);
-                });
-                badge.textContent = data.length;
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            document.getElementById('notifList').innerHTML = '<li>Error loading notifications.</li>';
-            document.getElementById('notifBadge').textContent = '!';
+      if (!data || data.length === 0) {
+        list.innerHTML = '<li>No new notifications 🎉</li>';
+        badge.textContent = '0';
+      } else {
+        data.forEach(n => {
+          const li = document.createElement('li');
+          li.classList.add(n.type);
+          li.innerHTML = `
+            <span class="notif-msg">${n.message}</span>
+            <button class="mark-read-btn" title="Mark as read" onclick="markAsRead('${n.id}', this)">✅</button>
+          `;
+          list.appendChild(li);
         });
+        badge.textContent = data.length;
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('notifList').innerHTML = '<li>Error loading notifications.</li>';
+      document.getElementById('notifBadge').textContent = '!';
+    });
+}
+
+function markAsRead(id, btn) {
+  fetch('mark_as_read.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ id })
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if (resp.success) {
+      btn.parentElement.remove();
+      updateBadgeCount();
+    } else {
+      alert('Failed to mark as read');
+    }
+  })
+  .catch(console.error);
+}
+
+function clearAllNotifications() {
+  if (!confirm("Are you sure you want to clear all notifications?")) return;
+
+  fetch('clear_all_notifications.php', { method: 'POST' })
+    .then(res => res.json())
+    .then(resp => {
+      if (resp.success) {
+        document.getElementById('notifList').innerHTML = '<li>No new notifications 🎉</li>';
+        document.getElementById('notifBadge').textContent = '0';
+      } else {
+        alert('Error clearing notifications: ' + (resp.error || 'Unknown'));
+      }
+    })
+    .catch(console.error);
+}
+
+function updateBadgeCount() {
+  const remaining = document.querySelectorAll('#notifList li').length;
+  document.getElementById('notifBadge').textContent = remaining;
+}
+
+
+function updateBadgeCount() {
+    const remaining = document.querySelectorAll('#notifList li').length;
+    document.getElementById('notifBadge').textContent = remaining;
 }
 
 
@@ -870,4 +917,25 @@ notnulltoggleBtn.addEventListener('click',function(){
 //     })
 
 // });
+
+
+document.getElementById("logoutBtn").addEventListener("click", function(event) {
+  event.preventDefault(); // stop normal link behavior
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You’ll be logged out of your account.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, log me out",
+    cancelButtonText: "No, stay here"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Redirect to logout.php if user confirms
+      window.location.href = "logout.php";
+    }
+  });
+});
 

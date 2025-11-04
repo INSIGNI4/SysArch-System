@@ -15,7 +15,7 @@
         <form action="send-password-reset.php" method="post">
             <div class="input-group"style="padding: 0 40px; margin-top: 20px">
                 <i class="fas fa-envelope"></i>
-                <input type="email" name="email" id="email" placeholder="  Email"required >
+                <input type="email" name="email" id="email" placeholder="  Email"required autocomplete="off">
                 <label for="email"></label>
                 <button class="btn" style="margin-top: 20px; text-decoration: none;" >SEND</button>
                 <a class="fas fa-angle-left" href="index.php" style="margin-top: 30px; width: 100%; background:linear-gradient(to top,rgb(0, 0, 0),rgb(85, 78, 79)); 
@@ -25,6 +25,11 @@
         </form>
     </div>
     <script src="script.js"></script>
+<script>
+window.addEventListener("load", function() {
+  document.body.classList.add("loaded");
+});
+</script>
     
 </body>
 </html>

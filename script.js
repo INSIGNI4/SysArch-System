@@ -8,19 +8,44 @@ const validationMsg = document.getElementById('passwordValidation');
 const body = document.getElementById('container0');
 
 
+// --- FADE IN/OUT TRANSITION HANDLER ---
+signUpButton.addEventListener('click', function () {
+    // Add fade-out to login
+    signInForm.classList.add('fade-out');
 
-signUpButton.addEventListener('click',function(){
-    signInForm.style.display="none";
-    signUpForm.style.display="block";
-    body.style.backgroundImage = "url('registrationBG.png')";
+    setTimeout(() => {
+        signInForm.style.display = "none";
+        signUpForm.style.display = "flex";
+        signUpForm.classList.add('active'); // fade in signup
+        body.style.backgroundImage = "url('registrationBG.png')";
+    }, 300); // delay to match CSS transition
+});
 
-})
+signInButton.addEventListener('click', function () {
+    // fade out signup
+    signUpForm.classList.remove('active');
 
-signInButton.addEventListener('click',function(){
-    signInForm.style.display="block";
-    signUpForm.style.display="none";
-    body.style.backgroundImage = "url('bglogin.png')";
-})
+    setTimeout(() => {
+        signUpForm.style.display = "none";
+        signInForm.style.display = "block";
+        signInForm.classList.remove('fade-out'); // show login again
+        body.style.backgroundImage = "url('bglogin.png')";
+    }, 300);
+});
+
+
+// signUpButton.addEventListener('click',function(){
+//     signInForm.style.display="none";
+//     signUpForm.style.display="block";
+//     body.style.backgroundImage = "url('registrationBG.png')";
+
+// })
+
+// signInButton.addEventListener('click',function(){
+//     signInForm.style.display="block";
+//     signUpForm.style.display="none";
+//     body.style.backgroundImage = "url('bglogin.png')";
+// })
 
 
 

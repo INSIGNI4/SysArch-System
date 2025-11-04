@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
   const supplierSelect = document.getElementById("Transaction_IDSALES");
 
-  async function loadSupplierIDs() {
+  async function loadTransactionIDs() {
     try {
       const response = await fetch("get_transaction.php"); // adjust path if needed
-      const supplierIDs = await response.json();
+      const TransactionIDs = await response.json();
 
       supplierSelect.innerHTML = ""; // Clear current options
 
-      if (supplierIDs.length === 0) {
+      if (TransactionIDs.length === 0) {
         const option = document.createElement("option");
         option.text = "No transaction available";
         option.disabled = true;
@@ -20,10 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
         defaultOption.selected = true;
         supplierSelect.add(defaultOption);
 
-        supplierIDs.forEach(id => {
+        TransactionIDs.forEach(transactions => {
           const option = document.createElement("option");
-          option.value = id;
-          option.text = id;
+          // option.value = id;
+          option.value = transactions.Transaction_ID;
+          option.text = `${transactions.Transaction_ID} - ${transactions.Transaction_Date}`;
           supplierSelect.add(option);
         });
       }
@@ -32,5 +33,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  loadSupplierIDs();
+  loadTransactionIDs();
 });

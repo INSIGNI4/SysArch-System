@@ -29,6 +29,9 @@ $sql = "SELECT * FROM (
         ) AS recent
         ORDER BY Period ASC;";
 
+
+
+
 $result = $conn->query($sql);
 
 $data = [];

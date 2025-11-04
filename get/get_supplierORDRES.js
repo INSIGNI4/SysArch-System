@@ -20,10 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
         defaultOption.selected = true;
         supplierSelect.add(defaultOption);
 
-        supplierIDs.forEach(id => {
+        supplierIDs.forEach(supplier => {
           const option = document.createElement("option");
-          option.value = id;
-          option.text = id;
+          option.value = supplier.Supplier_ID;
+        
+          option.text = `${supplier.Supplier_ID} - ${supplier.SupplierName} - ${supplier.Location} `;
           supplierSelect.add(option);
         });
       }

@@ -58,6 +58,11 @@ $stmt->bind_param("ss", $password, $user["id"]);
 
 $stmt->execute();
 
-echo "Password updated. You can now login.";
+// echo "Password updated. You can now login.";
+
+echo "<script>
+    alert('Password updated. You can now login.');
+    window.location.href = 'index.php'; // optional redirect back to login
+</script>";
 
 ?>

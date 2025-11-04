@@ -53,7 +53,7 @@ if (strtotime($user["reset_token_expires_at"]) <= time()) {
                 <label for="password"></label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock"></i>
-                    <input type="password" name="password" id="password" placeholder="  Password" required>
+                    <input type="password" name="password" id="password" placeholder="  Password" required autocomplete="off">
                     <button type="button" class="toggle-icon" id="registerPasswordToggle" onclick="toggleRegisterPassword()">👁️</button>
                     
                 </div>
@@ -63,7 +63,7 @@ if (strtotime($user["reset_token_expires_at"]) <= time()) {
             <div class="input-group" style="padding: 0 40px; margin-top: 20px;">
                 <i class="fas fa-lock"></i>
                 <label for="confirm_password"></label>
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="  Confirm Password" required>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="  Confirm Password" required autocomplete="off">
                 <button type="button" class="toggle-icon" onclick="toggleRegisterPassword()"></button>
                 <div class="validation" id="confirmPasswordValidation"style="font-weight: bolder;"></div> 
 
@@ -182,6 +182,11 @@ if (strtotime($user["reset_token_expires_at"]) <= time()) {
 
 
     </script>
+<script>
+window.addEventListener("load", function() {
+  document.body.classList.add("loaded");
+});
+</script>
 
 </body>
 </html>

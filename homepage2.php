@@ -1,6 +1,20 @@
 <?php
 session_start();
 
+
+// 🚫 Prevent access if user is not logged in
+if (!isset($_SESSION['email'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// 🧠 Prevent browser from showing cached version after logout
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+
+
 if (isset($_SESSION['response'])) {
     echo "<script>alert('" . $_SESSION['response']['message'] . "');</script>";
     unset($_SESSION['response']);
@@ -222,7 +236,37 @@ if(isset($_SESSION['email'])){
             </div>
             <div class="sidebar-footer">
                 <a class="footer-link" onclick="showContentSection('settings')"><span>⚙️</span> Settings</a>
-                <a href="logout.php" class="footer-link" ><span>↪</span> Log Out</a>
+                <!-- <a href="logout.php" class="footer-link" ><span>↪</span> Log Out</a> -->
+                <!-- <a href="logout.php" class="footer-link" onclick="return confirmLogout(event)">
+                <span>↪</span> Log Out
+                </a> -->
+                <a href="#" class="footer-link" id="logoutBtn">
+                <span>↪</span> Log Out
+                </a>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                document.getElementById("logoutBtn").addEventListener("click", function(event) {
+                event.preventDefault(); // stop normal link behavior
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You’ll be logged out of your account.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, log me out",
+                    cancelButtonText: "No, stay here"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    // Redirect to logout.php if user confirms
+                    window.location.href = "logout.php";
+                    }
+                });
+                });
+                </script>
+
+
             </div>
         </div>
 
@@ -333,17 +377,42 @@ if(isset($_SESSION['email'])){
 
                                     <script src="https://code.highcharts.com/highcharts.js"></script>
                                     <script>
+                                    function formatPeriodLabel(type, period) {
+                                    if (type === 'weekly') {
+                                        // Example: 202542 → "Week 42 (2025)"
+                                        const year = period.toString().substring(0, 4);
+                                        const week = period.toString().substring(4);
+                                        return `Week ${week} (${year})`;
+                                    } else if (type === 'monthly') {
+                                        // Example: 2025-10 → "Oct 2025"
+                                        const [year, month] = period.split('-');
+                                        const date = new Date(`${year}-${month}-01`);
+                                        return date.toLocaleString('default', { month: 'short', year: 'numeric' });
+                                    } else {
+                                        // Daily: display as "Oct 16, 2025"
+                                        const date = new Date(period);
+                                        return date.toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' });
+                                    }
+                                    }
+
                                     function loadForecast(type = 'daily') {
                                     fetch('get_sales_forecast.php?type=' + type)
                                         .then(res => res.json())
                                         .then(data => {
+                                        if (!data.length) {
+                                            document.getElementById('salesChart').innerHTML = '<p>No data available.</p>';
+                                            return;
+                                        }
+
                                         const actual = data.map(r => parseFloat(r.TotalQuantity));
                                         const forecast = data.map(r => parseFloat(r.MovingAverage3));
-                                        const categories = data.map(r => r.Period);
+                                        const categories = data.map(r => formatPeriodLabel(type, r.Period));
 
                                         Highcharts.chart('salesChart', {
                                             chart: { type: 'line' },
-                                            title: { text: `Store Sales Forecast (${type.charAt(0).toUpperCase() + type.slice(1)} 3-Moving Average)` },
+                                            title: { 
+                                            text: `Store Sales Forecast (${type.charAt(0).toUpperCase() + type.slice(1)} 3-Moving Average)` 
+                                            },
                                             subtitle: { text: 'Actual Sales vs Forecasted Trend' },
                                             xAxis: {
                                             categories: categories,
@@ -364,8 +433,9 @@ if(isset($_SESSION['email'])){
                                     loadForecast(this.value);
                                     });
 
-                                    loadForecast(); // 
+                                    loadForecast(); // load daily by default
                                     </script>
+
 
 
 
@@ -1051,9 +1121,18 @@ if(isset($_SESSION['email'])){
                         <!-- <span class="na-icon-btn">🖨️</span> -->
                         <button id="products-add-btn" class="na-btn na-btn-add" type="button">ADD</button>
                         </div>
-                        <div>
+                        <!-- <div>
                             <div class="na-quick-search">🔍 Quick Search</div>
-                        </div>            
+                        </div>    -->
+                        
+                        <div class="search-container" style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                        <input 
+                            type="text" 
+                            id="quickSearch" 
+                            placeholder="🔍 Quick Search..." 
+                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; width: 250px;">
+                        </div>
+
 
                         <div id="addProductModal" class="modal">
                             <div class="modal-content">
@@ -1070,23 +1149,7 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Type" required> -->
 
 
-                                    <label>Type:</label>
-                                    <div style="display: flex; justify-content:space-between; align-items:center;">
-                                
-                                    <select class="type-select" name="Type" required>
-                                        <option value="NONE">...</option>
-                                        <option value="Exhaust">Exhaust</option>
-                                        <option value="Tires">Tires</option>
-                                        <option value="Brakes">Brakes</option>
-                                        <option value="Stand">Stand</option>
-                                        <option value="Forks">Forks</option>
-                                        <option value="Rims">Rims</option>
-                                        <option value="Mirror">Mirror</option>
-                                        <option value="Suspension">Suspension</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Oil">Oil</option>
-                                    </select>
-                                    </div>
+
 
                                     <!-- <label>Reorder Points:</label>
                                     <input type="number" name="ReordingPoints" required> -->
@@ -1112,8 +1175,26 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Supplier ID:</label>
                                     <input type="text" name="Supplier_ID" required> -->
 
+                                    <label>Type:</label>
+                                    <div style="display: flex; justify-content:space-between; align-items:center;">
+                                
+                                    <select class="type-select" name="Type" required>
+                                        <option value="NONE">...</option>
+                                        <option value="Exhaust">Exhaust</option>
+                                        <option value="Tires">Tires</option>
+                                        <option value="Brakes">Brakes</option>
+                                        <option value="Stand">Stand</option>
+                                        <option value="Forks">Forks</option>
+                                        <option value="Rims">Rims</option>
+                                        <option value="Mirror">Mirror</option>
+                                        <option value="Suspension">Suspension</option>
+                                        <option value="Box">Box</option>
+                                        <option value="Oil">Oil</option>
+                                    </select>
+                                    </div>
+
                                     <label for="Supplier_ID">Choose Supplier ID:</label>
-                                    <select id="Supplier_IDPROD" name="Supplier_ID" class="id-select" required>
+                                    <select id="Supplier_IDPROD" name="Supplier_ID" class="id-select" style="width: 60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
@@ -1346,6 +1427,24 @@ if(isset($_SESSION['email'])){
                             </tbody>
                         </table>
                     </div>
+
+
+                    <script>
+                    document.getElementById("quickSearch").addEventListener("keyup", function() {
+                        const filter = this.value.toLowerCase();
+                        const rows = document.querySelectorAll(".products-table tbody tr");
+
+                        rows.forEach(row => {
+                            const rowText = row.innerText.toLowerCase();
+                            row.style.display = rowText.includes(filter) ? "" : "none";
+                        });
+                    });
+                    </script>
+
+
+
+
+
                 </div>
 
                 <div id="suppliers" class="content-section">
@@ -1727,25 +1826,25 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Customer_ID"> -->
 
                                     <label for="Customer_IDRETURN">Choose Customer ID:</label>
-                                    <select id="Customer_IDRETURN" name="Customer_ID" class="id-select">
+                                    <select id="Customer_IDRETURN" name="Customer_ID" class="id-select" style="width: 60%;">
                                         
                                         <option disabled selected>Loading...</option>
                                     </select>
 
                                     <label>ReferenceNo:</label>
                                     <!-- <input type="number" name="ReferenceNo" maxlength="11" required> -->
-                                    <input type="text" name="ReferenceNo" inputmode="numeric" pattern="\d{1,11}" maxlength="11" >
+                                    <input type="text" name="ReferenceNo" inputmode="numeric" pattern="\d{1,11}" maxlength="11" style="width: 55%;" >
 
                                     <!-- <label>Product ID:</label>
                                     <input type="text" name="Product_ID" required> -->
 
                                     <label for="Product_IDCRETURN">Choose Product ID:</label>
-                                    <select id="Product_IDCRETURN" name="Product_ID" class="id-select"required>
+                                    <select id="Product_IDCRETURN" name="Product_ID" class="id-select" style="width: 60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
                                     <label>Quantity:</label>
-                                    <input type="number" name="Quantity" required>
+                                    <input type="number" name="Quantity" style="width: 55%;" required>
 
                                     <!-- <label>Returned Date:</label>
                                     <input type="datetime-local" name="ReturnedDate" required> -->
@@ -1795,7 +1894,7 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Supplier_ID" required> -->
 
                                     <label for="Supplier_IDSRETURN">Choose Supplier ID:</label>
-                                    <select id="Supplier_IDSRETURN" name="Supplier_ID" class="id-select"required>
+                                    <select id="Supplier_IDSRETURN" name="Supplier_ID" class="id-select" style="width: 60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
@@ -1803,12 +1902,12 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Product_ID" required> -->
 
                                     <label for="Product_IDSRETURN">Choose Product ID:</label>
-                                    <select id="Product_IDSRETURN" name="Product_ID" class="id-select"required>
+                                    <select id="Product_IDSRETURN" name="Product_ID" class="id-select" style="width: 60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
                                     <label>Quantity:</label>
-                                    <input type="number" name="Quantity" required>
+                                    <input type="number" name="Quantity"  style="width: 55%;"required>
 
                                     <!-- <label>Returned Date:</label>
                                     <input type="datetime-local" name="ReturnedDate"> -->
@@ -1884,7 +1983,7 @@ if(isset($_SESSION['email'])){
                             <tbody>
                                 <?php foreach($supplierreturns as $index => $supplierreturns){ ?>
                                     <tr>
-                                        <td><?= $index + 1?></td>
+                                        <!-- <td><?= $index + 1?></td> -->
                                         <td><?= $supplierreturns['SReturns_ID']?></td>
                                         <td class="supplier-id-cell"><?= $supplierreturns['Supplier_ID']?></td>
                                         <td class="product-id-cell"><?= $supplierreturns['Product_ID']?></td>
@@ -2022,7 +2121,7 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Product_ID" required> -->
 
                                     <label for="Product_IDORDRES">Choose Product ID:</label>
-                                    <select id="Product_IDORDRES" name="Product_ID" class="id-select" required>
+                                    <select id="Product_IDORDRES" name="Product_ID" class="id-select" style="width: 60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
@@ -2044,7 +2143,7 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Supplier_ID" required> -->
 
                                     <label for="Supplier_IDORDRES">Choose Supplier ID:</label>
-                                    <select id="Supplier_IDORDRES" name="Supplier_ID" class="id-select" required>
+                                    <select id="Supplier_IDORDRES" name="Supplier_ID" class="id-select" style="width: 60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
@@ -2398,9 +2497,37 @@ if(isset($_SESSION['email'])){
                             
                         </div>
 
-                        <div>
+                        <!-- <div>
                             <div class="na-quick-search">🔍 Quick Search</div>
-                        </div> 
+                        </div>  -->
+                        <!-- <div class="search-container" style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                        <input 
+                            type="text" 
+                            id="quickSearch" 
+                            placeholder="🔍 Quick Search..." 
+                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; width: 250px;">
+                        </div> -->
+
+
+                        <!-- <div class="search-container" style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                            <input 
+                                type="text" 
+                                id="quickSearch" 
+                                placeholder="🔍 Quick Search..." 
+                                style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; width: 250px;"
+                            >
+                        </div> -->
+
+                        <div class="search-container" style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+                        <input 
+                            type="text" 
+                            id="quickSearch" 
+                            placeholder="🔍 Quick Search..." 
+                            style="padding:8px 12px; border-radius:6px; border:1px solid #ccc; width:250px;"
+                        >
+                        </div>
+
+
 
 
    
@@ -2419,7 +2546,7 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Customer_ID"> -->
 
                                     <label for="Customer_IDTRANS">Choose Customer ID:</label>
-                                    <select id="Customer_IDTRANS" name="Customer_ID" class="id-select" required>
+                                    <select id="Customer_IDTRANS" name="Customer_ID" class="id-select"  style="width: 60%;"required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
@@ -2490,8 +2617,8 @@ if(isset($_SESSION['email'])){
 
                                     </select>  
 
-                                    <!-- <label>Transaction Date:</label>
-                                    <input type="datetime-local" name="Transaction_Date" required> -->
+                                    <label>Transaction Date:</label>
+                                    <input type="datetime-local" name="Transaction_Date" required>
                                     
 
                                     <div class="modal-buttons">
@@ -2519,12 +2646,12 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Transaction_ID" required> -->
 
                                     <label for="Transaction_IDSALES">Choose Transaction ID:</label>
-                                    <select id="Transaction_IDSALES" name="Transaction_ID" class="id-select" required>
+                                    <select id="Transaction_IDSALES" name="Transaction_ID" class="id-select"  style="width: 60%;"required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
                                     <label for="Product_ID">Choose Product ID:</label>
-                                    <select id="Product_IDSALES" name="Product_ID" class="id-select" required>
+                                    <select id="Product_IDSALES" name="Product_ID" class="id-select" style="width: 60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
@@ -2534,7 +2661,7 @@ if(isset($_SESSION['email'])){
                                     </select> -->
 
                                     <label for="BatchNum">Choose Batch ID:</label>
-                                    <select id="Product_IDSALES_Batch" name="BatchNum" class="id-select" required>
+                                    <select id="Product_IDSALES_Batch" name="BatchNum" class="id-select" style="width: 60%;" required>
                                     <option disabled selected>Loading...</option>
                                     </select>
 
@@ -2709,6 +2836,7 @@ if(isset($_SESSION['email'])){
                                 <?php } ?>
                             </tbody>
                         </table>
+                        <script src="quick_search_transaction.js"></script>
                     </div>
                 </div>    
 
@@ -3541,13 +3669,15 @@ if(isset($_SESSION['email'])){
 
 
     <!-- MODALS -->
+     
     <link rel="stylesheet" href="assets/notifs.css">
     <div id="notificationModal" class="modal">
         <div class="notif-modal-content">
             <span class="close-btn" onclick="closeNotifications()">&times;</span>
             <h2>Notifications</h2>
+            <button id="clearAllBtn" onclick="clearAllNotifications()">Clear All</button>
             <ul class="notification-list" id="notifList">
-                <li>Loading notifications...</li>
+            <li>Loading notifications...</li>
             </ul>
         </div>
         <span id="notifBadge">0</span>
@@ -3618,5 +3748,6 @@ if(isset($_SESSION['email'])){
     <script src="homepagescript.js"></script>
     <!-- <script src="get_product.js" defer></script>
     <script src="get_supplier.js" defer></script> -->
+
 </body>
 </html>

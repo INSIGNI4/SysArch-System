@@ -20,10 +20,12 @@ document.addEventListener("DOMContentLoaded", function () {
         defaultOption.selected = true;
         productSelect.add(defaultOption);
 
-        productIDs.forEach(id => {
+        productIDs.forEach(product => {
           const option = document.createElement("option");
-          option.value = id;
-          option.text = id;
+          // option.value = id;
+          option.value = product.Product_ID;
+          // option.text = id ;
+          option.text = `${product.Product_ID} - ${product.ProductName}`;
           productSelect.add(option);
         });
       }

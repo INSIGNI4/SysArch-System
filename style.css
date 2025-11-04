@@ -18,6 +18,49 @@ body{
     background-attachment: fixed;
     background-size: cover;
 
+
+    /* opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease; */
+
+    /* AFTER LOG OUT TRANSITION */
+    filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.8s ease, filter 0.8s ease;
+
+}
+
+body.loaded {
+    /* opacity: 1;
+    transform: translateY(0); */
+
+    filter: blur(0);
+    opacity: 1;
+}
+
+
+/* Start hidden (not display:none, just invisible) */
+#signup {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none; /* prevent clicks while hidden */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* When active, fade and scale in smoothly */
+#signup.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
+  display: flex; /* ensure layout stays same */
+}
+
+/* Optional: make sure login fades out at same time */
+#signIn.fade-out {
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 

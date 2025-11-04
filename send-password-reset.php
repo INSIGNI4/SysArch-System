@@ -41,6 +41,11 @@ if($mysqli->affected_rows) {
 
     try {
         $mail->send();
+        echo 
+        "<script>
+            alert('Message sent! Please check your inbox.');
+            window.location.href = 'index.php'; // optional redirect back to login
+        </script>";
 
     }catch (Exception $e) {
 
@@ -50,5 +55,5 @@ if($mysqli->affected_rows) {
 
 
 }   
-echo "Messege sent, Please check your inbox";
+
 ?>

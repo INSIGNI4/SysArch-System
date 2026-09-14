@@ -20,12 +20,23 @@ document.addEventListener("DOMContentLoaded", function () {
         defaultOption.selected = true;
         supplierSelect.add(defaultOption);
 
-        supplierIDs.forEach(id => {
+        // supplierIDs.forEach(id => {
+        //   const option = document.createElement("option");
+        //   option.value = id;
+        //   option.text = id;
+        //   supplierSelect.add(option);
+        // });
+
+        supplierIDs.forEach(supplier => {''
           const option = document.createElement("option");
-          option.value = id;
-          option.text = id;
+          option.value = supplier.Supplier_ID;
+          option.text = `${supplier.Supplier_ID} - ${supplier.SupplierName}`;
+          
           supplierSelect.add(option);
         });
+
+
+
       }
     } catch (error) {
       console.error("Failed to fetch supplier IDs:", error);

@@ -1,36 +1,37 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const supplierSelect = document.getElementById("edit-productidRESTOCK");
+  const productSelect = document.getElementById("edit-productidRESTOCK");
 
-  async function loadSupplierIDs() {
+  async function loadProductIDs() {
     try {
       const response = await fetch("get_product.php"); // adjust path if needed
-      const supplierIDs = await response.json();
+      const productIDs = await response.json();
 
-      supplierSelect.innerHTML = ""; // Clear current options
+      productSelect.innerHTML = ""; // Clear current options
 
-      if (supplierIDs.length === 0) {
+      if (productIDs.length === 0) {
         const option = document.createElement("option");
-        option.text = "No supplier available";
+        option.text = "No product available";
         option.disabled = true;
-        supplierSelect.add(option);
+        productSelect.add(option);
       } else {
         const defaultOption = document.createElement("option");
-        defaultOption.text = "Select Supplier ID";
+        defaultOption.text = "Select Product ID";
         defaultOption.disabled = true;
         defaultOption.selected = true;
-        supplierSelect.add(defaultOption);
+        productSelect.add(defaultOption);
 
-        supplierIDs.forEach(id => {
+        productIDs.forEach(id => {
           const option = document.createElement("option");
-          option.value = id;
-          option.text = id;
-          supplierSelect.add(option);
+          option.value = id.Product_ID;
+          option.text = `${id.Product_ID} - ${id.ProductName}`;
+          
+          productSelect.add(option);
         });
       }
     } catch (error) {
-      console.error("Failed to fetch supplier IDs:", error);
+      console.error("Failed to fetch product IDs:", error);
     }
   }
 
-  loadSupplierIDs();
+  loadProductIDs();
 });

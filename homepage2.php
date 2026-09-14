@@ -1319,6 +1319,7 @@ if(isset($_SESSION['email'])){
                                     <select id="edit-supplierid" name="Supplier_ID" class="id-select" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
+                                    
 
                                     <!-- <label>Expiration Date:</label>
                                     <input type="date" name="ExpirationDate" id="edit-expirationdate"> -->

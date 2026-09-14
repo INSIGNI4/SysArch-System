@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const editButtons = document.querySelectorAll('.select-product-btn');
     const modal = document.getElementById('editProductModal');
 
+
     editButtons.forEach(button => {
         button.addEventListener('click', function () {
             // Show modal

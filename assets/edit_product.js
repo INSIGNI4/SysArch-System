@@ -151,7 +151,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('edit-supplierprice').value = this.dataset.supplierprice;
             
             document.getElementById('edit-supplierid').value = this.dataset.supplierid;
-            document.getElementById('edit-expirationdate').value = this.dataset.expirationdate;
+            // document.getElementById('edit-expirationdate').value = this.dataset.expirationdate;
+            document.getElementById('edit-packsize').value = this.dataset.packsize;
             document.getElementById('edit-barcode').value = this.dataset.barcode;
             
             

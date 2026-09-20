@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+   $GLOBALS['conn_pos'] = $conn_pos;
+
 
 // 🚫 Prevent access if user is not logged in
 if (!isset($_SESSION['email'])) {
@@ -33,6 +35,9 @@ if (isset($_SESSION['response'])) {
 
 include('show_data.php');
 
+$sales_item_test = fetchTableData($conn_pos, 'sales_item_test');
+$sales_test = fetchTableData($conn_pos, 'sales_test');
+
 $product = fetchTableData($conn, 'product');
 $supplier = fetchTableData($conn, 'supplier');
 $customers = fetchTableData($conn, 'customers');
@@ -41,9 +46,11 @@ $customersreturns = fetchTableData($conn, 'customersreturns');
 $supplierreturns = fetchTableData($conn, 'supplierreturns');
 $sales = fetchTableData($conn, 'sales');
 $transaction = fetchTableData($conn, 'transactions');
-
 $forecast = fetchTableData($conn, 'forecast');
 
+$itemToOrder = fetchTableData($conn, 'item_to_order');
+$listToOrder = fetchTableData($conn, 'list_to_order');
+$inventoryBatch = fetchTableData($conn, 'inventory_batch');
 
 $pulledoutitems = fetchTableData($conn, 'pulledoutitems');
 $salesaggregration = fetchTableData($conn, 'salesaggregration');
@@ -69,6 +76,15 @@ $monthlysalesE = fetchTableData($conn, 'monthly_total_sales');
 $analytics = fetchTableData($conn, 'analytics');
 
 $users = fetchTableData($conn, 'users');
+
+
+if (!is_array($sales_item_test)) {
+    $sales_item_test = [];  
+}
+
+if (!is_array($sales_test)) {
+    $sales_test = [];  
+}
 
 if (!is_array($product)) {
     $product = [];  
@@ -105,6 +121,25 @@ if (!is_array($transaction)) {
 if (!is_array($forecast)) {
     $forecast = [];  
 }
+
+
+
+
+
+if (!is_array($itemToOrder)) {
+    $itemToOrder = [];  
+}
+
+if (!is_array($listToOrder)) {
+    $listToOrder = [];  
+}
+
+if (!is_array($inventoryBatch)) {
+    $inventoryBatch = [];  
+}
+
+
+
 
 // if (!is_array($dailyforecast)) {
 //     $dailyforecast = [];  
@@ -193,6 +228,7 @@ if(isset($_SESSION['email'])){
     <link rel="stylesheet" href="homepagestyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <!-- <meta http-equiv="refresh" content="5"> -->
+    <link rel="stylesheet" href="ai_recommendation.css">
 
 
     <!-- <script>
@@ -233,6 +269,7 @@ if(isset($_SESSION['email'])){
 
                 <a class="nav-link" onclick="showContentSection('stock-adjustments')">Stock Adjustments</a>
                 <a class="nav-link" onclick="showContentSection('account')">Account</a>
+                
             </div>
             <div class="sidebar-footer">
                 <a class="footer-link" onclick="showContentSection('settings')"><span>⚙️</span> Settings</a>
@@ -288,6 +325,10 @@ if(isset($_SESSION['email'])){
                 <link rel="stylesheet" href="dashboardAssets/products_summary.css">
                 <link rel="stylesheet" href="dashboardAssets/confidence.css">
                 <link rel="stylesheet" href="dashboardAssets/projected.css">
+                <link rel="stylesheet" href="ml_prediction-main/dashboardAssets/js/demand_dashboard.css">
+                
+                
+                
                 
                 <div id="home" class="content-section" style=" margin: -25px;">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat; background-size: cover; height: 100px;">
@@ -317,6 +358,14 @@ if(isset($_SESSION['email'])){
                             </p>
                             </div>
                             <div class="header-icons" style="margin-top: 20px; margin-right: 1rem;">
+                                <button style="height: 30px;"
+                                    type="button"
+                                    class="na-btn na-btn-add"
+                                    onclick="openAIRecommendationModal()">
+
+                                    AI RECOMMENDATION
+
+                                </button>
                                 <span class="icon-wrapper"><i class="fas fa-print"></i></span>
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
                                 <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
@@ -446,81 +495,7 @@ if(isset($_SESSION['email'])){
 
 
 
-                                    <!-- <select id="forecastSelector">
-                                        <option value="daily">Daily</option>
-                                        <option value="weekly">Weekly</option>
-                                        <option value="monthly">Monthly</option>
-                                    </select>
-                                    <div id="salesChart" style="width: 100%; height: 400px;">
-                                    </div>
-
-
-                                    <script src="https://code.highcharts.com/highcharts.js"></script>
-                                    <script>
-                                    // Fetch data from PHP
-                                    fetch('get_sales_forecast.php')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                        if (!Array.isArray(data) || data.length === 0) {
-                                            console.error("No data received or invalid JSON.");
-                                            return;
-                                        }
-
-                                        // Prepare arrays for Highcharts
-                                        const actual = data.map(row => [row.SalesDate, row.DailyTotalQuantity]);
-                                        const forecast = data.map(row => [row.SalesDate, row.MovingAverage3]);
-
-                                        // Render chart
-                                        Highcharts.chart('salesChart', {
-                                            chart: {
-                                            type: 'line'
-                                            },
-                                            title: {
-                                            text: 'Store Sales Forecast (3-Day Moving Average)'
-                                            },
-                                            subtitle: {
-                                            text: 'Actual Sales vs Forecasted Trend'
-                                            },
-                                            xAxis: {
-                                            categories: data.map(row => row.SalesDate),
-                                            title: { text: 'Date' },
-                                            labels: {
-                                            step: 0 // show one date label every 2 points (try 3 or 4 for more spacing)
-                                            }
-                                            // crosshair: true
-                                            },
-                                            yAxis: {
-                                            title: { text: 'Total Quantity Sold' },
-                                            min: 0
-                                            },
-                                            tooltip: {
-                                            shared: true,
-                                            valueSuffix: ' units'
-                                            
-                                            },
-                                            legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-
-                                            },
-                                            series: [
-                                            {
-                                                name: 'Actual Sales',
-                                                data: actual.map(item => item[1]), // only the y-values
-                                                color: '#007bff'
-                                            },
-                                            {
-                                                name: '3-Day Moving Average',
-                                                data: forecast.map(item => item[1]),
-                                                dashStyle: 'ShortDot',
-                                                color: '#28a745'
-                                            }
-                                            ]
-                                        });
-                                        })
-                                        .catch(error => console.error('Error loading chart data:', error));
-                                    </script> -->
+                                    
                                 </figure>
                             </div>
 
@@ -772,12 +747,89 @@ if(isset($_SESSION['email'])){
                                     </div>
                                 </div>
                             </div>
+                                                        
 
+  
+
+                            
 
                             <!-- END OF DASHBOARD -->
                         </div>
 
+                            <!-- AI DEMAND PREDICTION DASHBOARD -->
+
+                            <div class="demand_prediction_dashboard">
+
+                                <div class="demand_header">
+                                    <h2>AI Demand Prediction</h2>
+                                    <p>14-Day Forecast</p>
+                                </div>
+
+
+
+                                <div class="demand_summary">
+
+                                    <div class="demand_kpi">
+                                        <h4>Forecast Period</h4>
+                                        <strong id="forecastPeriod">14 Days</strong>
+                                    </div>
+
+                                    <div class="demand_kpi">
+                                        <h4>Products Forecasted</h4>
+                                        <strong id="productsForecasted">0</strong>
+                                    </div>
+
+                                    <div class="demand_kpi">
+                                        <h4>Total Predicted Demand</h4>
+                                        <strong id="totalPredictedDemand">0</strong>
+                                        <span>Units</span>
+                                    </div>
+
+                                    <div class="demand_kpi">
+                                        <h4>Peak Forecast Day</h4>
+                                        <strong id="peakForecastDay">--</strong>
+                                        <span id="peakForecastValue">0 units</span>
+                                    </div>
+
+                                </div>
+
+
+
+
+
+
+
+
+
+                                <div class="demand_charts">
+
+                                    <div class="demand_chart_box">
+                                        <h3>Predicted Demand by Product</h3>
+                                        <div class="demand_canvas">
+                                            <canvas id="productChart"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <div class="demand_chart_box">
+                                        <h3>Predicted Demand by Category</h3>
+                                        <div class="demand_canvas">
+                                            <canvas id="categoryChart"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <div class="demand_chart_box demand_trend_box">
+                                        <h3>14-Day Predicted Demand Trend</h3>
+                                        <div class="demand_canvas">
+                                            <canvas id="trendChart"></canvas>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <!-- <script src="dashboardAssets/js/demand_dashboard.js"></script> -->
                         <script src="dashboardAssets/stock_avail.js"></script>
                         <script src="dashboardAssets/summary.js"></script>
                         <script src="dashboardAssets/forecast_dh.js"></script>
@@ -785,6 +837,12 @@ if(isset($_SESSION['email'])){
                         <script src="dashboardAssets/topcustomer_dh.js"></script>
                         <script src="dashboardAssets/return.js"></script>
                         <script src="dashboardAssets/products_summary.js"></script>
+                        <script src="ml_prediction-main/dashboardAssets/js/demand_dashboard.js"></script>
+                        <script>
+                            loadDemandChart("productChart", "product");
+                            loadDemandChart("categoryChart", "category");
+                            loadDemandChart("trendChart", "trend");
+                        </script>
 
 
 
@@ -1198,26 +1256,25 @@ if(isset($_SESSION['email'])){
                                         <option disabled selected>Loading...</option>
                                     </select>
 
-                                    <label>With Expiration? :</label>
+                                    <!-- <label>With Expiration? :</label>
                                     <div style="display: flex; justify-content:space-between; align-items:center;">
-                                    <!-- <label>With Expiration?:</label>
-                                    <select class="status-select" name="LocationS" id="Expiration_Status" required>
-                                        <option value="yes">Yes</option>
-                                        <option value="no ">No</option>
-                                    </select> -->
+                                    
 
                                     <label>Expiration Date:
                                         <button type="button" id="toggleNullBtn" style="color: red;">NO ?</button>
                                         <button type="button" id="toggleNotNullBtn" style="display: none;">YES ?</button>
                                     </label>
                                     <input type="date" name="ExpirationDate" id="expiration_date" style="width: 50%;">
-                                    </div>
+                                    </div> -->
 
                                     <!-- <label>Expiration Date:</label>
                                     <input type="date" name="ExpirationDate"> -->
 
+                                    <label>Pack Size:</label>
+                                    <input type="number" name="Pack_Size" required>
+
                                     <label>Barcode:</label>
-                                    <input type="text" name="Barcode" maxlength="11" required>
+                                    <input type="text" name="Barcode" required>
 
 
 
@@ -1324,14 +1381,17 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Expiration Date:</label>
                                     <input type="date" name="ExpirationDate" id="edit-expirationdate"> -->
 
-                                    <label>Expiration Date:
+                                    <!-- <label>Expiration Date:
                                         <button type="button" id="toggleNullBtn1">NULL?</button>
                                         <button type="button" id="toggleNotNullBtn1" style="display: none;">NOT NULL?</button>
                                     </label>
-                                    <input type="date" name="ExpirationDate" id="edit-expirationdate"required>
+                                    <input type="date" name="ExpirationDate" id="edit-expirationdate"required> -->
+
+                                    <label>Pack Size:</label>
+                                    <input type="number" name="Pack_Size" id="edit-packsize" required>    
 
                                     <label>Barcode:</label>
-                                    <input type="text" name="Barcode" id="edit-barcode" maxlength="11" required>
+                                    <input type="text" name="Barcode" id="edit-barcode" required>
 
                                     
                                     <div class="modal-buttons">
@@ -1362,8 +1422,8 @@ if(isset($_SESSION['email'])){
                                     <th>Supplier Price</th>
                                     <th>Image</th>
                                     <th>Supplier ID</th>
-                                    <th>Expiration Date</th>
-                                    <!-- <th>Barcode</th> -->
+                                    <th>Pack Size</th>
+                                    <th>Barcode</th>
                                     <th colspan="2">Location</th>
                                     <th>       </th>
                                 </tr>
@@ -1390,14 +1450,16 @@ if(isset($_SESSION['email'])){
                                             <?php endif; ?>
                                         </td>
                                         <td class="supplier-id-cell"><?= $products['Supplier_ID']?></td>
-                                        <td style="color: red;"><?= empty($products['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($products['ExpirationDate'])) ?></td>
+                                        <!-- <td style="color: red;"><?= empty($products['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($products['ExpirationDate'])) ?></td> -->
                                         <!-- <td><?= date('F d,Y', strtotime($products['ExpirationDate']))?></td> -->
-                                        <!-- <td><?= $products['Barcode']?></td> -->
+                                        <td><?= $products['Pack_Size']?></td>
+                                        <td><?= $products['Barcode']?></td>
                                         <td><span class="Location-tag shelf"><?= $products['LocationS']?></span></td>
                                         <td><span class="Location-tag row"><?= $products['LocationR']?></span></td>
                                     
                                             <!-- data-reorder="<?= $products['ReordingPoints'] ?>" -->
                                              <!-- data-unitsordered="<?= $products['UnitsOrdered'] ?>" -->
+                                              <!-- data-expirationdate="<?= $products['ExpirationDate'] ?>" -->
                                         <td class="action-cell" >
                                             <!-- edit & delete action -->
                                             <button style="display: none;" class="select-product-btn"
@@ -1409,8 +1471,10 @@ if(isset($_SESSION['email'])){
                                                 data-unitsold="<?= $products['UnitSold'] ?>"
                                                 data-storeprice="<?= $products['StorePrice'] ?>"
                                                 data-supplierprice="<?= $products['SupplierPrice'] ?>"
+                                                data-packsize="<?= $products['Pack_Size'] ?>"
+                                                
                                                 data-barcode="<?= $products['Barcode'] ?>"
-                                                data-expirationdate="<?= $products['ExpirationDate'] ?>"
+                                                
                                                 data-supplierid="<?= $products['Supplier_ID'] ?>">
                                                 
                                                 
@@ -2049,7 +2113,9 @@ if(isset($_SESSION['email'])){
                     </div>
                 </div>
 
-                <div id="order-restock" class="content-section">
+
+                
+                                <div id="order-restock" class="content-section">
                     <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; 
                     height: 80px; ">
                         <div class="top-bar">
@@ -2448,6 +2514,8 @@ if(isset($_SESSION['email'])){
                             </table>
                         </div>
                 </div>
+
+                
                 
 
                 <div id="transaction-sales" class="content-section" >
@@ -2498,26 +2566,7 @@ if(isset($_SESSION['email'])){
                             
                         </div>
 
-                        <!-- <div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
-                        </div>  -->
-                        <!-- <div class="search-container" style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-                        <input 
-                            type="text" 
-                            id="quickSearch" 
-                            placeholder="🔍 Quick Search..." 
-                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; width: 250px;">
-                        </div> -->
-
-
-                        <!-- <div class="search-container" style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-                            <input 
-                                type="text" 
-                                id="quickSearch" 
-                                placeholder="🔍 Quick Search..." 
-                                style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; width: 250px;"
-                            >
-                        </div> -->
+                      
 
                         <div class="search-container" style="display:flex; justify-content:flex-end; margin-bottom:10px;">
                         <input 
@@ -2546,10 +2595,10 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Customer ID:</label>
                                     <input type="text" name="Customer_ID"> -->
 
-                                    <label for="Customer_IDTRANS">Choose Customer ID:</label>
+                                    <!-- <label for="Customer_IDTRANS">Choose Customer ID:</label>
                                     <select id="Customer_IDTRANS" name="Customer_ID" class="id-select"  style="width: 60%;"required>
                                         <option disabled selected>Loading...</option>
-                                    </select>
+                                    </select> -->
 
                                     <label>ReferenceNo:</label>
                                     <input type="number" name="ReferenceNo" required maxlength=11>
@@ -2557,16 +2606,15 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Purchase Type:</label>
                                     <input type="text" name="PurchaseType" required> -->
 
-                                    <label>Purchase Type:</label>
+                                    <!-- <label>Purchase Type:</label> -->
                                     <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
-                                    <select class="purchase-type-select" name="PurchaseType" required>
+                                    <!-- <select class="purchase-type-select" name="PurchaseType" required>
                                         <option value="">- - - Choose Purchase Type - - -</option>
                                         <option value="Online">Online</option>
                                         <option value="Over-the-Counter">Over-the-Counter</option>
-                                        <!-- <option value="Cancelled">Cancelled</option>
-                                        <option value="Received">Received</option> -->
+                                        
 
-                                    </select>    
+                                    </select>    --> 
 
 
 
@@ -2608,15 +2656,15 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Service Type:</label>
                                     <input type="text" name="DeliveryType" required> -->
 
-                                    <label>Service Type:</label>
+                                    <!-- <label>Service Type:</label> -->
                                     <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
-                                    <select class="payment-method-select" name="ServiceType" required>
+                                    <!-- <select class="payment-method-select" name="ServiceType" required>
                                         <option value="">- - - Choose Service Type - - -</option>
                                         <option value="Pick Up">Pick Up</option>
                                         <option value="Delivery">Delivery</option>
 
 
-                                    </select>  
+                                    </select>   -->
 
                                     <label>Transaction Date:</label>
                                     <input type="datetime-local" name="Transaction_Date" required>
@@ -2735,7 +2783,7 @@ if(isset($_SESSION['email'])){
                             <thead class="sticky-div">
                                 <tr>
                                     <th></th>
-                                    <th>Order ID</th>   
+                                    <th>Sales Item ID</th>   
                                     <th>Transaction ID</th>
                                     <th>Product ID</th>
                                     <th>Product Name</th>
@@ -2743,47 +2791,68 @@ if(isset($_SESSION['email'])){
                                     <th>Unit Price</th>
                                     <th>Total Quantity</th>
                                     <th>Total Price</th>
+                                    <th>Date Created</th>
+                                    <!-- <th>Date Uppated</th> -->
                                     <!-- <th>Barcode</th> -->
                                     <!-- <th>Sales Date</th> -->
-                                    <th>Account ID</th>
+                                    <!-- <th>Account ID</th> -->
                                 </tr>
                             </thead>
 
                             <tbody>
                                 
                                 <?php 
-                                usort($sales, function ($a, $b) {
-                                    return $b['Order_ID'] <=> $a['Order_ID'];
+                                usort($sales_item_test, function ($a, $b) {
+                                    return $b['SalesItem_ID'] <=> $a['SalesItem_ID'];
                                 });
                                 
-                                foreach($sales as $index => $sales){ ?>
+                                foreach($sales_item_test as $index => $sales_item_test){ ?>
                                     <tr>
                                         <td><?= $index + 1?></td>
-                                        <td><?= $sales['Order_ID'] ?></td>
-                                        <td><?= $sales['Transaction_ID'] ?></td>
-                                        <td class="product-id-cell"><?= $sales['Product_ID'] ?></td>
-                                        <td><?= $sales['ProductName'] ?></td>
-                                        <!-- <td><?= $sales['BatchNum'] ?></td> -->
-                                        <td style="color: red;">
-                                        <?= empty($sales['BatchNum']) ? '- - - N/A - - -' : $sales['BatchNum']; ?>
+                                        <td><?= $sales_item_test['SalesItem_ID'] ?></td>
+                                        <td><?= $sales_item_test['Sales_ID'] ?></td>
+                                        <td class="product-id-cell"><?= $sales_item_test['Product_ID'] ?></td>
+
+                                        <td>
+                                            <?php 
+                                            
+                                            $productsales_id = $sales_item_test['Product_ID'];
+                                            $product_query = mysqli_query($conn, "SELECT ProductName FROM product where Product_ID = '$productsales_id'");
+                                            $productname = mysqli_fetch_assoc($product_query);
+                                            echo $productname['ProductName'] ?? 'Unknown Product';
+
+                                            ?>
                                         </td>
-                                        <!-- <td>PHP <?= $sales['Unit_Price'] ?></td> -->
+
+                                        <!-- <td><?= $sales_item_test['ProductName'] ?></td> -->
+                                        <!-- <td><?= $sales_item_test['BatchNum'] ?></td> -->
+                                        <td style="color: red;">
+                                        <?= empty($sales_item_test['BatchNum']) ? '- - - N/A - - -' : $sales_item_test['BatchNum']; ?>
+                                        </td>
+                                        <!-- <td>PHP <?= $sales_item_test['Unit_Price'] ?></td> -->
                                         <td >
                                             <span style="color: darkgreen; font-weight: bolder; float:left">PHP </span> 
-                                            <?= number_format($sales['Unit_Price'], 2) ?>
+                                            <?= number_format($sales_item_test['Unit_Price'], 2) ?>
                                         </td>
-                                        <td><?= $sales['Quantity'] ?></td>
+                                        <td><?= $sales_item_test['Quantity'] ?></td>
 
                                         <td >
                                             <span style="color: darkgreen; font-weight: bolder; float:left">PHP </span> 
-                                            <?= number_format($sales['TotalPrice'], 2) ?>
+                                            <?= number_format($sales_item_test['TotalPrice'], 2) ?>
                                         </td>
+
+                                        <td>
+                                            <?= date('M d, Y h:i A', strtotime($sales_item_test['date_created'])) ?>
+                                        </td>
+                                        <!-- <td>
+                                            <?= date('M d, Y h:i A', strtotime($sales_item_test['date_updated'])) ?>
+                                        </td> -->
+
 
                                         <!-- <td style="color: green; font-weight: bolder;">PHP <?= $sales['TotalPrice'] ?></td> -->
                                         <!-- <td><?= $sales['Barcode'] ?></td> -->
                                         <!-- <td><?= date('F d,Y', strtotime($sales['SalesDate']))?></td> -->
                                         <!-- <td style="color: red;"><?= empty($sales['SalesDate']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($sales['SalesDate'])) ?></td> -->
-                                        <td><?= $sales['id'] ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -2797,42 +2866,47 @@ if(isset($_SESSION['email'])){
                                 <tr>
                                     <th></th>
                                     <th>Transaction ID</th>
-                                    <th>Customer ID</th>
                                     <th>Reference No.</th>
-                                    <th>Purchase Type</th>
-                                    <!-- <th>Product Scope</th>
-                                    <th>Product ID</th>
-                                    <th>Quantity</th>
-                                    <th>Total Sales</th> -->
-                                    <th>Payment Method</th>
-                                    <th>Service Type</th>
-                                    <th>Transaction Date</th>
-                                    <th>Total Price</th>
+                                    <th>User</th>
+                                    <th>Total</th>
+                                    <th>Amount Tendered</th>
+                                    <th>Change Amount</th>
+                                    <th>Date Created</th>
                                 </tr>
                             </thead>
                            <tbody>
                                 <?php 
-                                usort($transaction, function ($a, $b) {
-                                    return $b['Transaction_ID'] <=> $a['Transaction_ID'];
+                                usort($sales_test, function ($a, $b) {
+                                    return $b['Sales_ID'] <=> $a['Sales_ID'];
                                 });
-                                foreach($transaction as $index => $transaction){ ?>
+                                foreach($sales_test as $index => $sales_test){ ?>
                                     <tr>
                                         <td><?= $index + 1?></td>
-                                        <td><?= $transaction['Transaction_ID'] ?></td>
-                                        <td><?= $transaction['Customer_ID'] ?></td>
-                                        <td><?= $transaction['ReferenceNo'] ?></td>
-                                        <td><span class="purchase-type-tag purchase-type-online"><?= $transaction['PurchaseType'] ?></span></td>
-                                        <!-- <td><?= $transaction['PurchaseScope'] ?></td>
-                                        <td class="product-id-cell"><?= $transaction['Product_ID'] ?></td>
-                                        <td><?= $transaction['Quantity'] ?></td>
-                                        <td>PHP <?= $transaction['TotalSales'] ?></td> -->
-                                        <td><?= $transaction['PaymentMethod'] ?></td>
-                                        <td><span class="delivery-type-tag delivery-type-delivery"><?= $transaction['ServiceType']?></span></td>
-                                        <td style="color: red;"><?= empty($transaction['Transaction_Date']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($transaction['Transaction_Date'])) ?></td>
-                                        <!-- <td>PHP <?= $transaction['Total_Price'] ?></td> -->
+                                        <td><?= $sales_test['Sales_ID'] ?></td>
+                                        <td><?= $sales_test['ReferenceNo'] ?></td>
+                                        <td>
+                                            <?php 
+                                            
+                                            $username_id = $sales_test['User_ID'];
+                                            $username_query = mysqli_query($conn, "SELECT userName FROM users where id = '$username_id'");
+                                            $username = mysqli_fetch_assoc($username_query);
+                                            echo $username['userName'] ?? 'Unknown Product';
+
+                                            ?>
+                                        </td>
+
+                                        <td><?= $sales_test['total_amount'] ?></td>
+                                        <td><?= $sales_test['amount_tendered'] ?></td>
+                                        <td><?= $sales_test['change_amt'] ?></td>
+
+                                        <td><?= $sales_test['date_created'] ?></td>
+                                        <!-- <td><?= $sales_test['date_updated'] ?></td> -->
+
+
+                                        <!-- <td style="color: red;"><?= empty($transaction['Transaction_Date']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($transaction['Transaction_Date'])) ?></td>
                                         <td >
                                             <span style="color: darkgreen; font-weight: bolder; float:left">PHP </span> <?= number_format($transaction['Total_Price'], 2) ?>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -2848,7 +2922,8 @@ if(isset($_SESSION['email'])){
                             <div class="user-controls">
                                 <div>      
                                 <?php
-                                    echo $row['userName'];                        
+                                    echo $row['userName'];   
+                                                         
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
@@ -3157,29 +3232,7 @@ if(isset($_SESSION['email'])){
                         <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span>
 
-                        <!-- Forecast ADD buttons
-                        <button id="daily-forecast-add-btn" class="na-btn na-btn-add">ADD</button>
-                        <button id="weekly-forecast-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
-                        <button id="monthly-forecast-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
-
-                        Analytics ADD buttons
-                        <button id="daily-analytics-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
-                        <button id="weekly-analytics-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
-                        <button id="monthly-analytics-add-btn" class="na-btn na-btn-add" style="display:none;">ADD</button>
-
-                        Forecast toggle buttons
-                        <div class="toggle-buttons" id="forecast-toggle-buttons" style="margin-bottom:10px; display:block;">
-                            <button id="daily-forecast-view-btn" class="toggle-btn active">Daily</button>
-                            <button id="weekly-forecast-view-btn" class="toggle-btn">Weekly</button>
-                            <button id="monthly-forecast-view-btn" class="toggle-btn">Monthly</button>
-                        </div>
-
-                        Analytics toggle buttons
-                        <div class="toggle-buttons" id="analytics-toggle-buttons" style="margin-bottom:10px; display:none;">
-                            <button id="daily-analytics-view-btn" class="toggle-btn active">Daily</button>
-                            <button id="weekly-analytics-view-btn" class="toggle-btn">Weekly</button>
-                            <button id="monthly-analytics-view-btn" class="toggle-btn">Monthly</button>
-                        </div> -->
+                       
                     </div>
 
                     <!-- Forecast view container -->
@@ -3258,127 +3311,9 @@ if(isset($_SESSION['email'])){
 
                     </div>
 
-                    <!-- Forecast & Analytics Modals
-                    <div id="daily-addForecastModal" class="modal" aria-hidden="true">
-                        <div class="modal-content">
-                            <h3>Add Daily New Forecast</h3>
-                            <form id="daily-forecastForm" action="add.php" method="POST">
-                            <input type="hidden" name="table" value="daily_forecast">
-                            <label>Forecast Type:</label><input type="text" name="ForecastType" required>
-                            <label>Product Scope:</label><input type="number" name="ProductScope" required>
-                            <label>Forecast Period:</label><input type="text" name="ForecastPeriod" required>
-                            <label>Forecast Start:</label><input type="date" name="ForecastStart" required>
-                            <label>Forecast End:</label><input type="date" name="ForecastEnd" required>
-                            <label>Projected Sales:</label><input type="number" name="ProjectedSales" required>
-                            <label>ConfidenceLevel:</label><input type="text" name="ConfidenceLevel" required>
-                            <label>Account_ID:</label><input type="number" name="Account_ID" required>
-                            <div class="modal-buttons">
-                                <button type="submit" class="na-btn na-btn-add">Save</button>
-                                <button type="button" id="daily-forecast-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                            </div>
-                            </form>
-                        </div>
-                        </div>
-
-                        <div id="weekly-addForecastModal" class="modal" aria-hidden="true">
-                        <div class="modal-content">
-                            <h3>Add Weekly New Forecast</h3>
-                            <form id="weekly-forecastForm" action="add.php" method="POST">
-                            <input type="hidden" name="table" value="weekly_forecast">
-                            <label>Forecast Type:</label><input type="text" name="ForecastType" required>
-                            <label>Product Scope:</label><input type="number" name="ProductScope" required>
-                            <label>Forecast Period:</label><input type="text" name="ForecastPeriod" required>
-                            <label>Forecast Start:</label><input type="date" name="ForecastStart" required>
-                            <label>Forecast End:</label><input type="date" name="ForecastEnd" required>
-                            <label>Projected Sales:</label><input type="number" name="ProjectedSales" required>
-                            <label>ConfidenceLevel:</label><input type="text" name="ConfidenceLevel" required>
-                            <label>Account_ID:</label><input type="number" name="Account_ID" required>
-                            <div class="modal-buttons">
-                                <button type="submit" class="na-btn na-btn-add">Save</button>
-                                <button type="button" id="weekly-forecast-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                            </div>
-                            </form>
-                        </div>
-                        </div>
-
-                        <div id="monthly-addForecastModal" class="modal" aria-hidden="true">
-                        <div class="modal-content">
-                            <h3>Add Monthly New Forecast</h3>
-                            <form id="monthly-forecastForm" action="add.php" method="POST">
-                            <input type="hidden" name="table" value="monthly_forecast">
-                            <label>Forecast Type:</label><input type="text" name="ForecastType" required>
-                            <label>Product Scope:</label><input type="number" name="ProductScope" required>
-                            <label>Forecast Period:</label><input type="text" name="ForecastPeriod" required>
-                            <label>Forecast Start:</label><input type="date" name="ForecastStart" required>
-                            <label>Forecast End:</label><input type="date" name="ForecastEnd" required>
-                            <label>Projected Sales:</label><input type="number" name="ProjectedSales" required>
-                            <label>ConfidenceLevel:</label><input type="text" name="ConfidenceLevel" required>
-                            <label>Account_ID:</label><input type="number" name="Account_ID" required>
-                            <div class="modal-buttons">
-                                <button type="submit" class="na-btn na-btn-add">Save</button>
-                                <button type="button" id="monthly-forecast-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                            </div>
-                            </form>
-                        </div>
-                        </div>
-
-                        <div id="daily-addAnalyticsModal" class="modal" aria-hidden="true">
-                        <div class="modal-content">
-                            <h3>Add Daily New Analytics</h3>
-                            <form id="daily-analyticsForm" action="add.php" method="POST">
-                            <input type="hidden" name="table" value="analytics">
-                            <label>Forecast ID:</label><input type="number" name="Forecast_ID" required>
-                            <label>Sales Metrics:</label><input type="number" name="SalesMetrics" required>
-                            <label>Inventory ID:</label><input type="number" name="Inventory_ID" required>
-                            <label>Account ID:</label><input type="number" name="Account_ID" required>
-                            <div class="modal-buttons">
-                                <button type="submit" class="na-btn na-btn-add">Save</button>
-                                <button type="button" id="daily-analytics-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                            </div>
-                            </form>
-                        </div>
-                        </div>
-
-                        <div id="weekly-addAnalyticsModal" class="modal" aria-hidden="true">
-                        <div class="modal-content">
-                            <h3>Add Weekly New Analytics</h3>
-                            <form id="weekly-analyticsForm" action="add.php" method="POST">
-                            <input type="hidden" name="table" value="analytics">
-                            <label>Forecast ID:</label><input type="number" name="Forecast_ID" required>
-                            <label>Sales Metrics:</label><input type="number" name="SalesMetrics" required>
-                            <label>Inventory ID:</label><input type="number" name="Inventory_ID" required>
-                            <label>Account ID:</label><input type="number" name="Account_ID" required>
-                            <div class="modal-buttons">
-                                <button type="submit" class="na-btn na-btn-add">Save</button>
-                                <button type="button" id="weekly-analytics-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                            </div>
-                            </form>
-                        </div>
-                        </div>
-
-                        <div id="monthly-addAnalyticsModal" class="modal" aria-hidden="true">
-                        <div class="modal-content">
-                            <h3>Add Monthly New Analytics</h3>
-                            <form id="monthly-analyticsForm" action="add.php" method="POST">
-                            <input type="hidden" name="table" value="analytics">
-                            <label>Forecast ID:</label><input type="number" name="Forecast_ID" required>
-                            <label>Sales Metrics:</label><input type="number" name="SalesMetrics" required>
-                            <label>Inventory ID:</label><input type="number" name="Inventory_ID" required>
-                            <label>Account ID:</label><input type="number" name="Account_ID" required>
-                            <div class="modal-buttons">
-                                <button type="submit" class="na-btn na-btn-add">Save</button>
-                                <button type="button" id="monthly-analytics-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                            </div>
-                            </form>
-                        </div>
-                    </div>-->
                 </div>
-<!-- END OF FORECAST & ANALYTICS -->
-                
 
-                <!-- <script src="assets/add_forecast.js"></script>
-                <script src="assets/add_analytics.js"></script>  -->
-
+                 
                         
 
 
@@ -3745,8 +3680,79 @@ if(isset($_SESSION['email'])){
         </div>
     </div>
 
+    <!-- =========================================================
+     AI RECOMMENDATION / ORDER REVIEW MODAL
+     ========================================================= -->
+
+    <div id="aiRecommendationModal" style="display: none;">
+
+        <div class="ai-order-modal-content">
+
+            <!-- HEADER -->
+            <div class="ai-order-header">
+                <h2>AI RECOMMENDATION</h2>
+
+                <button
+                    type="button"
+                    class="ai-order-close"
+                    id="aiOrderCloseBtn">
+                    &times;
+                </button>
+            </div>
+
+
+            <!-- SUPPLIER SECTIONS WILL BE INSERTED HERE -->
+            <div id="aiSupplierSections">
+
+                <!-- JavaScript will create:
+                    Supplier 1
+                    Supplier 2
+                    Supplier 3
+                    etc.
+                -->
+
+            </div>
+
+
+            <!-- FOOTER -->
+            <div class="ai-order-footer">
+
+                <div class="ai-order-grand-total">
+                    <strong>Grand Total:</strong>
+                    <span id="aiOrderGrandTotal">
+                        ₱0.00
+                    </span>
+                </div>
+
+                <div class="ai-order-buttons">
+
+                    <button
+                        type="button"
+                        id="aiOrderCancelBtn"
+                        class="ai-order-cancel-btn">
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        id="aiOrderConfirmBtn"
+                        class="ai-order-confirm-btn">
+                        Confirm Order
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <!-- Link to the external JavaScript file -->
     <script src="homepagescript.js"></script>
+
+    <script src="homepagescript.js"></script>
+    <script src="ai_recommendation.js"></script>
     <!-- <script src="get_product.js" defer></script>
     <script src="get_supplier.js" defer></script> -->
 

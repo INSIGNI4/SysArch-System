@@ -8,7 +8,7 @@ include 'connect.php';
 
 try {
     // Connect to MySQL
-    $conn = new mysqli($host, $user, $pass, $db);
+    $conn = new mysqli($host, $users, $pass, $db);
 
     if ($conn->connect_error) {
         throw new Exception("Connection failed: " . $conn->connect_error);

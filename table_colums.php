@@ -1,5 +1,7 @@
 <?php
 
+$GLOBALS['conn_pos'] = $conn_pos;
+
 $table_colums_mapping = [
     /// ======= INVENTORY DATABASE ======= ///
 
@@ -14,7 +16,8 @@ $table_colums_mapping = [
 
     'product' => [
         'Product_ID', 'ProductName', 'Type', 'ReordingPoints', 'UnitsOrdered',
-        'UnitSold', 'StorePrice', 'SupplierPrice', 'Image', 'Supplier_ID', 'ExpirationDate', 
+        'UnitSold', 'StorePrice', 'SupplierPrice', 'Image', 'Supplier_ID', 
+        'Pack_Size', 
         'Barcode',
         'LocationS','LocationR'
     ],
@@ -22,6 +25,7 @@ $table_colums_mapping = [
         'Product_ID', 'LocationS','LocationR', 'Price', 'Inventory', 'UnitIN',
         'UnitOut', 'Status', 'ExpirationDate','Barcode','Supplier_ID'
     ],
+
     'newaddition' => [
         'Inventory_ID','Product_ID', 'Quantity', 'Date_Added',
         'Expiration_Date', 'Status', 'Supplier_ID','LocationS','LocationR'
@@ -31,10 +35,16 @@ $table_colums_mapping = [
         'Barcode',
          'SalesDate', 'id','BatchNum','userName'
     ],
+    // 'transactions' => [
+    //     'Transaction_ID', 'Customer_ID', 'ReferenceNo', 'PurchaseType', 'PaymentMethod', 'ServiceType',
+    //     'Transaction_Date','Total_Price'
+    // ],
+
     'transactions' => [
-        'Transaction_ID', 'Customer_ID', 'ReferenceNo', 'PurchaseType', 'PaymentMethod', 'ServiceType',
-        'Transaction_Date','Total_Price'
+            'Transaction_ID', 'ReferenceNo', 'PaymentMethod',
+            'Transaction_Date','Total_Price'
     ],
+
     'customers' => [
         'Customer_ID', 'CustomerName', 'Location', 'Email', 'PhoneNumber'
     ],
@@ -56,6 +66,31 @@ $table_colums_mapping = [
         'Supplier_ID', 'Status', 'Image', 'DeliveryStatus','Date_Received'
         ,'TotalReceived','withIssue','ExpirationDate'
     ],
+    
+    // 'restock' => [
+    //     'Restock_ID', 'ItemToOrder_ID', 'Received_Quantity', 'Date_Received', 'ExpirationDate',
+    //     'Receipt_Image', 'Status', 'WithIssue', 'Notes'
+    // ],
+
+    // 'item_to_order' => [
+    //     'ItemToOrder_ID', 'ListToOrder_ID', 'Product_ID', 'Current_Stock', 'Predicted_Demand',
+    //     'Forecast_Start_Date', 'Forecast_End_Date', 'Net_Demand', 'Pack_Size',
+    //     'Recommended_Order_Quantity', 'Ordered_Quantity', 'Unit_Cost', 'Line_Total',
+    //     'Received_Quantity', 'Item_Status', 'Notes'
+    // ],
+
+    // 'list_to_order' => [
+    //     'ListToOrder_ID', 'Supplier_ID', 'Order_Date', 'Expected_Receive_Date', 'Order_Status',
+    //     'Total_Amount', 'Created_By', 'Notes'
+    // ],
+
+    // 'inventory_batch' => [
+    //     'Batch_ID', 'Product_ID', 'Restock_ID', 'Supplier_ID', 'BatchNum',
+    //     'ExpirationDate', 'ReceivedDate', 'Quantity'
+    // ],
+
+
+
 
 
     
@@ -118,7 +153,17 @@ $table_colums_mapping = [
 
     
 
+/// ======= POS DATABASE ======= ///
 
+    'sales_item_test' => [
+        'SalesItem_ID', 'Sales_ID', 'Product_ID', 'Quantity', 'Unit Price', 'TotalPrice',
+        'date_created', 'date_updated', 'BatchNum', 
+    ],
+    
+    'sales_test' => [
+        'Sales_ID', 'ReferenceNo', 'User_ID', 'total_amount', 'amount_tendered', ' change_amt',
+        'date_created', 'date_updated',
+    ],
 
 
 ];

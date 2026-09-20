@@ -453,6 +453,14 @@ body, html {
 
 /* Specific Table Cell Styles */
 .product-id-cell { cursor: pointer; font-size: 15px; color: #084e7d; text-align: center;font-weight: bolder;}
+/* .product-name-cell {
+    width: 200px;
+    max-width: 200px;
+    min-width: 200px;
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+} */
 .supplier-id-cell { cursor: pointer; font-size: 15px; color: #b72312;  text-align: center;font-weight: bolder;}
 .status-tag { padding: 4px 10px; border-radius: 5px; color: white; font-weight: bold; text-align: center; display: inline-block; font-size: 14px; border: 1px solid rgba(0,0,0,0.2); }
 /* .status-new, .status-returned, .order-restock-table .status-received { background-color: #28a745; } */

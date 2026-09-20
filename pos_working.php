@@ -1,258 +1,399 @@
-
-<?php
-include('product.php');
-$products = getProducts();
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS System</title>
-    
-    <!-- Bootstrap 3.4.1 CSS Only (Fixes enlarged UI) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css">
-    <script src="https://use.fontawesome.com/0c7a3095b5.js"></script>
-
-    <!-- Bootstrap Dialog CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.35.4/css/bootstrap-dialog.min.css">
-    
-    <!-- Custom POS CSS -->
-    <link rel="stylesheet" href="posStyle.css?v=<?= time() ?>">
-</head>
-<body>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-9 col-sm-9 col-md-9">
-                <div class="searchImputContainer">
-                    <input type="text" id="searchInput" placeholder="Search product name or scan barcode..." >
-                    <div id="searchResultContainerMain"></div>
-                </div>
-
-                <div class="searchResultContainer">
-                    <div class="row">
-                        <?php foreach($products as $index => $product){ ?>
-                        <div class="col-xs-4 col-sm-4 col-md-4 productColContainer" data-pid="<?= $product['Product_ID']?>">
-                            <div class="productResultContainer">
-                                <img src="uploads/<?= $product['Image']?>" class="productImage" alt="">
-                                <div class="productInfoContainer">    
-                                    <div class="row">
-                                        <div class="col-xs-8 col-md-8">
-                                            <p class="productName"><?= $product['ProductName']?></p>
-                                        </div>
-                                        <div class="col-xs-4 col-md-4">
-                                            <p class="productPrice">PHP: <?= $product['StorePrice']?></p>
-                                        </div>
-                                    </div>
+                <div id="order-restock" class="content-section">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; 
+                    height: 80px; ">
+                        <div class="top-bar">
+                            <div class="tab">RESTOCK</div>
+                            <div class="user-controls">
+                                <div>      
+                                <?php
+                                    echo $row['userName'];                        
+                                ?>
                                 </div>
-                            </div>        
+                                <div class="user-icon">👤</div>
+                            </div>
                         </div>
-                        <?php } ?>      
-                    </div>   
-                </div>       
-            </div>
-
-            <div class="col-xs-3 col-sm-3 col-md-3 posOrderContainer">
-                <div class="pos_header">
-                    <div class="setting alignRight">
-                        <a href="javascript:void(0);"><i class="fa fa-gear"></i></a>
+                        <div class="controls-bar">
+                             <div class="controls">
+                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
+                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div> -->
+                            </div>
+                            <!-- <div class="na-quick-search">🔍 Quick Search</div> -->
+                            <div class="header-icons">
+                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
+                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                            </div>
+                        </div>
                     </div>
-                    <p class="logo">IMS</p>
-                    <p class="timeAndDate">XX XX,XXXX XX:XX:XX XX</p>
-                </div>
-                <div class="pos_items_container">
-                    <div class="pos_items">
-                        <p class="itemNoData">No Data</p>
-                    </div>
-                    <div class="item_total_container">
-                        <p class="item_total">
-                            <span class="item_total--label">TOTAL</span>
-                            <span class="item_total--value">PHP: 0.00</span>
-                        </p>
-                    </div>            
-                </div>
-                <div class="checkoutBtnContainer">
-                    <a href="javascript:void(0);" class="checkoutBtn">CHECKOUT</a>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <!-- <div class="toolbar">
+                        <?php 
+                        $totalRows = count($restock);
+                        ?>
+                    
+                        
 
-    <script>
-    let productsJson = <?= json_encode($products) ?>;
-    var products = {};
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span> 
+                        <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
+                        
+                        <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
+                        <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
+                         -->
 
-    // Map database fields using Product_ID
-    // productsJson.forEach((product) => {
-    //     let pid = product.Product_ID;
-    //     products[pid] = {
-    //         name: product.ProductName,
-    //         stock: parseInt(product.UnitOrdered || 0) - parseInt(product.UnitSold || 0),
-    //         price: parseFloat(product.StorePrice),
-    //         barcode: product.Barcode || ''
-    //     };
-    // });
+                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <div>
+                            <?php 
+                            $totalRows = count($restock);
+                            ?>
 
-    productsJson.forEach((product) => {
-    let pid = product.Product_ID;
+                            <span id="products-count" class="na-count"><?= $totalRows ?></span>
+                            <button id="edit-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <!-- <span class="na-icon-btn">🖨️</span> -->
+                             
+                            <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
+                            <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
+                        </div>
 
-    // Use available stock count directly from the database response
-    let availableStock = product.CurrentStock !== undefined 
-        ? parseInt(product.CurrentStock) 
-        : (product.Quantity !== undefined 
-            ? parseInt(product.Quantity) 
-            : (parseInt(product.UnitOrdered || 0) - parseInt(product.UnitSold || 0)));
+                        <div>
+                            <div class="na-quick-search">🔍 Quick Search</div>
+                        </div>  
 
-        products[pid] = {
-            name: product.ProductName,
-            stock: availableStock,
-            price: parseFloat(product.StorePrice),
-            barcode: product.Barcode || ''
-        };
-    });
 
-    // Global Scanner Detection Variables
-    let barcodeBuffer = '';
-    let lastKeyTime = 0;
-    var typingTimer;
-    var doneTypingInterval = 400;
+                                <!-- //ADD RESTOCK -->
 
-    // INTERCEPT SCANNER KEYS GLOBALLY (Prevents page shifts and unwanted auto-focusing)
-    document.addEventListener('keydown', function(ev) {
-        let activeEl = document.activeElement;
-        let currentTime = new Date().getTime();
-        let timeDiff = currentTime - lastKeyTime;
-        lastKeyTime = currentTime;
+                        <div id="addOrderRestockModal" class="modal" style="display: none;">
+                            <div class="modal-content">
+                                <h3>Add New Order/Restock</h3>
+                                <form id="restockForm" action="add.php" method="POST">
+                                    <input type="hidden" name="table" value="restock">
 
-        // 1. IF USER IS MANUALLY TYPING INSIDE SEARCH BAR
-        if (activeEl && activeEl.id === 'searchInput') {
-            if (ev.key === 'Enter') {
-                ev.preventDefault();
-                let code = activeEl.value.trim();
-                if (code.length > 0) {
-                    processBarcodeAdd(code);
-                    activeEl.value = '';
-                    document.getElementById('searchResultContainerMain').style.display = 'none';
-                }
-            }
-            return; // Allow normal text typing inside input
-        }
+                                    <!-- <label>Select Product ID</label>
+                                    <input type="text" name="Product_ID" required> -->
 
-        // 2. IF SCANNER IS OPERATING IN BACKGROUND (UNFOCUSED)
-        
-        // Hardware scanners enter characters < 30ms apart
-        if (ev.key === 'Enter' || ev.key === 'Tab') {
-            if (barcodeBuffer.length > 2) {
-                ev.preventDefault(); // Stop scanner from focusing the search bar or jumping UI
-                if (activeEl && typeof activeEl.blur === 'function') {
-                    activeEl.blur(); // Unfocus any element
-                }
-                processBarcodeAdd(barcodeBuffer.trim());
-                barcodeBuffer = '';
-                return;
-            }
-        }
+                                    <label for="Product_IDORDRES">Choose Product ID:</label>
+                                    <select id="Product_IDORDRES" name="Product_ID" class="id-select" style="width: 60%;" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select>
 
-        // Reset buffer if delay > 100ms (indicates a human typing, not a scanner)
-        if (timeDiff > 100) {
-            barcodeBuffer = '';
-        }
+                                    <!-- <label>Order Type</label>
+                                    <input type="text" name="Type" required> -->
 
-        // Buffer readable alphanumeric characters
-        if (ev.key.length === 1) {
-            barcodeBuffer += ev.key;
-        }
-    }, true); // Use capture phase to intercept before browser default behavior
+                                    <!-- <label>Order Type::</label>
+                                    <div style="display: flex; justify-content:space-between; align-items:center;">                                                       
+                                    <select class="status-select" name="Type" required>
+                                        <option value="">...</option>
+                                        <option value="New">New</option>
+                                        <option value="Re-Order">Re-Order</option>
 
-    // Live Search Keyup (Manual typing inside search bar)
-    document.getElementById('searchInput').addEventListener('keyup', function(ev) {
-        if (ev.key !== 'Enter') {
-            let searchTerm = this.value;
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(function() {
-                searchDb(searchTerm);
-            }, doneTypingInterval);
-        }
-    });
+                                    </select>                        
+                                    </div> -->
 
-    // Live Search Function
-    function searchDb(searchTerm) {          
-        let searchResult = document.getElementById('searchResultContainerMain');
+                                    
+                                    <!-- <label>Select Supplier ID</label>
+                                    <input type="text" name="Supplier_ID" required> -->
 
-        if (searchTerm.length) {          
-            searchResult.style.display = 'block';
-            $.ajax({
-                type: 'GET',
-                data: { search_term: searchTerm },
-                url: 'pos_live-search.php',
-                dataType: 'json',
-                success: function(response) {
-                    if (!response.data || response.data.length === 0) {
-                        searchResult.innerHTML = '<p class="nodatafound">no data found</p>';
-                    } else {
-                        let html = '';
-                        response.data.forEach((row) => {
-                            html += `       
-                                <div class="row searchResultEntry" data-pid="${row['Product_ID']}">
-                                    <div class="col-xs-3">                                            
-                                        <img class="searchResultImg" src="uploads/${row['Image']}" alt="">                                        
+                                    <label for="Supplier_IDORDRES">Choose Supplier ID:</label>
+                                    <select id="Supplier_IDORDRES" name="Supplier_ID" class="id-select" style="width: 60%;" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select>
+
+
+                                    <label>Quantity:</label>
+                                    <input type="number" name="Quantity" required>
+
+                                    <!-- <label>Order Date:</label>
+                                    <input type="datetime-local" name="OrderDate" required> -->
+
+                                    <!-- <label>Proof of Transaction:</label>
+                                    <input type="file" accept="image/*" name="Image"> -->
+                                    
+                                    <!-- <label>Status:</label>
+                                    <input type="text" name="Status" required> -->
+
+
+                                    <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
+                                    <!-- <label>Status::</label>
+                                    <select class="status-select" name="Status" required>
+                                        <option value="">...</option>
+                                        <option value="Requested">Requested</option>
+                                        <option value="Out for Delivery">Out for Delivery</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Received">Received</option>
+                                        
+                                    </select>            -->
+                                    <input type="hidden"  name="Status" value="Requested">
+                                    
+                                    <!-- <label>Total Received:</label> -->
+                                    <!-- <input type="hidden"  name="TotalReceived" value="0"> -->
+                                    
+                                    <!-- <label>With Issue:</label> -->
+                                    <!-- <input type="hidden"  name="withIssue"  value="0"> -->
+
+                                    
+                                    <!-- <label>Delivery Status:</label>
+                                    <input type="text" name="DeliveryStatus" required> -->
+
+
+                                    <!-- <label>Delivery Status::</label>                            
+                                    <select class="status-select" name="DeliveryStatus">
+                                        <option value="">...</option>
+                                        <option value="On Time">On Time</option>
+                                        <option value="Delayed">Delayed</option>
+                                        <option value="Early">Early</option>
+                                    </select>        -->
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-add">Save</button>
+                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
+                                        <button type="button" id="ord-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
                                     </div>
-                                    <div class="col-xs-9">
-                                        <p class="searchResultProductName">${row['ProductName']}</p>
-                                        <p class="searchResultProductPrice">
-                                            ${(!row['CurrentStock'] || row['CurrentStock'] <= 0) ? '<span style="color:red;">Out of Stock</span>' : '<span style="color:green;">Available </span>' + row['CurrentStock']}
-                                        </p>                                            
-                                        <p class="searchResultProductPrice">Price: PHP: ${row['StorePrice']}</p>
-                                        <p class="searchResultProductPrice">BARCODE: ${row['Barcode']}</p>
-                                    </div>                                    
-                                </div>`;
-                        });
-                        searchResult.innerHTML = html;
-                    }
-                }
-            });
-        } else {
-            searchResult.style.display = 'none';
-        }
-    }
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <link rel="stylesheet" href="assets/add_product.css">
+                        <script src="assets/add_order.js" defer></script>
+                        <script src="get/get_supplierORDRES.js" defer></script>
+                        <script src="get/get_productORDRES.js" defer></script>
 
-    // Process and add item into IMS
-    function processBarcodeAdd(scannedCode) {
-        let foundPid = null;
 
-        for (let pid in products) {
-            if (String(pid) === scannedCode || (products[pid].barcode && String(products[pid].barcode).trim() === scannedCode)) {
-                foundPid = pid;
-                break;
-            }
-        }
+                                <!-- //EDIT RESTOCK -->
 
-        if (foundPid) {
-            let p = products[foundPid];
-            if (p.stock <= 0) {
-                alert(`Product "${p.name}" is Out of Stock.`);
-                return;
-            }
+                        <div id="editRestockModal" class="modal" style="display: none;">
+                            <div class="modal-content">
+                                <h3>Edit Restock</h3>
+                                <form id="restockForm" action="update.php" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="table" value="restock">
+                                    <input type="number" name="id" id="edit-order-id" readonly>
 
-            // Calls your existing script object to populate IMS list
-            if (typeof script !== 'undefined' && script.addToOrder) {
-                script.addToOrder(p, foundPid, 1);
-            } else if (typeof loadScript !== 'undefined' && loadScript.addToOrder) {
-                loadScript.addToOrder(p, foundPid, 1);
-            }
-        } else {
-            alert(`Product with Barcode / ID "${scannedCode}" not found.`);
-        }
-    }
-    </script>
+                                    <!-- <label>Select Product ID</label>
+                                    <input type="text" name="Product_ID" required> -->
 
-    <!-- Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.35.4/js/bootstrap-dialog.min.js"></script>
-    <script src="posScript.js?v=<?= time() ?>"></script>
-</body>
-</html>
+                                    <label for="Product_IDORDRES">Choose Product ID:</label>
+                                    <select id="edit-productidRESTOCK" name="Product_ID" class="id-select" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select>
+
+                                    <label for="Supplier_IDORDRES">Choose Supplier ID:</label>
+                                    <select id="edit-supplieridRESTOCK" name="Supplier_ID" class="id-select" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select>
+
+
+                                    <label>Quantity:</label>
+                                    <input type="number" name="Quantity" id="edit-quantity" required>
+
+
+                                    <input type="hidden"  name="Status" value="Requested">
+                                    
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-add">Save</button>
+                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
+                                        <button type="button" id="editorder-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <link rel="stylesheet" href="assets/add_product.css">
+                            <script src="assets/edit_restock.js"></script>
+                            <script src="get/edit_supplierRESTOCK.js"></script>
+                            <script src="get/edit_productRESTOCK.js"></script>
+                        </div>
+                        
+                        <!-- <script src="assets/add_order.js" defer></script>
+                        
+                        <script src="get/get_supplierORDRES.js" defer></script>
+                        <script src="get/get_productORDRES.js" defer></script> -->
+
+
+
+
+
+
+
+
+                        <div id="updateOrderModal" class="modal" style="display: none;">
+                            <div class="modal-content">
+                                <h3>Update Order/Restock</h3>
+                                <form action="update.php" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="table" value="restock">
+                                    <input type="number" name="id" id="update-order-id">
+
+
+                                    <label>Proof of Transaction:</label>
+                                    <input type="file" accept="image/*" name="Image" id="edit-image">
+                                    
+                                    
+
+                                    <label>Status::</label>
+                                    <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
+                                    <select class="status-select" name="Status" id="update-status" required>
+                                        <option value="">...</option>
+                                        <option value="Requested">Requested</option>
+                                        <option value="Out-for-Delivery">Out for Delivery</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Received">Received</option>
+
+                                    </select>                        
+
+
+                                    <label>Delivery Status::</label>                            
+                                    <select class="status-select" name="DeliveryStatus" id="update-delivery-status">
+                                        <option value="">...</option>
+                                        <option value="On-Time">On Time</option>
+                                        <option value="Delayed">Delayed</option>
+                                        <option value="Early">Early</option>
+                                    </select>       
+
+                                    <label style="color: red;">With Expiration? :</label>
+                                    <div style="display: flex; justify-content:space-between; align-items:center;">
+                                    <!-- <label>With Expiration?:</label>
+                                    <select class="status-select" name="LocationS" id="Expiration_Status" required>
+                                        <option value="yes">Yes</option>
+                                        <option value="no ">No</option>
+                                    </select> -->
+
+                                    <label>Expiration Date:
+                                        <button type="button" id="toggleNullBtnOrder_restock" style="color: red;">NO ?</button>
+                                        <button type="button" id="toggleNotNullBtnOrder_restock" style="display: none;">YES ?</button>
+                                    </label>
+                                    <input type="date" name="ExpirationDate" id="update-datereceived" style="width: 50%;">
+                                    </div>
+
+                                    
+                                    <!-- <label>Expiration Date:</label>
+                                    <input type="datetime-local" name="Date_Received" id="update-datereceived"> -->
+
+                                    <label>Ordered Quantity:</label>
+                                    <input type="number" name="Quantity" id="update-orderedQuantity" readonly>
+
+                                    <label>Without Issue:</label>
+                                    <input type="number"  name="TotalReceived" id="update-received">
+                                    
+                                    <label>With Issue:</label>
+                                    <input type="number"  name="withIssue" id="update-issue">
+
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-add">Save</button>
+                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
+                                        <button type="button" id="updateorder-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <link rel="stylesheet" href="assets/add_product.css">
+                        <script src="assets/add_order.js" defer></script>
+                        <script src="assets/update_restock.js" defer></script>
+                        <script src="get/get_productORDRES.js" defer></script>
+                        <script src="compare_quantity.js" defer></script>
+                        
+
+
+
+                        
+                    </div>
+                        <div class="table-container order-restock-table-container">
+                            <table class="order-restock-table">
+                                <thead class="sticky-div">
+                                    <tr>
+                                        <!-- <th><?= $totalRows ?></th> -->
+                                        <th>ORESTOCK ID</th>
+                                        <th>Product ID</th>
+                                        <th>Supplier ID</th>
+                                        <!-- <th>Order Type</th> -->
+                                        <th>Ordered Quantity</th>
+                                        <th>Order Date</th>
+                                        <th>Proof of Transaction</th>
+                                        <th>Status</th>
+                                        <th>Delivery Status</th>
+                                        <th>Date Received</th>
+                                        <th>Without Issue</th>
+                                        <th>with Issue</th>
+                                        <th></th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        usort($restock, function ($a, $b) {
+                                        return $b['Orestock_ID'] <=> $a['Orestock_ID'];
+                                    });
+
+
+                                    foreach($restock as $index => $restocks){ ?>
+                                        <tr>
+                                            <!-- <td>
+                                                <?= $index + 1?>
+                                            </td> -->
+                                            <td><?= $restocks['Orestock_ID'] ?></td>
+                                            <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td>
+                                            <td class="supplier-id-cell"><?= $restocks['Supplier_ID'] ?></td>
+                                            <!-- <td><span class="order-type-tag order-type-new"><?= $restocks['Type'] ?></span></td> -->
+                                            <td><?= $restocks['Quantity'] ?></td>
+                                            <td><?= date('F d, Y h:i A', strtotime($restocks['OrderDate']))?></td>
+                                            <!-- <td class="proof-icon"><?= $restocks['ProofOfTransaction'] ?></td> -->
+
+                                            <td>
+                                                <?php if (!empty($restocks['Image']) && file_exists("uploads/" . $restocks['Image'])): ?>
+                                                    <a href="uploads/<?= $restocks['Image']?>" target="_blank">
+                                                        <img src="uploads/<?= $restocks['Image']?>" alt="Product Image" style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                                    </a>
+                                                <?php else: ?>
+                                                    No Image
+                                                <?php endif; ?>
+                                            </td>
+
+                                            <!-- <td><span class="status-tag status-pending"><?= $restocks['Status']?></span></td> -->
+
+                                            <td><span class="status-tag status-<?= strtolower($restocks['Status']) ?>">
+                                                                        <?= htmlspecialchars($restocks['Status']) ?>
+                                                </span>
+                                            </td>
+
+                                            <td><span class="delivery-status-tag delivery-status-<?= strtolower($restocks['DeliveryStatus']) ?>">
+                                                                        <?= htmlspecialchars($restocks['DeliveryStatus']) ?>
+                                                </span>
+                                            </td>
+                                            <!-- <td><span class="delivery-status-tag delivery-status-delayed"><?= $restocks['DeliveryStatus']?></span></td> -->
+                                            <!-- <td><?= date('F d, Y h:i A', strtotime($restocks['Date_Received']))?></td> -->
+                                            <td style="color: red;"><?= empty($restocks['Date_Received']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($restocks['Date_Received'])) ?></td>
+                                            <td><?= $restocks['TotalReceived'] ?></td>
+                                            <td><?= $restocks['withIssue'] ?></td>
+
+                                            <td class="action-cell" >
+                                            <!-- edit & delete action -->
+                                                <button style="display: none;" class="edit-order-btn"
+                                                    data-id="<?= $restocks['Orestock_ID'] ?>"
+                                                    data-quantity="<?= $restocks['Quantity'] ?>"                                                                                                        
+                                                    data-productid="<?= $restocks['Product_ID'] ?>"
+                                                    data-supplierid="<?= $restocks['Supplier_ID'] ?>">
+                                                    📝 Edit
+                                                </button>
+
+                                                <button style="display: none;" class="update-order-btn"
+                                                    data-id="<?= $restocks['Orestock_ID'] ?>"
+                                                    data-proof="<?= $restocks['Image'] ?>"
+                                                    data-status="<?= $restocks['Status'] ?>"
+                                                    data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
+                                                    data-datereceived="<?= $restocks['ExpirationDate'] ?>"
+                                                    data-quantity="<?= $restocks['Quantity'] ?>"
+                                                    data-received="<?= $restocks['TotalReceived'] ?>"
+                                                    data-issue="<?= $restocks['withIssue'] ?>">                                                                                    
+                                                    📝 Update
+                                                </button>
+
+                                                <form style="display: none;" id="display-delete" action="delete.php" class="delete-product-form" method="POST" style="display: inline;">
+                                                    <input type="hidden" name="table" value="restock">
+                                                    <input type="hidden" name="id" value="<?= $restocks['Orestock_ID']?>">
+                                                    <button type="submit"  onclick="return confirm('Delete this product?')">🗑️ Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                </div>

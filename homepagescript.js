@@ -25,6 +25,7 @@ let stockAdjustmentRowCount = 7, pulledIdCounter = 1007;
 
 // --- State Variables ---
 let activeReturnsTable = 'customer';
+let activeRestockTable = 'listToOrder';
 let activeTransactionSalesView = 'transaction';
 let activeForecastAnalyticsView = 'forecast';
 let activeSalesAggregrationView = 'daily';
@@ -137,6 +138,9 @@ function showContentSection(sectionId) {
 
     if (sectionId === 'sales-aggregation') {
         showSalesAggregrationView('byProduct');
+    }
+    if (sectionId === 'order-restock') {
+        showRestockTable('listToOrder');
     }
 
 }
@@ -251,6 +255,24 @@ function showReturnsTable(viewType) {
 
     document.getElementById('cusreturns-add-btn').style.display = viewType === 'customer' ? 'inline-block' : 'none';
     document.getElementById('supreturns-add-btn').style.display = viewType === 'supplier' ? 'inline-block' : 'none';
+}
+
+function showRestockTable(viewType) {
+    activeRestockTable = viewType;
+    document.getElementById('list-restock-table-container').style.display = viewType === 'listToOrder' ? 'flex' : 'none';
+    document.getElementById('item-restock-table-container').style.display = viewType === 'itemToOrder' ? 'flex' : 'none';
+    document.getElementById('receive-restock-table-container').style.display = viewType === 'itemToReceive' ? 'flex' : 'none';
+
+    document.getElementById('list-restock-btn').classList.toggle('active', viewType === 'listToOrder');
+    document.getElementById('item-restock-btn').classList.toggle('active', viewType === 'itemToOrder');
+    document.getElementById('receive-restock-btn').classList.toggle('active', viewType === 'itemToReceive');
+
+
+    // document.getElementById('returns-count').textContent = String(viewType === 'supplier' ? sReturnsRowCount : cReturnsRowCount).padStart(2, '0');
+
+    document.getElementById('cusreturns-add-btn').style.display = viewType === 'listToOrder' ? 'inline-block' : 'none';
+    document.getElementById('supreturns-add-btn').style.display = viewType === 'itemToOrder' ? 'inline-block' : 'none';
+    document.getElementById('supreturns-add-btn').style.display = viewType === 'itemToReceive' ? 'inline-block' : 'none';
 }
 
 
@@ -701,6 +723,11 @@ if (sidebarToggle) {
     document.getElementById('customer-returns-btn').addEventListener('click', () => showReturnsTable('customer'));
     document.getElementById('transaction-view-btn').addEventListener('click', () => showTransactionSalesView('transaction'));
     document.getElementById('sales-view-btn').addEventListener('click', () => showTransactionSalesView('sales'));
+
+
+    document.getElementById('item-restock-btn').addEventListener('click', () => showRestockTable('itemToOrder'));
+    document.getElementById('list-restock-btn').addEventListener('click', () => showRestockTable('listToOrder'));
+    document.getElementById('receive-restock-btn').addEventListener('click', () => showRestockTable('itemToReceive'));
     
     
     // document.getElementById('daily-sales-btn').classList.toggle('active', viewType === 'daily');

@@ -1,6 +1,7 @@
 <?php
 include('connect.php');
 
+
 $table = isset($_GET['table']) ? $_GET['table'] : 'product';
 
 

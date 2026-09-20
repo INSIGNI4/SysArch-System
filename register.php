@@ -131,11 +131,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Check if account is activated
             if (is_null($row['account_activation_hash'])) {
+                // session_start();
+                // $_SESSION['email'] = $row['email'];
+
+                // session_start();
+
+                // $_SESSION['email'] = $row['email'];
+                // $_SESSION['user_id'] = $row['id'];
+
                 session_start();
+
                 $_SESSION['email'] = $row['email'];
+                $_SESSION['user_id'] = $row['id'];
+
+                header("Location: homepage2.php");
+                                
 
                 // ✅ Redirect to homepage normally
-                header("Location: homepage2.php");
+                // header("Location: homepage2.php");
                 exit();
 
             } else {

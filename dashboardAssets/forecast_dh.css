@@ -12,6 +12,11 @@
         sans-serif;
 }
 
+.forecast_dashboard{
+    margin-top: -12px;
+    
+}
+
 #container1 {
     height: 400px;
     width: 100%;

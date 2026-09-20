@@ -23,30 +23,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-const nulltoggleBtn = document.getElementById('toggleNullBtn');
-const expInput = document.getElementById('expiration_date');
-const notnulltoggleBtn = document.getElementById('toggleNotNullBtn');
+// const nulltoggleBtn = document.getElementById('toggleNullBtn');
+// const expInput = document.getElementById('expiration_date');
+// const notnulltoggleBtn = document.getElementById('toggleNotNullBtn');
 
-nulltoggleBtn.addEventListener('click',function(){
+// nulltoggleBtn.addEventListener('click',function(){
 
-    nulltoggleBtn.style.display = 'none';
-    notnulltoggleBtn.style.display = 'inline-block';
-    notnulltoggleBtn.style.color = 'blue'; 
-    expInput.disabled = true;
+//     nulltoggleBtn.style.display = 'none';
+//     notnulltoggleBtn.style.display = 'inline-block';
+//     notnulltoggleBtn.style.color = 'blue'; 
+//     expInput.disabled = true;
     
 
 
-})
+// })
 
-notnulltoggleBtn.addEventListener('click',function(){
-    // expInput.type = 'date';
-    notnulltoggleBtn.style.display = 'none';
-    nulltoggleBtn.style.display = 'inline-block';
-    nulltoggleBtn.style.color = 'red'; 
-    expInput.disabled = false;
+// notnulltoggleBtn.addEventListener('click',function(){
+//     // expInput.type = 'date';
+//     notnulltoggleBtn.style.display = 'none';
+//     nulltoggleBtn.style.display = 'inline-block';
+//     nulltoggleBtn.style.color = 'red'; 
+//     expInput.disabled = false;
 
 
-})
+// })
 
 
 

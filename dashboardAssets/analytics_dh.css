@@ -18,6 +18,9 @@
     max-width: 800px;
     margin: 1em auto;
 }
+.analytics_dashboard{
+    margin-top: -12px;
+}
 
 #container {
     height: 400px;

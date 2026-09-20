@@ -1,0 +1,215 @@
+/* =========================================
+   AI DEMAND PREDICTION - COLOR THEME
+   ========================================= */
+
+/* Main AI dashboard */
+.demand_prediction_dashboard {
+    background: #f5f8fc;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.demand_header {
+    background: linear-gradient(135deg, #eef5ff, #ffffff);
+    border: 1px solid #b8d4ff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.demand_header h2 {
+    margin: 0;
+    color: #173b78;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.demand_header p {
+    margin: 6px 0 0;
+    color: #52709d;
+    font-size: 15px;
+}
+
+
+/* =========================================
+   KPI CARDS
+   ========================================= */
+
+.demand_summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.demand_kpi {
+    position: relative;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-sizing: border-box;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Blue */
+.demand_kpi:nth-child(1) {
+    border: 2px solid #8fc5ff;
+    background: linear-gradient(135deg, #f0f8ff, #ffffff);
+}
+
+.demand_kpi:nth-child(1) h4 {
+    color: #1674d1;
+}
+
+/* Green */
+.demand_kpi:nth-child(2) {
+    border: 2px solid #8bdcc0;
+    background: linear-gradient(135deg, #effcf7, #ffffff);
+}
+
+.demand_kpi:nth-child(2) h4 {
+    color: #13885d;
+}
+
+/* Purple */
+.demand_kpi:nth-child(3) {
+    border: 2px solid #c9a8ff;
+    background: linear-gradient(135deg, #f7f1ff, #ffffff);
+}
+
+.demand_kpi:nth-child(3) h4 {
+    color: #6535c5;
+}
+
+/* Orange */
+.demand_kpi:nth-child(4) {
+    border: 2px solid #ffc878;
+    background: linear-gradient(135deg, #fff7e9, #ffffff);
+}
+
+.demand_kpi:nth-child(4) h4 {
+    color: #c36b00;
+}
+
+.demand_kpi h4 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.demand_kpi strong {
+    display: block;
+    font-size: 27px;
+    color: #17233c;
+    font-weight: 700;
+}
+
+.demand_kpi span {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #718096;
+}
+
+
+/* =========================================
+   CHART CARDS
+   ========================================= */
+
+.demand_charts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.demand_chart_box {
+    background: #ffffff;
+    border: 1px solid #b9d5f7;
+    border-radius: 12px;
+    padding: 16px;
+    box-sizing: border-box;
+    min-width: 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.demand_chart_box h3 {
+    margin: 0 0 15px;
+    text-align: center;
+    color: #173b78;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   CHART CONTAINER
+   ========================================= */
+
+.demand_canvas {
+    position: relative;
+    width: 100%;
+    height: 320px;
+}
+
+
+/* =========================================
+   TREND CHART
+   ========================================= */
+
+.demand_trend_box {
+    grid-column: 1 / -1;
+    border: 1px solid #9fd7ff;
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #f8fcff 100%
+    );
+}
+
+.demand_trend_box h3 {
+    color: #126fc1;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1100px) {
+
+    .demand_summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .demand_charts {
+        grid-template-columns: 1fr;
+    }
+
+    .demand_trend_box {
+        grid-column: auto;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .demand_summary {
+        grid-template-columns: 1fr;
+    }
+
+    .demand_prediction_dashboard {
+        padding: 10px;
+    }
+
+}

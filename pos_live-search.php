@@ -13,7 +13,7 @@
 				SELECT * FROM product 
 					WHERE ProductName LIKE '%$search_term%' OR Barcode LIKE '%$search_term%'
 					ORDER BY Product_ID DESC"
-			);
+			);	
             
     $stmt->execute();
 

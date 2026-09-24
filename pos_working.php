@@ -1,3 +1,4 @@
+ 
                 <div id="order-restock" class="content-section">
                     <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; 
                     height: 80px; ">
@@ -14,6 +15,19 @@
                         </div>
                         <div class="controls-bar">
                              <div class="controls">
+                                <div class="toggle-buttons">
+                                    <button id="list-restock-btn" class="toggle-btn active">
+                                        List to Order
+                                    </button>
+
+                                    <button id="item-restock-btn" class="toggle-btn">
+                                        Item to Order
+                                    </button>
+
+                                    <button id="receive-restock-btn" class="toggle-btn">
+                                        Item to Receive
+                                    </button>
+                                </div>
                                 <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
                                 <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div> -->
                             </div>
@@ -294,6 +308,9 @@
 
                         
                     </div>
+                                            
+                        
+
                         <div class="table-container order-restock-table-container">
                             <table class="order-restock-table">
                                 <thead class="sticky-div">
@@ -301,6 +318,7 @@
                                         <!-- <th><?= $totalRows ?></th> -->
                                         <th>ORESTOCK ID</th>
                                         <th>Product ID</th>
+                                        <th>Item Order ID</th>
                                         <th>Supplier ID</th>
                                         <!-- <th>Order Type</th> -->
                                         <th>Ordered Quantity</th>
@@ -330,6 +348,7 @@
                                             </td> -->
                                             <td><?= $restocks['Orestock_ID'] ?></td>
                                             <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td>
+                                            <td class="product-id-cell"><?= $restocks['ItemToOrder_ID'] ?></td>
                                             <td class="supplier-id-cell"><?= $restocks['Supplier_ID'] ?></td>
                                             <!-- <td><span class="order-type-tag order-type-new"><?= $restocks['Type'] ?></span></td> -->
                                             <td><?= $restocks['Quantity'] ?></td>

@@ -26,6 +26,7 @@ let stockAdjustmentRowCount = 7, pulledIdCounter = 1007;
 // --- State Variables ---
 let activeReturnsTable = 'customer';
 let activeRestockTable = 'listToOrder';
+let selectedListToOrderId = null;
 let activeTransactionSalesView = 'transaction';
 let activeForecastAnalyticsView = 'forecast';
 let activeSalesAggregrationView = 'daily';
@@ -257,23 +258,163 @@ function showReturnsTable(viewType) {
     document.getElementById('supreturns-add-btn').style.display = viewType === 'supplier' ? 'inline-block' : 'none';
 }
 
+// function showRestockTable(viewType) {
+//     activeRestockTable = viewType;
+//     document.getElementById('list-restock-table-container').style.display = viewType === 'listToOrder' ? 'flex' : 'none';
+//     document.getElementById('item-restock-table-container').style.display = viewType === 'itemToOrder' ? 'flex' : 'none';
+//     document.getElementById('receive-restock-table-container').style.display = viewType === 'itemToReceive' ? 'flex' : 'none';
+
+//     document.getElementById('list-restock-btn').classList.toggle('active', viewType === 'listToOrder');
+//     document.getElementById('item-restock-btn').classList.toggle('active', viewType === 'itemToOrder');
+//     document.getElementById('receive-restock-btn').classList.toggle('active', viewType === 'itemToReceive');
+
+
+//     // document.getElementById('returns-count').textContent = String(viewType === 'supplier' ? sReturnsRowCount : cReturnsRowCount).padStart(2, '0');
+
+//     document.getElementById('cusreturns-add-btn').style.display = viewType === 'listToOrder' ? 'inline-block' : 'none';
+//     document.getElementById('supreturns-add-btn').style.display = viewType === 'itemToOrder' ? 'inline-block' : 'none';
+//     document.getElementById('supreturns-add-btn').style.display = viewType === 'itemToReceive' ? 'inline-block' : 'none';
+// }
+
+// function showRestockTable(viewType) {
+//     activeRestockTable = viewType;
+
+//     document.getElementById('list-restock-table-container').style.display =
+//         viewType === 'listToOrder' ? 'flex' : 'none';
+
+//     document.getElementById('item-restock-table-container').style.display =
+//         viewType === 'itemToOrder' ? 'flex' : 'none';
+
+//     document.getElementById('receive-restock-table-container').style.display =
+//         viewType === 'itemToReceive' ? 'flex' : 'none';
+
+//     document.getElementById('list-restock-btn').classList.toggle(
+//         'active',
+//         viewType === 'listToOrder'
+//     );
+
+//     document.getElementById('item-restock-btn').classList.toggle(
+//         'active',
+//         viewType === 'itemToOrder'
+//     );
+
+//     document.getElementById('receive-restock-btn').classList.toggle(
+//         'active',
+//         viewType === 'itemToReceive'
+//     );
+
+//     document.getElementById('edit-restock-btn').style.display =
+//     viewType === 'listToOrder' || viewType === 'itemToOrder'
+//         ? 'inline-block'
+//         : 'none';
+
+//     document.getElementById('delete-restock-btn').style.display =
+//         viewType === 'listToOrder' || viewType === 'itemToOrder'
+//             ? 'inline-block'
+//             : 'none';
+
+//     document.getElementById('order-restock-add-btn').style.display =
+//         viewType === 'listToOrder' || viewType === 'itemToOrder'
+//             ? 'inline-block'
+//             : 'none';
+
+//     document.getElementById('update-restock-status-btn').style.display =
+//         viewType === 'itemToReceive'
+//             ? 'inline-block'
+//             : 'none';
+
+
+
+
+//     if (viewType === 'listToOrder') {
+//         document.getElementById('products-count').textContent =
+//             document.querySelectorAll('#list-restock-table-container tbody tr').length;
+//     }
+
+//     if (viewType === 'itemToOrder') {
+//         document.getElementById('products-count').textContent =
+//             document.querySelectorAll('#item-restock-table-container tbody tr').length;
+//     }
+
+//     if (viewType === 'itemToReceive') {
+//         document.getElementById('products-count').textContent =
+//             document.querySelectorAll('#receive-restock-table-container tbody tr').length;
+//     }
+// }
+
 function showRestockTable(viewType) {
     activeRestockTable = viewType;
-    document.getElementById('list-restock-table-container').style.display = viewType === 'listToOrder' ? 'flex' : 'none';
-    document.getElementById('item-restock-table-container').style.display = viewType === 'itemToOrder' ? 'flex' : 'none';
-    document.getElementById('receive-restock-table-container').style.display = viewType === 'itemToReceive' ? 'flex' : 'none';
 
-    document.getElementById('list-restock-btn').classList.toggle('active', viewType === 'listToOrder');
-    document.getElementById('item-restock-btn').classList.toggle('active', viewType === 'itemToOrder');
-    document.getElementById('receive-restock-btn').classList.toggle('active', viewType === 'itemToReceive');
+    document.getElementById('list-restock-table-container').style.display =
+        viewType === 'listToOrder' ? 'flex' : 'none';
 
+    document.getElementById('item-restock-table-container').style.display =
+        viewType === 'itemToOrder' ? 'flex' : 'none';
 
-    // document.getElementById('returns-count').textContent = String(viewType === 'supplier' ? sReturnsRowCount : cReturnsRowCount).padStart(2, '0');
+    document.getElementById('receive-restock-table-container').style.display =
+        viewType === 'itemToReceive' ? 'flex' : 'none';
 
-    document.getElementById('cusreturns-add-btn').style.display = viewType === 'listToOrder' ? 'inline-block' : 'none';
-    document.getElementById('supreturns-add-btn').style.display = viewType === 'itemToOrder' ? 'inline-block' : 'none';
-    document.getElementById('supreturns-add-btn').style.display = viewType === 'itemToReceive' ? 'inline-block' : 'none';
+    document.getElementById('list-restock-btn').classList.toggle(
+        'active',
+        viewType === 'listToOrder'
+    );
+
+    document.getElementById('item-restock-btn').classList.toggle(
+        'active',
+        viewType === 'itemToOrder'
+    );
+
+    document.getElementById('receive-restock-btn').classList.toggle(
+        'active',
+        viewType === 'itemToReceive'
+    );
+
+    document.getElementById('edit-restock-btn').style.display =
+        viewType === 'listToOrder' || viewType === 'itemToOrder'
+            ? 'inline-block'
+            : 'none';
+
+    document.getElementById('delete-restock-btn').style.display =
+        viewType === 'listToOrder' || viewType === 'itemToOrder'
+            ? 'inline-block'
+            : 'none';
+
+    document.getElementById('order-restock-add-btn').style.display =
+        viewType === 'listToOrder' || viewType === 'itemToOrder'
+            ? 'inline-block'
+            : 'none';
+
+    // document.getElementById('place-order-btn').style.display =
+    //     viewType === 'itemToOrder'
+    //         ? 'inline-block'
+    //         : 'none';
+
+    document.getElementById('place-order-btn').style.display =
+        viewType === 'listToOrder'
+            ? 'inline-block'
+            : 'none';            
+
+    document.getElementById('update-restock-status-btn').style.display =
+        viewType === 'itemToReceive'
+            ? 'inline-block'
+            : 'none';
+
+    if (viewType === 'listToOrder') {
+        document.getElementById('products-count').textContent =
+            document.querySelectorAll('#list-restock-table-container tbody tr').length;
+    }
+
+    if (viewType === 'itemToOrder') {
+        document.getElementById('products-count').textContent =
+            document.querySelectorAll('#item-restock-table-container tbody tr').length;
+    }
+
+    if (viewType === 'itemToReceive') {
+        document.getElementById('products-count').textContent =
+            document.querySelectorAll('#receive-restock-table-container tbody tr').length;
+    }
 }
+
 
 
 function showTransactionSalesView(viewType) {
@@ -725,10 +866,193 @@ if (sidebarToggle) {
     document.getElementById('sales-view-btn').addEventListener('click', () => showTransactionSalesView('sales'));
 
 
-    document.getElementById('item-restock-btn').addEventListener('click', () => showRestockTable('itemToOrder'));
-    document.getElementById('list-restock-btn').addEventListener('click', () => showRestockTable('listToOrder'));
-    document.getElementById('receive-restock-btn').addEventListener('click', () => showRestockTable('itemToReceive'));
+    // document.getElementById('item-restock-btn').addEventListener('click', () => showRestockTable('itemToOrder'));
+    // document.getElementById('list-restock-btn').addEventListener('click', () => showRestockTable('listToOrder'));
+    // document.getElementById('receive-restock-btn').addEventListener('click', () => showRestockTable('itemToReceive'));
     
+    // document.getElementById('list-restock-btn').addEventListener('click', function () {
+    //     showRestockTable('listToOrder');
+    // });
+
+    // document.getElementById('item-restock-btn').addEventListener('click', function () {
+    //     showRestockTable('itemToOrder');
+    // });
+
+    // document.getElementById('receive-restock-btn').addEventListener('click', function () {
+    //     showRestockTable('itemToReceive');
+    // });
+
+
+    document.getElementById('list-restock-btn').addEventListener('click', function () {
+        showRestockTable('listToOrder');
+    });
+
+    document.getElementById('item-restock-btn').addEventListener('click', function () {
+        showRestockTable('itemToOrder');
+    });
+
+    document.getElementById('receive-restock-btn').addEventListener('click', function () {
+        showRestockTable('itemToReceive');
+    });
+
+
+    // SELECT LIST TO ORDER
+    document.querySelectorAll('.list-order-row').forEach(row => {
+        row.addEventListener('click', function () {
+            document.querySelectorAll('.list-order-row').forEach(r => {
+                r.classList.remove('selected');
+            });
+
+            this.classList.add('selected');
+
+            selectedListToOrderId = this.dataset.id;
+
+            console.log('Selected ListToOrder_ID:', selectedListToOrderId);
+        });
+    });
+
+
+    // PLACE ORDER
+    // document.getElementById('place-order-btn').addEventListener('click', async function () {
+
+    //     if (!selectedListToOrderId) {
+    //         alert('Please select a List Order first.');
+    //         return;
+    //     }
+
+    //     const selectedRow = document.querySelector(
+    //         `.list-order-row[data-id="${selectedListToOrderId}"]`
+    //     );
+
+    //     if (!selectedRow) {
+    //         alert('Selected List Order could not be found.');
+    //         return;
+    //     }
+
+    //     const statusElement = selectedRow.querySelector('.status-tag');
+
+    //     const currentStatus = statusElement
+    //         ? statusElement.textContent.trim()
+    //         : '';
+
+    //     if (currentStatus !== 'Confirmed') {
+    //         alert('Only Confirmed orders can be placed.');
+    //         return;
+    //     }
+
+    //     const confirmed = confirm(
+    //         `Place List Order #${selectedListToOrderId}?\n\n` +
+    //         `This will change the order status to Ordered.`
+    //     );
+
+    //     if (!confirmed) {
+    //         return;
+    //     }
+
+    //     try {
+
+    //         const response = await fetch('place_order.php', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({
+    //                 listToOrderId: selectedListToOrderId
+    //             })
+    //         });
+
+    //         const rawResponse = await response.text();
+
+    //         console.log('place_order.php response:', rawResponse);
+
+    //         let result;
+
+    //         try {
+    //             result = JSON.parse(rawResponse);
+    //         } catch (error) {
+    //             console.error('Invalid JSON:', rawResponse);
+
+    //             alert('Server returned an invalid response.');
+    //             return;
+    //         }
+
+    //         if (!result.success) {
+    //             alert(result.error || 'Failed to place order.');
+    //             return;
+    //         }
+
+    //         alert(result.message);
+
+    //         location.reload();
+
+    //     } catch (error) {
+
+    //         console.error('Place order error:', error);
+
+    //         alert('An error occurred while placing the order.');
+    //     }
+    // });    
+
+    document.getElementById('place-order-btn').addEventListener('click', async function () {
+
+        if (!selectedListToOrderId) {
+            alert('Please select a List Order first.');
+            return;
+        }
+
+        const confirmed = confirm(
+            `Place List Order #${selectedListToOrderId}?\n\n` +
+            `This will change the order status to Ordered.`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch('place_order.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    listToOrderId: selectedListToOrderId
+                })
+            });
+
+            const rawResponse = await response.text();
+
+            console.log('place_order.php response:', rawResponse);
+
+            let result;
+
+            try {
+                result = JSON.parse(rawResponse);
+            } catch (error) {
+                console.error('Invalid JSON:', rawResponse);
+
+                alert('Server returned an invalid response.');
+                return;
+            }
+
+            if (!result.success) {
+                alert(result.error || 'Failed to place order.');
+                return;
+            }
+
+            alert(result.message);
+
+            location.reload();
+
+        } catch (error) {
+
+            console.error('Place order error:', error);
+
+            alert('An error occurred while placing the order.');
+        }
+    });    
+
     
     // document.getElementById('daily-sales-btn').classList.toggle('active', viewType === 'daily');
     // document.getElementById('weekly-sales-btn').classList.toggle('active', viewType === 'weekly');

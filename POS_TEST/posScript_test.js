@@ -298,25 +298,6 @@ let script = function() {
                                     <p class="checkoutUserChange"><small>CHANGE: ₱ </small><span class="changeAmt"> 0.00 </span></p>\
                                 </div>\
                                 <hr/>\
-                                <div class="checkoutCustomer">\
-                                    <h4>Customer Details</h4>\
-                                    <div class="form-group">\
-                                        <label for="fName">First Name</label>\
-                                        <input type="text" id="fName" placeholder="Enter first name..." class="form-control" />\
-                                    </div>\
-                                    <div class="form-group">\
-                                        <label for="lName">Last Name</label>\
-                                        <input type="text" id="lName" placeholder="Enter last name..." class="form-control" />\
-                                    </div>\
-                                    <div class="form-group">\
-                                        <label for="address">Address</label>\
-                                        <input type="text" id="address" placeholder="Enter address..." class="form-control" />\
-                                    </div>\
-                                    <div class="form-group">\
-                                        <label for="contact">Contact</label>\
-                                        <input type="text" id="contact" placeholder="Enter contact..." class="form-control" />\
-                                    </div>\
-                                </div>\
                             </div>\
                         </div>';
 

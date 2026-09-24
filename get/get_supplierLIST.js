@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const supplierSelect = document.getElementById("Supplier_IDPROD");
+  const supplierSelect = document.getElementById("Supplier_IDLISTORDER");
 
   async function loadSupplierIDs() {
     try {
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const option = document.createElement("option");
           option.value = supplier.Supplier_ID;
         
-          option.text = `${supplier.Supplier_ID} - ${supplier.SupplierFName} ${supplier.SupplierLName} (${supplier.Location}) -- (${supplier.OfferedProductsType})`;
+          option.text = `${supplier.Supplier_ID} - ${supplier.SupplierFName} ${supplier.SupplierLName} (${supplier.Location})`;
           supplierSelect.add(option);
         });
       }

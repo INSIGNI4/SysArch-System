@@ -1,130 +1,115 @@
+// document.addEventListener("DOMContentLoaded", function () {
 
+//     const orderedInput = document.getElementById("update-orderedQuantity");
+//     const receivedInput = document.getElementById("update-received");
+//     const issueInput = document.getElementById("update-issue");
 
-document.addEventListener("DOMContentLoaded", function() {
-  const orderedInput = document.getElementById("update-orderedQuantity");
-  const receivedInput = document.getElementById("update-received");
-  const issueInput = document.getElementById("update-issue");
+//     if (orderedInput && receivedInput && issueInput) {
 
-  if (orderedInput && receivedInput && issueInput) {
-    function validateQuantities() {
-      const ordered = parseInt(orderedInput.value) || 0;
-      const received = parseInt(receivedInput.value) || 0;
-      const issue = parseInt(issueInput.value) || 0;
-      const total = received + issue;
+//         function validateQuantities() {
 
-      // Validation rule: must match exactly
-        if (receivedInput.value !== "" && issueInput.value !== "") {
-            const total = received + issue;
+//             const ordered = parseInt(orderedInput.value) || 0;
+//             const received = parseInt(receivedInput.value) || 0;
+//             const issue = parseInt(issueInput.value) || 0;
 
-            if (total !== ordered) {
-            alert("Invalid Quantity: Total Received + With Issue must equal Ordered Quantity.");
-            receivedInput.value = "";
-            issueInput.value = 0;
-            receivedInput.focus();
-            }
-        }
-    }
+//             const total = received + issue;
 
-    // Trigger validation when user stops typing or leaves field
-    receivedInput.addEventListener("change", validateQuantities);
-    issueInput.addEventListener("change", validateQuantities);
+//             // Cannot receive/issue more than what was ordered
+//             if (total > ordered) {
 
-    // Optional: prevent form submission if invalid
-    const form = receivedInput.closest("form");
-    if (form) {
-      form.addEventListener("submit", function(e) {
-        const ordered = parseInt(orderedInput.value) || 0;
-        const received = parseInt(receivedInput.value) || 0;
-        const issue = parseInt(issueInput.value) || 0;
-        const total = received + issue;
-        if (total !== ordered) {
-          e.preventDefault();
-          alert("Please fix the quantities before saving.");
-        }
-      });
-    }
-  }
-});
+//                 alert("Invalid Quantity: Without Issue + With Issue cannot exceed Ordered Quantity.");
 
+//                 receivedInput.value = "";
+//                 issueInput.value = 0;
 
+//                 receivedInput.focus();
+//             }
+//         }
 
+//         receivedInput.addEventListener("change", validateQuantities);
+//         issueInput.addEventListener("change", validateQuantities);
 
+//         // Final validation before saving
+//         const form = receivedInput.closest("form");
 
+//         if (form) {
+//             form.addEventListener("submit", function (e) {
 
+//                 const ordered = parseInt(orderedInput.value) || 0;
+//                 const received = parseInt(receivedInput.value) || 0;
+//                 const issue = parseInt(issueInput.value) || 0;
 
+//                 const total = received + issue;
 
+//                 if (total > ordered) {
+//                     e.preventDefault();
 
+//                     alert("Please fix the quantities. The total cannot exceed the Ordered Quantity.");
 
-
-
-
-
-// document.addEventListener('DOMContentLoaded', function() {
-//   const orderedInput = document.getElementById('Quantity')
-//   const receivedInput = document.getElementById('TotalReceived')
-//   const issueInput = document.getElementById('withIssue')
-
-
-
-//   if (orderedInput && receivedInput && issueInput) {
-//     function validateQuantities() {
-//       const ordered = parseInt(orderedInput.value) || 0;
-//       const received = parseInt(receivedInput.value) || 0;
-//       const issue = parseInt(issueInput.value) || 0;
-//       const total = received + issue;
-
-//       if (total > ordered || total < ordered) {
-//         alert('Invalid Quantity: The sum of Total Received and With Issue must equal Ordered Quantity.');
-//         receivedInput.value = '';
-//         issueInput.value = '';
-//       }
+//                     receivedInput.focus();
+//                 }
+//             });
+//         }
 //     }
-
-//     receivedInput.addEventListener('input', validateQuantities);
-//     issueInput.addEventListener('input', validateQuantities);
-//   }
 // });
 
+document.addEventListener("DOMContentLoaded", function () {
 
+    const orderedInput = document.getElementById("update-orderedQuantity");
+    const receivedInput = document.getElementById("update-received");
+    const issueInput = document.getElementById("update-issue");
 
+    if (orderedInput && receivedInput && issueInput) {
 
+        function validateQuantities() {
 
+            const ordered = parseInt(orderedInput.value) || 0;
+            const received = parseInt(receivedInput.value) || 0;
+            const issue = parseInt(issueInput.value) || 0;
 
+            const total = received + issue;
 
+            // Partial delivery is allowed.
+            // But delivered quantity + issue cannot exceed the quantity for this restock row.
+            if (total > ordered) {
 
+                alert(
+                    "Invalid Quantity: Without Issue + With Issue cannot exceed Ordered Quantity."
+                );
 
-// const quantityInput = document.getElementById('Quantity');
-// const receivedInput = document.getElementById('TotalReceived');
-// const issueInput = document.getElementById('withIssue');
+                receivedInput.value = "";
+                issueInput.value = 0;
 
-// // Run check whenever any relevant input changes
-// quantityInput.addEventListener('input', validateInputs);
-// receivedInput.addEventListener('input', validateInputs);
-// issueInput.addEventListener('input', validateInputs);
+                receivedInput.focus();
+            }
+        }
 
+        receivedInput.addEventListener("change", validateQuantities);
+        issueInput.addEventListener("change", validateQuantities);
 
+        const form = receivedInput.closest("form");
 
+        if (form) {
+            form.addEventListener("submit", function (e) {
 
+                const ordered = parseInt(orderedInput.value) || 0;
+                const received = parseInt(receivedInput.value) || 0;
+                const issue = parseInt(issueInput.value) || 0;
 
+                const total = received + issue;
 
+                if (total > ordered) {
 
-//   const received = parseFloat(receivedInput.value) || 0;
-//   const issue = parseFloat(issueInput.value) || 0;
-//   const total = received + issue;
-//   const quantity = parseInt(quantityInput.value);
+                    e.preventDefault();
 
+                    alert(
+                        "Please fix the quantities. " +
+                        "Without Issue + With Issue cannot exceed Ordered Quantity."
+                    );
 
-//   if (total < quantity) {
-//     alert('Invalid Quantity.');
-//     received.value = '';
-//     issue.value = '';
-//     return;
-//   }
-
-//   if (quantity > total) {
-//     alert('Quantity cannot exceed Total Received.');
-//     received.value = '';
-//     issue.value = '';
-//     return;
-//   }
-
+                    receivedInput.focus();
+                }
+            });
+        }
+    }
+});

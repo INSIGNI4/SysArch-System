@@ -1,161 +1,246 @@
 document.addEventListener('DOMContentLoaded', function () {
+
     const modal = document.getElementById('updateOrderModal');
+
     const statusSelect = document.getElementById('update-status');
     const idInput = document.getElementById('update-order-id');
-    const deliverystatusSelect = document.getElementById('update-delivery-status');
+
     const orderedQtys = document.getElementById('update-orderedQuantity');
     const totalReceivedInput = document.getElementById('update-received');
     const withIssueInput = document.getElementById('update-issue');
+
     const proofInput = document.getElementById('edit-image');
-    const dateReceivedInput = document.getElementById('update-datereceived');
+
+    const expirationDateInput =
+        document.getElementById('update-expiration-date');
+
+    const nulltoggleBtn =
+        document.getElementById('toggleNullBtnOrder_restock');
+
+    const notnulltoggleBtn =
+        document.getElementById('toggleNotNullBtnOrder_restock');
+
+    const updateOrderBtn =
+        document.getElementById('update-restock-status-btn');
+
+    const deleteproductbtn =
+        document.getElementById('delete-restock-btn');
+
+    const updateCancelBtn =
+        document.getElementById('updateorder-cancel-btn');
+
+
+    /* =========================================================
+       HIDE ACTION BUTTONS
+    ========================================================= */
 
     function resetActions() {
-        document.querySelectorAll(".update-order-btn").forEach(btn => btn.style.display = "none");
+
+        document.querySelectorAll(".update-order-btn").forEach(function (btn) {
+            btn.style.display = "none";
+        });
+
+        document.querySelectorAll(".edit-order-btn").forEach(function (btn) {
+            btn.style.display = "none";
+        });
+
+        document.querySelectorAll(".delete-product-form").forEach(function (form) {
+            form.style.display = "none";
+        });
     }
 
-    // ⏱️ Dynamically bind update button clicks
+
+    /* =========================================================
+       BIND UPDATE BUTTONS
+    ========================================================= */
+
     function bindUpdateButtons() {
-        document.querySelectorAll(".update-order-btn").forEach(button => {
-            // Remove previous listeners (clone)
+
+        document.querySelectorAll(".update-order-btn").forEach(function (button) {
+
             const clone = button.cloneNode(true);
+
             button.replaceWith(clone);
 
             clone.addEventListener('click', function () {
+
                 modal.style.display = 'block';
-                idInput.value = this.dataset.id || '';
-                orderedQtys.value = this.dataset.quantity || '';
-                totalReceivedInput.value = this.dataset.received || '';
-                withIssueInput.value = this.dataset.issue || '';
-                statusSelect.value = this.dataset.status || '';
-                deliverystatusSelect.value = this.dataset.deliverystatus || '';
-                dateReceivedInput.value = this.dataset.datereceived || '';
-                proofInput.value = this.dataset.proof || '';
+
+
+                /* =========================
+                   BASIC VALUES
+                ========================= */
+
+                idInput.value =
+                    this.dataset.id || '';
+
+                orderedQtys.value =
+                    this.dataset.quantity || '';
+
+                totalReceivedInput.value =
+                    this.dataset.received || 0;
+
+                withIssueInput.value =
+                    this.dataset.issue || 0;
+
+                statusSelect.value =
+                    this.dataset.status || '';
+
+
+                /* =========================
+                   EXPIRATION DATE
+                ========================= */
+
+                let expirationDate =
+                    this.dataset.expirationdate || '';
+
+                /*
+                 * <input type="date"> needs:
+                 * YYYY-MM-DD
+                 *
+                 * If MySQL somehow gives us a datetime,
+                 * take only the first 10 characters.
+                 */
+
+                if (expirationDate.length > 10) {
+                    expirationDate = expirationDate.substring(0, 10);
+                }
+
+                expirationDateInput.value = expirationDate;
+
+
+                /* =========================
+                   RESET EXPIRATION TOGGLE
+                ========================= */
+
+                expirationDateInput.disabled = false;
+
+                nulltoggleBtn.style.display = 'inline-block';
+                nulltoggleBtn.style.color = 'red';
+
+                notnulltoggleBtn.style.display = 'none';
+
+
+                /*
+                 * Do NOT set:
+                 *
+                 * proofInput.value = this.dataset.proof;
+                 *
+                 * because this is a file input.
+                 */
             });
         });
     }
 
-    // ✅ Toolbar "UPDATE" button click
-    const updateOrderBtn = document.getElementById("update-restock-status-btn");
+
+    /* =========================================================
+       TOOLBAR UPDATE BUTTON
+    ========================================================= */
+
     if (updateOrderBtn) {
-        updateOrderBtn.addEventListener("click", () => {
+
+        updateOrderBtn.addEventListener("click", function () {
+
             resetActions();
-            document.querySelectorAll(".update-order-btn").forEach(btn => {
+
+            document.querySelectorAll(".update-order-btn").forEach(function (btn) {
                 btn.style.display = "inline-block";
             });
+
             bindUpdateButtons();
         });
     }
 
-    // ✅ Cancel modal
-    const cancelBtn = document.getElementById('updateorder-cancel-btn');
-    if (cancelBtn) {
-        cancelBtn.addEventListener('click', function () {
+
+    /* =========================================================
+       CANCEL MODAL
+    ========================================================= */
+
+    if (updateCancelBtn) {
+
+        updateCancelBtn.addEventListener('click', function () {
+
             modal.style.display = 'none';
+
         });
     }
 
-    // ✅ Click outside to close
+
+    /* =========================================================
+       CLICK OUTSIDE MODAL
+    ========================================================= */
+
     window.addEventListener('click', function (event) {
+
         if (event.target === modal) {
+
             modal.style.display = 'none';
+
         }
+
     });
 
-const nulltoggleBtn = document.getElementById('toggleNullBtnOrder_restock');
-const notnulltoggleBtn = document.getElementById('toggleNotNullBtnOrder_restock');
-const expInput = document.getElementById('update-datereceived');
 
-nulltoggleBtn.addEventListener('click', () => {
-    nulltoggleBtn.style.display = 'none';
-    notnulltoggleBtn.style.display = 'inline-block';
-    notnulltoggleBtn.style.color = 'blue';
-    expInput.disabled = true;
+    /* =========================================================
+       EXPIRATION = NO
+    ========================================================= */
+
+    if (nulltoggleBtn) {
+
+        nulltoggleBtn.addEventListener('click', function () {
+
+            nulltoggleBtn.style.display = 'none';
+
+            notnulltoggleBtn.style.display = 'inline-block';
+
+            notnulltoggleBtn.style.color = 'blue';
+
+            expirationDateInput.disabled = true;
+
+            expirationDateInput.value = '';
+
+        });
+
+    }
+
+
+    /* =========================================================
+       EXPIRATION = YES
+    ========================================================= */
+
+    if (notnulltoggleBtn) {
+
+        notnulltoggleBtn.addEventListener('click', function () {
+
+            notnulltoggleBtn.style.display = 'none';
+
+            nulltoggleBtn.style.display = 'inline-block';
+
+            nulltoggleBtn.style.color = 'red';
+
+            expirationDateInput.disabled = false;
+
+        });
+
+    }
+
+
+    /* =========================================================
+       DELETE MODE
+    ========================================================= */
+
+    if (deleteproductbtn) {
+
+        deleteproductbtn.addEventListener("click", function () {
+
+            resetActions();
+
+            document.querySelectorAll(".delete-product-form").forEach(function (form) {
+                form.style.display = "inline-block";
+            });
+
+        });
+
+    }
+
 });
-
-notnulltoggleBtn.addEventListener('click', () => {
-    notnulltoggleBtn.style.display = 'none';
-    nulltoggleBtn.style.display = 'inline-block';
-    nulltoggleBtn.style.color = 'red';
-    expInput.disabled = false;
-});
-
-
-
-
-
-
-const updateORDERtbtn = document.getElementById("update-restock-status-btn");
-const deleteproductbtn = document.getElementById("delete-restock-btn");
-const displaydeletebtn = document.getElementById("display-delete");
-
-
-function resetActions() {
-	document.querySelectorAll(".edit-order-btn").forEach(btn => btn.style.display = "none");
-	document.querySelectorAll(".delete-product-form").forEach(form => form.style.display = "none");
-    
-}
-
-updateORDERtbtn.addEventListener("click", () => {
-	resetActions();
-	document.querySelectorAll(".update-order-btn").forEach(btn => btn.style.display = "inline-block");
-});
-deleteproductbtn.addEventListener("click", () => {
-	resetActions();
-	document.querySelectorAll(".delete-product-form").forEach(btn => btn.style.display = "inline-block");
-    
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-});
-    
-    // // document.addEventListener('click', function () {
-    //     const notnulltoggleBtn = document.getElementById('toggleNotNullBtn1');
-    //     const nulltoggleBtn = document.getElementById('toggleNullBtn1');
-    //     const expInput = document.getElementById('update-datereceived');
-
-    //     // if (e.target.id === 'toggleNullBtn1') {
-    //     //     nulltoggleBtn.style.display = 'none';
-    //     //     notnulltoggleBtn.style.display = 'inline-block';
-    //     //     notnulltoggleBtn.style.color = 'blue';
-    //     //     expInput.disabled = true;
-    //     // }
-
-    //     // if (e.target.id === 'toggleNotNullBtn1') {
-    //     //     notnulltoggleBtn.style.display = 'none';
-    //     //     nulltoggleBtn.style.display = 'inline-block';
-    //     //     nulltoggleBtn.style.color = 'red';
-    //     //     expInput.disabled = false;
-    //     // }
-            
-    //     nulltoggleBtn.addEventListener('click', function () {
-    //         nulltoggleBtn.style.display = 'none';
-    //         notnulltoggleBtn.style.display = 'inline-block';
-    //         notnulltoggleBtn.style.color = 'blue';
-    //         expInput.disabled = true;
-            
-    //     })
-
-    //     notnulltoggleBtn.addEventListener('click', function () {
-    //         notnulltoggleBtn.style.display = 'none';
-    //         nulltoggleBtn.style.display = 'inline-block';
-    //         nulltoggleBtn.style.color = 'red';
-    //         expInput.disabled = false;
-    //     })
-    // // });

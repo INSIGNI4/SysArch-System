@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-   $GLOBALS['conn_pos'] = $conn_pos;
+//    $GLOBALS['conn_pos'] = $conn_pos;
 
 
 // 🚫 Prevent access if user is not logged in
@@ -391,7 +391,7 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <!-- FORECAST DASHBOARD JS -->
-                            <script src="https://code.highcharts.com/highcharts.js"></script>
+                            <!-- <script src="https://code.highcharts.com/highcharts.js"></script> -->
                             <script src="https://code.highcharts.com/modules/data.js"></script>
                             <script src="https://code.highcharts.com/modules/series-label.js"></script>
                             <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -424,7 +424,7 @@ if(isset($_SESSION['email'])){
 
                                     <div id="salesChart"></div>
 
-                                    <script src="https://code.highcharts.com/highcharts.js"></script>
+                                    <!-- <script src="https://code.highcharts.com/highcharts.js"></script> -->
                                     <script>
                                     function formatPeriodLabel(type, period) {
                                     if (type === 'weekly') {
@@ -484,17 +484,6 @@ if(isset($_SESSION['email'])){
 
                                     loadForecast(); // load daily by default
                                     </script>
-
-
-
-
-
-
-
-
-
-
-
                                     
                                 </figure>
                             </div>
@@ -545,13 +534,15 @@ if(isset($_SESSION['email'])){
 
                                 <div class="product-categories">
                                     <button data-type="All" class="active">All</button>
-                                    <button data-type="Exhaust">Exhaust</button>
-                                    <button data-type="Mirror">Mirror</button>
-                                    <button data-type="Tires">Tires</button>
-                                    <button data-type="Suspensions">Suspensions</button>
-                                    <button data-type="Rims">Rims</button>
-                                    <button data-type="Stands">Stands</button>
-                                    <button data-type="Oil">Oil</button>
+                                    <button data-type="Noodles and Instant Meals">Noodles and Instant Meals</button>
+                                    <button data-type="Frozen Hotpot Goods">Frozen Hotpot Goods</button>
+                                    <button data-type="Side Dishes">Side Dishes</button>
+                                    <button data-type="Canned Goods">Canned Goods</button>
+                                    <button data-type="Beverages">Beverages</button>
+                                    <button data-type="Sweets and Snacks">Sweets and Snacks</button>
+                                    <button data-type="Ice Cream">Ice Cream</button>
+                                    <button data-type="Beauty & Personal Care">Beauty & Personal Care</button>
+
                                 </div>
 
                                 <table class="product_table">
@@ -828,23 +819,35 @@ if(isset($_SESSION['email'])){
 
                             </div>
 
-                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
                         <!-- <script src="dashboardAssets/js/demand_dashboard.js"></script> -->
+                    
+                        <!-- <script src="ml_prediction-main/dashboardAssets/js/demand_dashboard.js"></script>
+                        <script>
+                            loadDemandChart("productChart", "product");
+                            loadDemandChart("categoryChart", "category");
+                            loadDemandChart("trendChart", "trend");
+                        </script> -->
+
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                        <!-- ORIGINAL PARENT DASHBOARD JS -->
                         <script src="dashboardAssets/stock_avail.js"></script>
                         <script src="dashboardAssets/summary.js"></script>
-                        <script src="dashboardAssets/forecast_dh.js"></script>
+                        <!-- <script src="dashboardAssets/forecast_dh.js"></script> -->
                         <script src="dashboardAssets/analytics_dh.js"></script>
-                        <script src="dashboardAssets/topcustomer_dh.js"></script>
+                        <!-- <script src="dashboardAssets/topcustomer_dh.js"></script> -->
                         <script src="dashboardAssets/return.js"></script>
                         <script src="dashboardAssets/products_summary.js"></script>
+
+                        <!-- AI DEMAND DASHBOARD -->
                         <script src="ml_prediction-main/dashboardAssets/js/demand_dashboard.js"></script>
+
                         <script>
                             loadDemandChart("productChart", "product");
                             loadDemandChart("categoryChart", "category");
                             loadDemandChart("trendChart", "trend");
                         </script>
-
-
 
                 </div>
 
@@ -1238,16 +1241,15 @@ if(isset($_SESSION['email'])){
                                 
                                     <select class="type-select" name="Type" required>
                                         <option value="NONE">...</option>
-                                        <option value="Exhaust">Exhaust</option>
-                                        <option value="Tires">Tires</option>
-                                        <option value="Brakes">Brakes</option>
-                                        <option value="Stand">Stand</option>
-                                        <option value="Forks">Forks</option>
-                                        <option value="Rims">Rims</option>
-                                        <option value="Mirror">Mirror</option>
-                                        <option value="Suspension">Suspension</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Oil">Oil</option>
+                                        <option value="Noodles and Instant Meals">Noodles and Instant Meals</option>
+                                        <option value="Frozen Hotpot Goods">Frozen Hotpot Goods</option>
+                                        <option value="Side Dishes">Side Dishes</option>
+                                        <option value="Canned Goods">Canned Goods</option>
+                                        <option value="Beverages">Beverages</option>
+                                        <option value="Sweets and Snacks">Sweets and Snacks</option>
+                                        <option value="Ice Cream">Ice Cream</option>
+                                        <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                                        
                                     </select>
                                     </div>
 
@@ -1334,17 +1336,17 @@ if(isset($_SESSION['email'])){
                                     <label>Type:</label>
                                     <div style="display: flex; justify-content:space-between; align-items:center;">
                                     <select class="type-select" name="Type"  id="edit-type" required>
-                                        <option value="">...</option>
-                                        <option value="Exhaust">Exhaust</option>
-                                        <option value="Tires">Tires</option>
-                                        <option value="Brakes">Brakes</option>
-                                        <option value="Stand">Stand</option>
-                                        <option value="Forks">Forks</option>
-                                        <option value="Rims">Rims</option>
-                                        <option value="Mirror">Mirror</option>
-                                        <option value="Suspension">Suspension</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Oil">Oil</option>
+                                   
+                                        <option value="NONE">...</option>
+                                        <option value="Noodles and Instant Meals">Noodles and Instant Meals</option>
+                                        <option value="Frozen Hotpot Goods">Frozen Hotpot Goods</option>
+                                        <option value="Side Dishes">Side Dishes</option>
+                                        <option value="Canned Goods">Canned Goods</option>
+                                        <option value="Beverages">Beverages</option>
+                                        <option value="Sweets and Snacks">Sweets and Snacks</option>
+                                        <option value="Ice Cream">Ice Cream</option>
+                                        <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                                        
                                     </select>
                                     </div>
 
@@ -1418,7 +1420,7 @@ if(isset($_SESSION['email'])){
                                     <!-- <th>Reorder Points</th> -->
                                     <th>Ordered</th>
                                     <th>Sold</th>
-                                    <th>Price</th>
+                                    <th>Store Price</th>
                                     <th>Supplier Price</th>
                                     <th>Image</th>
                                     <th>Supplier ID</th>
@@ -1438,8 +1440,8 @@ if(isset($_SESSION['email'])){
                                         <!-- <td><?= $products['ReordingPoints']?></td> -->
                                         <td class="units-ordered"><?= $products['UnitsOrdered']?></td>
                                         <td class="units-sold"><?= $products['UnitSold']?></td>
-                                        <td><?= $products['StorePrice']?></td>
-                                        <td><?= $products['SupplierPrice']?></td>
+                                        <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $products['StorePrice']?></td>
+                                        <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $products['SupplierPrice']?></td>
                                         <td>
                                             <?php if (!empty($products['Image']) && file_exists("uploads/" . $products['Image'])): ?>
                                                 <a href="uploads/<?= $products['Image']?>" target="_blank">
@@ -1576,12 +1578,18 @@ if(isset($_SESSION['email'])){
 
                                     <!-- <label>Supplier ID:</label>
                                     <input type="text" name="Supplier_ID" required> -->
+                                                    
+                                    <!-- <label>Supplier Name:</label>
+                                    <input type="text" name="SupplierName" style="text-transform: uppercase;" required> -->
+                                    <!-- <h5 style="color: black;">Supplier Name</h5>               -->
+                                    <label>Supplier First Name:</label>
+                                    <input type="text" name="SupplierFName" style="text-transform: uppercase;" required>
 
-                                    <label>Supplier Name:</label>
-                                    <input type="text" name="SupplierName" required>
+                                    <label>Supplier Last Name:</label>
+                                    <input type="text" name="SupplierLName" style="text-transform: uppercase;" required>
 
                                     <label>Location:</label>
-                                    <input type="text" name="Location" required>
+                                    <input type="text" name="Location" style="text-transform: uppercase;"required>
 
                                     <!-- <label>Location:</label>
                                     <div style="display: flex; justify-content:space-between; align-items:center;">
@@ -1604,7 +1612,7 @@ if(isset($_SESSION['email'])){
 
 
                                     <label>Email:</label>
-                                    <input type="text" name="Email" required>
+                                    <input type="text" name="Email" style="text-transform: lowercase;"required>
 
                                     <label>Phone Number:</label>
                                     <input type="number" name="PhoneNumber" required>
@@ -1614,18 +1622,16 @@ if(isset($_SESSION['email'])){
                                     <label>Offered Products::</label>
                                     <div style="display: flex; justify-content:space-between; align-items:center;">                   
                                     
-                                    <select class="shelf-row-select" name="OfferedProductsType" required>
-                                        <option value="">...</option>
-                                        <option value="Exhaust">Exhaust</option>
-                                        <option value="Tires">Tires</option>
-                                        <option value="Brakes">Brakes</option>
-                                        <option value="Stand">Stand</option>
-                                        <option value="Forks">Forks</option>
-                                        <option value="Rims">Rims</option>
-                                        <option value="Mirror">Mirror</option>
-                                        <option value="Suspension">Suspension</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Oil">Oil</option>
+                                    <select class="shelf-row-select" name="OfferedProductsType" style="width: max-content;" required>
+                                        <option value="NONE">...</option>
+                                        <option value="Noodles and Instant Meals">Noodles and Instant Meals</option>
+                                        <option value="Frozen Hotpot Goods">Frozen Hotpot Goods</option>
+                                        <option value="Side Dishes">Side Dishes</option>
+                                        <option value="Canned Goods">Canned Goods</option>
+                                        <option value="Beverages">Beverages</option>
+                                        <option value="Sweets and Snacks">Sweets and Snacks</option>
+                                        <option value="Ice Cream">Ice Cream</option>
+                                        <option value="Beauty & Personal Care">Beauty & Personal Care</option>
                                     </select>
                                     <!-- <input type="text" name="LocationR" required> -->
                                     </div>
@@ -1649,7 +1655,8 @@ if(isset($_SESSION['email'])){
                                 <tr>
                                     <!-- <th>#</th> -->
                                     <th>Supplier ID</th>
-                                    <th>Supplier Name</th>
+                                    <th>Supplier First Name</th>
+                                    <th>Supplier Last Name</th>
                                     <th>LOCATION</th>
                                     <!-- <th colspan="4">Location</th> -->
                                     <th>Offered Products TYPE</th>
@@ -1662,7 +1669,8 @@ if(isset($_SESSION['email'])){
                                     <tr>
                                         <!-- <td><?= $index + 1?></td> -->
                                         <td class="supplier-id-cell"><?= $supplier['Supplier_ID']?></td>
-                                        <td><?= $supplier['SupplierName']?></td>
+                                        <td><?= $supplier['SupplierFName']?></td>
+                                        <td><?= $supplier['SupplierLName']?></td>
                                         <td><?= $supplier['Location']?></td>
                                         <td><span class="type-tag-purple"><?= $supplier['OfferedProductsType']?></span></td>
                                         <td><a href="#" class="email-link"><?= $supplier['Email']?></a></td>
@@ -1867,14 +1875,6 @@ if(isset($_SESSION['email'])){
                         <div>
                             <div class="na-quick-search">🔍 Quick Search</div>
                         </div>  
-
-
-
-
-
-
-
-
 
 
 
@@ -2113,17 +2113,18 @@ if(isset($_SESSION['email'])){
                     </div>
                 </div>
 
-
                 
-                                <div id="order-restock" class="content-section">
-                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; 
+                
+                
+                <div id="order-restock" class="content-section">
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
                     height: 80px; ">
                         <div class="top-bar">
                             <div class="tab">RESTOCK</div>
                             <div class="user-controls">
-                                <div>      
+                                <div>
                                 <?php
-                                    echo $row['userName'];                        
+                                    echo $row['userName'];
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
@@ -2131,6 +2132,19 @@ if(isset($_SESSION['email'])){
                         </div>
                         <div class="controls-bar">
                              <div class="controls">
+                                <div class="toggle-buttons">
+                                    <button id="list-restock-btn" class="toggle-btn active">
+                                        List to Order
+                                    </button>
+
+                                    <button id="item-restock-btn" class="toggle-btn">
+                                        Item to Order
+                                    </button>
+
+                                    <button id="receive-restock-btn" class="toggle-btn">
+                                        Item to Receive
+                                    </button>
+                                </div>
                                 <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
                                 <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div> -->
                             </div>
@@ -2143,136 +2157,230 @@ if(isset($_SESSION['email'])){
                         </div>
                     </div>
                     <!-- <div class="toolbar">
-                        <?php 
+                        <?php
                         $totalRows = count($restock);
                         ?>
-                    
-                        
 
-                        <span id="products-count" class="na-count"><?= $totalRows ?></span> 
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span>
                         <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
-                        
+
                         <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
                         <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
                          -->
 
                     <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
                         <div>
-                            <?php 
+                            <?php
                             $totalRows = count($restock);
                             ?>
 
                             <span id="products-count" class="na-count"><?= $totalRows ?></span>
-                            <button id="edit-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button id="delete-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
-                            <!-- <span class="na-icon-btn">🖨️</span> -->
-                             
-                            <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
-                            <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
+
+                            <button id="edit-restock-btn" class="na-btn na-btn-add1" type="button">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+
+                            <button id="delete-restock-btn" class="na-btn na-btn-add1" type="button">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+
+                            <button id="order-restock-add-btn" class="na-btn na-btn-add" type="button">
+                                ADD
+                            </button>
+
+                            <button id="place-order-btn" class="na-btn na-btn-update" type="button" style="display:none;">
+                                PLACE ORDER
+                            </button>
+
+                            <button id="update-restock-status-btn" class="na-btn na-btn-update" type="button" style="display:none;">
+                                UPDATE
+                            </button>
                         </div>
 
                         <div>
                             <div class="na-quick-search">🔍 Quick Search</div>
-                        </div>  
-
+                        </div>
 
                                 <!-- //ADD RESTOCK -->
 
-                        <div id="addOrderRestockModal" class="modal" style="display: none;">
+                        <div id="addListToOrderModal" class="modal" style="display: none;">
+                            <!-- <div class="modal-content"> -->
                             <div class="modal-content">
-                                <h3>Add New Order/Restock</h3>
-                                <form id="restockForm" action="add.php" method="POST">
-                                    <input type="hidden" name="table" value="restock">
+                                <!-- <form id="listForm" action="add.php" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="table" value="list_to_order"> -->
 
-                                    <!-- <label>Select Product ID</label>
-                                    <input type="text" name="Product_ID" required> -->
+                                <h3>Add New List to Order</h3>
 
-                                    <label for="Product_IDORDRES">Choose Product ID:</label>
-                                    <select id="Product_IDORDRES" name="Product_ID" class="id-select" style="width: 60%;" required>
+                                <form id="listToOrderForm">
+                                    <!-- SUPPLIER -->
+                                    <label for="Supplier_IDLISTORDER">Choose Supplier ID:</label>
+                                    <select id="Supplier_IDLISTORDER"name="Supplier_ID"class="id-select"style="width: 60%;"required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
-                                    <!-- <label>Order Type</label>
-                                    <input type="text" name="Type" required> -->
+                                    <!-- EXPECTED RECEIVE DATE -->
 
-                                    <!-- <label>Order Type::</label>
-                                    <div style="display: flex; justify-content:space-between; align-items:center;">                                                       
-                                    <select class="status-select" name="Type" required>
-                                        <option value="">...</option>
-                                        <option value="New">New</option>
-                                        <option value="Re-Order">Re-Order</option>
+                                    <label>
+                                        Expected Receive Date:
+                                    </label>
 
-                                    </select>                        
-                                    </div> -->
+                                    <input
+                                        type="date"
+                                        name="Expected_Receive_Date"
+                                        id="list-expected-receive-date">
 
-                                    
-                                    <!-- <label>Select Supplier ID</label>
-                                    <input type="text" name="Supplier_ID" required> -->
+                                    <!-- FORECAST DATES -->
 
-                                    <label for="Supplier_IDORDRES">Choose Supplier ID:</label>
-                                    <select id="Supplier_IDORDRES" name="Supplier_ID" class="id-select" style="width: 60%;" required>
+                                    <label>
+                                        Forecast Dates:
+
+                                        <button
+                                            type="button"
+                                            id="toggleNullBtnListOrder"
+                                            style="color: red;">
+                                            NO ?
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="toggleNotNullBtnListOrder"
+                                            style="display: none;">
+                                            YES ?
+                                        </button>
+                                    </label>
+
+                                    <!-- FORECAST START DATE -->
+
+                                    <label>
+                                        Forecast Start Date:
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="Forecast_Start_Date"
+                                        id="list-forecast-start-date"
+                                        disabled>
+
+                                    <!-- FORECAST END DATE -->
+
+                                    <label>
+                                        Forecast End Date:
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="Forecast_End_Date"
+                                        id="list-forecast-end-date"
+                                        disabled>
+
+                                    <!-- NOTES -->
+
+                                    <label>
+                                        Notes:
+                                    </label>
+
+                                    <textarea
+                                        name="Notes"
+                                        id="list-order-notes"
+                                        rows="4"
+                                        style="width: 90%;"
+                                        placeholder="Enter notes..."></textarea>
+
+                                    <!-- BUTTONS -->
+
+                                    <div class="modal-buttons">
+
+                                        <button
+                                            type="submit"
+                                            class="na-btn na-btn-add">
+                                            Save
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="list-order-cancel-btn"
+                                            class="na-btn na-btn-cancel">
+                                            Cancel
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                        <link rel="stylesheet" href="assets/add_product.css">
+                        <script src="add_list_restock.js" defer></script>
+                        <script src="get/get_supplierLIST.js" defer></script>
+
+
+                        <div id="addItemToOrderModal" class="modal" style="display:none;">
+                            <div class="modal-content">
+                                <h3>Add New Item to Order</h3>
+
+                                <form id="itemToOrderForm">
+                                    <label for="Item_ListToOrder">Choose List to Order:</label>
+                                    <select id="Item_ListToOrder" name="ListToOrder_ID" class="id-select" style="width:60%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
 
+                                    <label for="Item_ProductID">Choose Product ID:</label>
+                                    <select id="Item_ProductID" name="Product_ID" class="id-select" style="width:60%;" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select>
 
-                                    <label>Quantity:</label>
-                                    <input type="number" name="Quantity" required>
+                                    <!-- <label for="Item_SupplierID">Choose Supplier ID:</label>
+                                    <select id="Item_SupplierID" name="Supplier_ID" class="id-select" style="width:60%;" required>
+                                        <option disabled selected>Loading...</option>
+                                    </select> -->
 
-                                    <!-- <label>Order Date:</label>
-                                    <input type="datetime-local" name="OrderDate" required> -->
+                                    <label id="Current_Stock_label">Current Stock:</label>
 
-                                    <!-- <label>Proof of Transaction:</label>
-                                    <input type="file" accept="image/*" name="Image"> -->
-                                    
-                                    <!-- <label>Status:</label>
-                                    <input type="text" name="Status" required> -->
+                                    <input type="number" name="Current_Stock" id="item-current-stock" style="font-weight: bolder;" value="0" readonly>
+                                    <!-- <label id="Current_Stock_label">Current Stock Quantity:</label> -->
+                                    <!-- <input type="number" id="Current_Stock" style="font-weight: bolder;" readonly> -->
 
+                                    <label>Predicted Demand:</label>
+                                    <input type="number" name="Predicted_Demand" id="item-predicted-demand" value="0" readonly>
 
-                                    <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
-                                    <!-- <label>Status::</label>
-                                    <select class="status-select" name="Status" required>
-                                        <option value="">...</option>
-                                        <option value="Requested">Requested</option>
-                                        <option value="Out for Delivery">Out for Delivery</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                        <option value="Received">Received</option>
-                                        
-                                    </select>            -->
-                                    <input type="hidden"  name="Status" value="Requested">
-                                    
-                                    <!-- <label>Total Received:</label> -->
-                                    <!-- <input type="hidden"  name="TotalReceived" value="0"> -->
-                                    
-                                    <!-- <label>With Issue:</label> -->
-                                    <!-- <input type="hidden"  name="withIssue"  value="0"> -->
+                                    <label style="color: blue">Pack Size:</label>
+                                    <input type="number" name="Pack_Size" id="item-pack-size" style="font-weight: bolder;color: blue" value="1" min="1" readonly>
 
-                                    
-                                    <!-- <label>Delivery Status:</label>
-                                    <input type="text" name="DeliveryStatus" required> -->
+                                    <label>Recommended Order Quantity:</label>
+                                    <input type="number" name="Recommended_Order_Quantity" id="item-recommended-quantity" value="0" min="0" readonly>
 
+                                    <label>Ordered Quantity:</label>
+                                    <!-- <input
+                                        type="number"
+                                        name="Ordered_Quantity"
+                                        id="item-ordered-quantity"
+                                        value="0"
+                                        min="1"
+                                        step="1"
+                                        required
+                                    > -->
+                                    <input type="number" name="Ordered_Quantity" id="item-ordered-quantity" value="0" min="1" step="1" required>
 
-                                    <!-- <label>Delivery Status::</label>                            
-                                    <select class="status-select" name="DeliveryStatus">
-                                        <option value="">...</option>
-                                        <option value="On Time">On Time</option>
-                                        <option value="Delayed">Delayed</option>
-                                        <option value="Early">Early</option>
-                                    </select>        -->
+                                    <label style="color: green" >Unit Cost:</label>
+                                    <input type="number" name="Unit_Cost" id="item-unit-cost" value="0" min="0" step="0.01" required>
+
+                                    <label>Notes:</label>
+                                    <textarea name="Notes" id="item-order-notes" rows="3" style="width:90%;" placeholder="Enter notes..."></textarea>
 
                                     <div class="modal-buttons">
                                         <button type="submit" class="na-btn na-btn-add">Save</button>
-                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
-                                        <button type="button" id="ord-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
+                                        <button type="button" id="item-order-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                        
-                        <link rel="stylesheet" href="assets/add_product.css">
-                        <script src="assets/add_order.js" defer></script>
-                        <script src="get/get_supplierORDRES.js" defer></script>
-                        <script src="get/get_productORDRES.js" defer></script>
 
+                        <script src="add_list_restock.js" defer></script>
+                        <script src="get/get_supplierLIST.js" defer></script>                        
+                        <script src="add_item_to_order.js" defer></script>
+                        <!-- <script src="get_item_order_products.php" defer></script> -->
 
                                 <!-- //EDIT RESTOCK -->
 
@@ -2296,13 +2404,10 @@ if(isset($_SESSION['email'])){
                                         <option disabled selected>Loading...</option>
                                     </select>
 
-
                                     <label>Quantity:</label>
                                     <input type="number" name="Quantity" id="edit-quantity" required>
 
-
                                     <input type="hidden"  name="Status" value="Requested">
-                                    
 
                                     <div class="modal-buttons">
                                         <button type="submit" class="na-btn na-btn-add">Save</button>
@@ -2316,51 +2421,72 @@ if(isset($_SESSION['email'])){
                             <script src="get/edit_supplierRESTOCK.js"></script>
                             <script src="get/edit_productRESTOCK.js"></script>
                         </div>
-                        
+
                         <!-- <script src="assets/add_order.js" defer></script>
-                        
+
                         <script src="get/get_supplierORDRES.js" defer></script>
                         <script src="get/get_productORDRES.js" defer></script> -->
-
-
-
-
-
-
-
 
                         <div id="updateOrderModal" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h3>Update Order/Restock</h3>
                                 <form action="update.php" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="table" value="restock">
-                                    <input type="number" name="id" id="update-order-id">
-
+                                    <!-- <input type="number" name="id" id="update-order-id"> -->
+                                    <input type="hidden" name="id" id="update-order-id">
 
                                     <label>Proof of Transaction:</label>
                                     <input type="file" accept="image/*" name="Image" id="edit-image">
-                                    
-                                    
 
                                     <label>Status::</label>
                                     <!-- <div style="display: flex; justify-content:space-between; align-items:center;"></div>-->
-                                    <select class="status-select" name="Status" id="update-status" required>
+                                    <!-- <select class="status-select" name="Status" id="update-status" required>
                                         <option value="">...</option>
                                         <option value="Requested">Requested</option>
                                         <option value="Out-for-Delivery">Out for Delivery</option>
                                         <option value="Cancelled">Cancelled</option>
                                         <option value="Received">Received</option>
 
-                                    </select>                        
+                                    </select> -->
+
+                                    <select class="status-select" name="Status" id="update-status" required>
+
+                                        <option value="">...</option>
+
+                                        <option value="Requested">
+                                            Requested
+                                        </option>
+
+                                        <option value="Out for Delivery">
+                                            Out for Delivery
+                                        </option>
+
+                                        <option value="Partially-Received">
+                                            Partially-Received
+                                        </option>
+
+                                        <option value="Backorder-Fulfillment">
+                                            Backorder-Fulfillment
+                                        </option>
+
+                                        <option value="Cancelled">
+                                            Cancelled
+                                        </option>
+
+                                        <option value="Received">
+                                            Received
+                                        </option>
+
+                                    </select>
 
 
-                                    <label>Delivery Status::</label>                            
+                                    <!-- <label>Delivery Status::</label>
                                     <select class="status-select" name="DeliveryStatus" id="update-delivery-status">
                                         <option value="">...</option>
                                         <option value="On-Time">On Time</option>
                                         <option value="Delayed">Delayed</option>
                                         <option value="Early">Early</option>
-                                    </select>       
+                                    </select> -->
 
                                     <label style="color: red;">With Expiration? :</label>
                                     <div style="display: flex; justify-content:space-between; align-items:center;">
@@ -2374,10 +2500,10 @@ if(isset($_SESSION['email'])){
                                         <button type="button" id="toggleNullBtnOrder_restock" style="color: red;">NO ?</button>
                                         <button type="button" id="toggleNotNullBtnOrder_restock" style="display: none;">YES ?</button>
                                     </label>
-                                    <input type="date" name="ExpirationDate" id="update-datereceived" style="width: 50%;">
+                                    <!-- <input type="date" name="ExpirationDate" id="update-datereceived" style="width: 50%;" required> -->
+                                    <input type="date" name="ExpirationDate" id="update-expiration-date" style="width: 50%;">
                                     </div>
 
-                                    
                                     <!-- <label>Expiration Date:</label>
                                     <input type="datetime-local" name="Date_Received" id="update-datereceived"> -->
 
@@ -2386,10 +2512,9 @@ if(isset($_SESSION['email'])){
 
                                     <label>Without Issue:</label>
                                     <input type="number"  name="TotalReceived" id="update-received">
-                                    
+
                                     <label>With Issue:</label>
                                     <input type="number"  name="withIssue" id="update-issue">
-
 
                                     <div class="modal-buttons">
                                         <button type="submit" class="na-btn na-btn-add">Save</button>
@@ -2399,121 +2524,230 @@ if(isset($_SESSION['email'])){
                                 </form>
                             </div>
                         </div>
-                        
+
                         <link rel="stylesheet" href="assets/add_product.css">
                         <script src="assets/add_order.js" defer></script>
                         <script src="assets/update_restock.js" defer></script>
                         <script src="get/get_productORDRES.js" defer></script>
                         <script src="compare_quantity.js" defer></script>
-                        
 
-
-
-                        
                     </div>
-                        <div class="table-container order-restock-table-container">
-                            <table class="order-restock-table">
-                                <thead class="sticky-div">
-                                    <tr>
-                                        <!-- <th><?= $totalRows ?></th> -->
-                                        <th>ORESTOCK ID</th>
-                                        <th>Product ID</th>
-                                        <th>Supplier ID</th>
-                                        <!-- <th>Order Type</th> -->
-                                        <th>Ordered Quantity</th>
-                                        <th>Order Date</th>
-                                        <th>Proof of Transaction</th>
-                                        <th>Status</th>
-                                        <th>Delivery Status</th>
-                                        <th>Date Received</th>
-                                        <th>Without Issue</th>
-                                        <th>with Issue</th>
-                                        <th></th>
 
+                    <div id="list-restock-table-container" class="table-container order-restock-table-container">
+                        <table class="order-restock-table">
+                            <thead class="sticky-div">
+                                <tr>
+                                    <th>LIST ORDER ID</th>
+                                    <th>SUPPLIER ID</th>
+                                    <th>ORDER DATE</th>
+                                    <th>EXPECTED RECEIVE</th>
+                                    <th>FORECAST START</th>
+                                    <th>FORECAST END</th>
+                                    <th>STATUS</th>
+                                    <th>TOTAL AMOUNT</th>
+                                    <th>CREATED BY</th>
+                                    <th>NOTES</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                usort($listToOrder, function ($a, $b) {
+                                    return $b['ListToOrder_ID'] <=> $a['ListToOrder_ID'];
+                                });
 
+                                foreach ($listToOrder as $listOrder) {
+                                ?>
+                                    <tr class="list-order-row" data-id="<?= $listOrder['ListToOrder_ID'] ?>">
+                                        <td><?= htmlspecialchars($listOrder['ListToOrder_ID']) ?></td>
+                                        <td><?= htmlspecialchars($listOrder['Supplier_ID']) ?></td>
+                                        <td><?= !empty($listOrder['Order_Date']) ? date('F d, Y h:i A', strtotime($listOrder['Order_Date'])) : '- - -' ?></td>
+                                        <td><?= !empty($listOrder['Expected_Receive_Date']) ? date('F d, Y h:i A', strtotime($listOrder['Expected_Receive_Date'])) : '- - -' ?></td>
+                                        <td><?= !empty($listOrder['Forecast_Start_Date']) ? date('F d, Y', strtotime($listOrder['Forecast_Start_Date'])) : '- - -' ?></td>
+                                        <td><?= !empty($listOrder['Forecast_End_Date']) ? date('F d, Y', strtotime($listOrder['Forecast_End_Date'])) : '- - -' ?></td>
+                                        <td>
+                                            <span class="status-tag status-<?= strtolower(str_replace(' ', '-', $listOrder['Order_Status'])) ?>">
+                                                <?= htmlspecialchars($listOrder['Order_Status']) ?>
+                                            </span>
+                                        </td>
+                                        <td>₱<?= number_format((float)$listOrder['Total_Amount'], 2) ?></td>
+                                        <td><?= htmlspecialchars($listOrder['Created_By'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($listOrder['Notes'] ?? '') ?></td>
+                                        <td class="action-cell">
+                                            <button style="display:none;" class="edit-list-order-btn"
+                                                data-id="<?= $listOrder['ListToOrder_ID'] ?>">
+                                                📝 Edit
+                                            </button>
+
+                                            <form style="display:none;" action="delete.php" method="POST" class="delete-list-order-form">
+                                                <input type="hidden" name="table" value="list_to_order">
+                                                <input type="hidden" name="id" value="<?= $listOrder['ListToOrder_ID'] ?>">
+                                                <button type="submit" onclick="return confirm('Delete this List to Order?')">
+                                                    🗑️ Delete
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php 
-                                        usort($restock, function ($a, $b) {
-                                        return $b['Orestock_ID'] <=> $a['Orestock_ID'];
-                                    });
+                                <?php } ?>
+                            </tbody>
+                        </table>
 
+                    </div>
 
-                                    foreach($restock as $index => $restocks){ ?>
-                                        <tr>
-                                            <!-- <td>
-                                                <?= $index + 1?>
-                                            </td> -->
-                                            <td><?= $restocks['Orestock_ID'] ?></td>
-                                            <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td>
-                                            <td class="supplier-id-cell"><?= $restocks['Supplier_ID'] ?></td>
-                                            <!-- <td><span class="order-type-tag order-type-new"><?= $restocks['Type'] ?></span></td> -->
-                                            <td><?= $restocks['Quantity'] ?></td>
-                                            <td><?= date('F d, Y h:i A', strtotime($restocks['OrderDate']))?></td>
-                                            <!-- <td class="proof-icon"><?= $restocks['ProofOfTransaction'] ?></td> -->
+                    <div id="item-restock-table-container" class="table-container order-restock-table-container" style="display:none;">
+                        <table class="order-restock-table">
+                            <thead class="sticky-div">
+                                <tr>
+                                    <th>ITEM ORDER ID</th>
+                                    <th>LIST ORDER ID</th>
+                                    <th>PRODUCT ID</th>
+                                    <th>SUPPLIER ID</th>
+                                    <th>CURRENT STOCK</th>
+                                    <th>PREDICTED DEMAND</th>
+                                    <th>NET DEMAND</th>
+                                    <th>PACK SIZE</th>
+                                    <th>RECOMMENDED QTY</th>
+                                    <th>ORDERED QTY</th>
+                                    <th>UNIT COST</th>
+                                    <th>LINE TOTAL</th>
+                                    <th>RECEIVED QTY</th>
+                                    <th>STATUS</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                usort($itemToOrder, function ($a, $b) {
+                                    return $b['ItemToOrder_ID'] <=> $a['ItemToOrder_ID'];
+                                });
 
-                                            <td>
-                                                <?php if (!empty($restocks['Image']) && file_exists("uploads/" . $restocks['Image'])): ?>
-                                                    <a href="uploads/<?= $restocks['Image']?>" target="_blank">
-                                                        <img src="uploads/<?= $restocks['Image']?>" alt="Product Image" style="max-width: 50px; max-height: 50px; object-fit: cover;">
-                                                    </a>
-                                                <?php else: ?>
-                                                    No Image
-                                                <?php endif; ?>
-                                            </td>
+                                foreach ($itemToOrder as $itemOrder) {
+                                ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($itemOrder['ItemToOrder_ID']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['ListToOrder_ID']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Product_ID']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Supplier_ID'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Current_Stock']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Predicted_Demand']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Net_Demand']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Pack_Size']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Recommended_Order_Quantity']) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Ordered_Quantity']) ?></td>
+                                        <td>₱<?= number_format((float)$itemOrder['Unit_Cost'], 2) ?></td>
+                                        <td>₱<?= number_format((float)$itemOrder['Line_Total'], 2) ?></td>
+                                        <td><?= htmlspecialchars($itemOrder['Received_Quantity']) ?></td>
+                                        <td>
+                                            <span class="status-tag status-<?= strtolower(str_replace(' ', '-', $itemOrder['Item_Status'])) ?>">
+                                                <?= htmlspecialchars($itemOrder['Item_Status']) ?>
+                                            </span>
+                                            
+                                        </td>
+                                        <td class="action-cell">
+                                            <button style="display:none;" class="edit-item-order-btn"
+                                                data-id="<?= $itemOrder['ItemToOrder_ID'] ?>">
+                                                📝 Edit
+                                            </button>
 
-                                            <!-- <td><span class="status-tag status-pending"><?= $restocks['Status']?></span></td> -->
-
-                                            <td><span class="status-tag status-<?= strtolower($restocks['Status']) ?>">
-                                                                        <?= htmlspecialchars($restocks['Status']) ?>
-                                                </span>
-                                            </td>
-
-                                            <td><span class="delivery-status-tag delivery-status-<?= strtolower($restocks['DeliveryStatus']) ?>">
-                                                                        <?= htmlspecialchars($restocks['DeliveryStatus']) ?>
-                                                </span>
-                                            </td>
-                                            <!-- <td><span class="delivery-status-tag delivery-status-delayed"><?= $restocks['DeliveryStatus']?></span></td> -->
-                                            <!-- <td><?= date('F d, Y h:i A', strtotime($restocks['Date_Received']))?></td> -->
-                                            <td style="color: red;"><?= empty($restocks['Date_Received']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($restocks['Date_Received'])) ?></td>
-                                            <td><?= $restocks['TotalReceived'] ?></td>
-                                            <td><?= $restocks['withIssue'] ?></td>
-
-                                            <td class="action-cell" >
-                                            <!-- edit & delete action -->
-                                                <button style="display: none;" class="edit-order-btn"
-                                                    data-id="<?= $restocks['Orestock_ID'] ?>"
-                                                    data-quantity="<?= $restocks['Quantity'] ?>"                                                                                                        
-                                                    data-productid="<?= $restocks['Product_ID'] ?>"
-                                                    data-supplierid="<?= $restocks['Supplier_ID'] ?>">
-                                                    📝 Edit
+                                            <form style="display:none;" action="delete.php" method="POST" class="delete-item-order-form">
+                                                <input type="hidden" name="table" value="item_to_order">
+                                                <input type="hidden" name="id" value="<?= $itemOrder['ItemToOrder_ID'] ?>">
+                                                <button type="submit" onclick="return confirm('Delete this Item to Order?')">
+                                                    🗑️ Delete
                                                 </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
 
-                                                <button style="display: none;" class="update-order-btn"
-                                                    data-id="<?= $restocks['Orestock_ID'] ?>"
-                                                    data-proof="<?= $restocks['Image'] ?>"
-                                                    data-status="<?= $restocks['Status'] ?>"
-                                                    data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
-                                                    data-datereceived="<?= $restocks['ExpirationDate'] ?>"
-                                                    data-quantity="<?= $restocks['Quantity'] ?>"
-                                                    data-received="<?= $restocks['TotalReceived'] ?>"
-                                                    data-issue="<?= $restocks['withIssue'] ?>">                                                                                    
-                                                    📝 Update
-                                                </button>
+                    <div id="receive-restock-table-container" class="table-container order-restock-table-container" style="display:none;">
+                        <table class="order-restock-table">
+                            <thead class="sticky-div">
+                                <tr>
+                                    <th>#</th>
+                                    <th>ITEM ORDER ID</th>
+                                    <th>PRODUCT ID</th>
+                                    <!-- <th>SUPPLIER ID</th> -->
+                                    <th>ORDERED QUANTITY</th>
+                                    <th>ORDER DATE</th>
+                                    <th>PROOF OF TRANSACTION</th>
+                                    <th>STATUS</th>
+                                    <th>DELIVERY STATUS</th>
+                                    <th>DATE RECEIVED</th>
+                                    <th>WITHOUT ISSUE</th>
+                                    <th>WITH ISSUE</th>
+                                    <th>EXPIRATION DATE</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                usort($restock, function ($a, $b) {
+                                    return $b['Orestock_ID'] <=> $a['Orestock_ID'];
+                                });
 
-                                                <form style="display: none;" id="display-delete" action="delete.php" class="delete-product-form" method="POST" style="display: inline;">
-                                                    <input type="hidden" name="table" value="restock">
-                                                    <input type="hidden" name="id" value="<?= $restocks['Orestock_ID']?>">
-                                                    <button type="submit"  onclick="return confirm('Delete this product?')">🗑️ Delete</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                foreach ($restock as $index => $restocks) {
+                                ?>
+                                    <tr>
+                                        <td><?= $restocks['Orestock_ID'] ?></td>
+                                        <td><?= $restocks['ItemToOrder_ID'] ?></td>
+                                        <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td>
+                                        <!-- <td class="supplier-id-cell"><?= $restocks['Supplier_ID'] ?></td> -->
+                                        <td><?= $restocks['Quantity'] ?></td>
+                                        <td><?= date('F d, Y h:i A', strtotime($restocks['OrderDate'])) ?></td>
+                                        <td>
+                                            <?php if (!empty($restocks['Image']) && file_exists("uploads/" . $restocks['Image'])): ?>
+                                                <a href="uploads/<?= $restocks['Image'] ?>" target="_blank">
+                                                    <img src="uploads/<?= $restocks['Image'] ?>" alt="Product Image" style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                                </a>
+                                            <?php else: ?>
+                                                No Image
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <span class="status-tag status-<?= strtolower($restocks['Status']) ?>">
+                                                <?= htmlspecialchars($restocks['Status']) ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="delivery-status-tag delivery-status-<?= strtolower($restocks['DeliveryStatus']) ?>">
+                                                <?= htmlspecialchars($restocks['DeliveryStatus']) ?>
+                                            </span>
+                                        </td>
+                                        <td style="color:red;">
+                                            <?= empty($restocks['Date_Received']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($restocks['Date_Received'])) ?>
+                                        </td>
+                                        <td><?= $restocks['TotalReceived'] ?></td>
+                                        <td><?= $restocks['withIssue'] ?></td>
+                                        <td>
+                                            <?= !empty($restocks['ExpirationDate']) ? date('F d, Y', strtotime($restocks['ExpirationDate'])) : '- - -' ?>
+                                        </td>
+                                        <td class="action-cell">
+                                            <button style="display:none;" class="update-order-btn"
+                                                data-id="<?= $restocks['Orestock_ID'] ?>"
+                                                data-proof="<?= $restocks['Image'] ?>"
+                                                data-status="<?= $restocks['Status'] ?>"
+                                                data-deliverystatus="<?= $restocks['DeliveryStatus'] ?>"
+                                                
+                                                data-expirationdate="<?= $restocks['ExpirationDate'] ?>"
+                                                data-quantity="<?= $restocks['Quantity'] ?>"
+                                                data-received="<?= $restocks['TotalReceived'] ?>"
+                                                data-issue="<?= $restocks['withIssue'] ?>">
+                                                📝 Update
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- ADD LIST TO ORDER MODAL -->
+
                 </div>
+
 
                 
                 
@@ -3749,10 +3983,12 @@ if(isset($_SESSION['email'])){
     </div>
 
     <!-- Link to the external JavaScript file -->
-    <script src="homepagescript.js"></script>
+    <!-- <script src="homepagescript.js"></script> -->
 
     <script src="homepagescript.js"></script>
     <script src="ai_recommendation.js"></script>
+    <script src="add_list_restock.js"></script>
+    <script src="add_list_to_order.js"></script>
     <!-- <script src="get_product.js" defer></script>
     <script src="get_supplier.js" defer></script> -->
 

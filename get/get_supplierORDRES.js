@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const option = document.createElement("option");
           option.value = supplier.Supplier_ID;
         
-          option.text = `${supplier.Supplier_ID} - ${supplier.SupplierName} - ${supplier.Location} `;
+          option.text = `${supplier.Supplier_ID} - ${supplier.SupplierFName} ${supplier.SupplierLName} (${supplier.Location})`;
           supplierSelect.add(option);
         });
       }

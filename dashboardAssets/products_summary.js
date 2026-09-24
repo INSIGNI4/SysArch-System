@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentTime = "daily";
 
     const fetchProducts = () => {
-        fetch(`dashboardQuery/products_summary.php?type=${currentType}&order=${currentOrder}&time=${currentTime}`)
+        fetch(
+            `dashboardQuery/products_summary.php?type=${encodeURIComponent(currentType)}&order=${encodeURIComponent(currentOrder)}&time=${encodeURIComponent(currentTime)}`
+        )
             .then(res => res.json())
             .then(data => renderProducts(data))
             .catch(err => console.error("Fetching ERROR:", err));

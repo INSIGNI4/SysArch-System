@@ -476,7 +476,12 @@ body, html {
 /* Returns Page Styles */
 .status-requested { background-color: #a46705; color: rgb(252, 252, 252); }
 .status-pending { background-color: #a46705; color: rgb(252, 252, 252);  }
-.status-out-for-delivery { background-color: #018036; color: rgb(252, 252, 252);  }
+
+.status-confirmed { background-color: rgba(60, 255, 0, 0.467); color: rgb(0, 0, 0);  }
+.status-partially-received { background-color: rgba(7, 255, 164, 0.764); color: rgb(0, 0, 0);  }
+.status-backorder-fulfillment { background-color: rgba(0, 86, 55, 0.764); color: rgb(253, 244, 244);  }
+.status-ordered { background-color: rgba(8, 228, 253, 0.901); color: rgb(0, 0, 0);  }
+.status-out-for-delivery { background-color: #016780; color: rgb(252, 252, 252);  }
 .status-cancelled { background-color: #6c1204; color: rgb(252, 252, 252);  }
 .status-received { background-color: #100a42; color: rgb(252, 252, 252);  }
 .status-delivered { background-color: #100a42; color: rgb(252, 252, 252);  }
@@ -1001,6 +1006,15 @@ tbody tr:hover {
     background: rgba(244, 244, 244, 0.9);
     top: 133px; 
     z-index: 9;
+}
+
+.list-order-row {
+    cursor: pointer;
+}
+
+.list-order-row.selected {
+    outline: 2px solid #007bff;
+    background-color: #eaf3ff;
 }
 
 

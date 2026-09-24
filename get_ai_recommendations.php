@@ -4,100 +4,258 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/connect.php';
 
+
 /*
 |--------------------------------------------------------------------------
-| GET AI RECOMMENDATIONS
+| CURRENT AI FORECAST CYCLE
 |--------------------------------------------------------------------------
-| Uses:
-|   ml_predictions  -> 14-day predicted demand
-|   expiration      -> current batch inventory
-|   product         -> product + current supplier + price + pack size
-|   supplier        -> supplier name + location
 |
-| The result is used by ai_recommendation.js
-|--------------------------------------------------------------------------
+| We use the current future predictions as the active forecast cycle.
+|
 */
 
 $sql = "
+
     SELECT
         p.Product_ID,
         p.ProductName,
-
         p.Supplier_ID,
-        s.SupplierName,
-        s.Location AS SupplierLocation,
+        CONCAT_WS(
+            ' ',
+            s.SupplierFName,
+            s.SupplierLName
+        ) AS SupplierName,
 
+        s.Location AS SupplierLocation,
+        
         p.SupplierPrice,
         p.Pack_Size,
 
         COALESCE(inv.CurrentStock, 0) AS CurrentStock,
 
-        ROUND(SUM(mp.Predicted_Demand), 2) AS PredictedDemand
+        ROUND(
+            SUM(mp.Predicted_Demand),
+            2
+        ) AS PredictedDemand
+
 
     FROM point_of_sale.ml_predictions mp
+
 
     INNER JOIN login.product p
         ON p.Product_ID = mp.Product_ID
 
+
     LEFT JOIN login.supplier s
         ON s.Supplier_ID = p.Supplier_ID
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | CURRENT PHYSICAL STOCK
+    |--------------------------------------------------------------------------
+    */
+
     LEFT JOIN (
+
         SELECT
             Product_ID,
             SUM(Quantity) AS CurrentStock
+
         FROM login.expiration
+
         GROUP BY Product_ID
+
     ) inv
+
         ON inv.Product_ID = p.Product_ID
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | CURRENT FORECAST CYCLE
+    |--------------------------------------------------------------------------
+    */
+
+    CROSS JOIN (
+
+        SELECT
+
+            MIN(ForecastDate) AS CycleStart,
+            MAX(ForecastDate) AS CycleEnd
+
+        FROM point_of_sale.ml_predictions
+
+        WHERE
+            ForecastDate > CURDATE()
+
+            AND ForecastDate
+                <= DATE_ADD(
+                    CURDATE(),
+                    INTERVAL 14 DAY
+                )
+
+    ) cycle
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CURRENT 14-DAY FORECAST
+    |--------------------------------------------------------------------------
+    */
+
     WHERE
+
         mp.ForecastDate > CURDATE()
-        AND mp.ForecastDate <= DATE_ADD(CURDATE(), INTERVAL 14 DAY)
+
+        AND mp.ForecastDate
+            <= DATE_ADD(
+                CURDATE(),
+                INTERVAL 14 DAY
+            )
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DO NOT SHOW A PRODUCT THAT WAS ALREADY HANDLED
+        | BY AN AI RECOMMENDATION FOR THIS CYCLE
+        |--------------------------------------------------------------------------
+        */
+
+        AND NOT EXISTS (
+
+            SELECT 1
+
+            FROM login.item_to_order i
+
+            INNER JOIN login.list_to_order l
+
+                ON l.ListToOrder_ID =
+                   i.ListToOrder_ID
+
+
+            WHERE
+
+                i.Product_ID =
+                    p.Product_ID
+
+
+                /*
+                | Only AI-generated orders
+                */
+
+                AND l.Created_By =
+                    'AI Recommendation'
+
+
+                /*
+                | Cancelled orders do NOT count as handled
+                */
+
+                AND l.Order_Status <>
+                    'Cancelled'
+
+
+                /*
+                | The AI order belongs to
+                | this forecast cycle
+                */
+
+                AND l.Forecast_Start_Date
+                    <= cycle.CycleStart
+
+                AND l.Forecast_End_Date
+                    >= cycle.CycleEnd
+
+        )
+
 
     GROUP BY
         p.Product_ID,
         p.ProductName,
         p.Supplier_ID,
-        s.SupplierName,
+        s.SupplierFName,
+        s.SupplierLName,
         s.Location,
         p.SupplierPrice,
         p.Pack_Size,
         inv.CurrentStock
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | ONLY PRODUCTS WITH A SHORTAGE
+    |--------------------------------------------------------------------------
+    */
+
     HAVING
-        PredictedDemand > COALESCE(inv.CurrentStock, 0)
+
+        PredictedDemand >
+        COALESCE(
+            inv.CurrentStock,
+            0
+        )
+
 
     ORDER BY
-        (PredictedDemand - COALESCE(inv.CurrentStock, 0)) DESC
+
+        (
+            PredictedDemand
+            - COALESCE(
+                inv.CurrentStock,
+                0
+            )
+        ) DESC
+
 ";
 
 
-$result = mysqli_query($conn, $sql);
+$result = mysqli_query(
+    $conn,
+    $sql
+);
+
 
 if (!$result) {
 
-    http_response_code(500);
-
     echo json_encode([
+
         'success' => false,
+
         'error' => mysqli_error($conn)
+
     ]);
 
     exit;
+
 }
 
 
 $data = [];
 
 
-while ($row = mysqli_fetch_assoc($result)) {
+while (
+    $row =
+        mysqli_fetch_assoc($result)
+) {
 
-    $currentStock = (float) $row['CurrentStock'];
+    $currentStock =
+        (float) $row['CurrentStock'];
 
-    $predictedDemand = (float) $row['PredictedDemand'];
 
-    $netDemand = $predictedDemand - $currentStock;
+    $predictedDemand =
+        (float) $row['PredictedDemand'];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | NET DEMAND
+    |--------------------------------------------------------------------------
+    */
+
+    $netDemand =
+        $predictedDemand
+        - $currentStock;
 
 
     /*
@@ -106,68 +264,125 @@ while ($row = mysqli_fetch_assoc($result)) {
     |--------------------------------------------------------------------------
     */
 
-    $packSize = (int) $row['Pack_Size'];
+    $packSize =
+        (int) $row['Pack_Size'];
+
 
     if ($packSize <= 0) {
+
         $packSize = 1;
+
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | RECOMMENDED QUANTITY
+    | AI RECOMMENDED QUANTITY
     |--------------------------------------------------------------------------
-    |
-    | Example:
-    |
-    | Net demand = 196
-    | Pack size  = 12
-    |
-    | 196 / 12 = 16.33
-    | ceil      = 17 packs
-    | 17 * 12   = 204 units
-    |
     */
 
     $recommendedQuantity =
-        ceil($netDemand / $packSize) * $packSize;
 
+        ceil(
+            $netDemand /
+            $packSize
+        )
+        * $packSize;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RETURN DATA
+    |--------------------------------------------------------------------------
+    */
 
     $data[] = [
 
-        'productId' => (int) $row['Product_ID'],
+        'productId' =>
+            (int)
+            $row['Product_ID'],
 
-        'productName' => $row['ProductName'],
 
-        'supplierId' => $row['Supplier_ID'] !== null
-            ? (int) $row['Supplier_ID']
-            : null,
+        'productName' =>
+            $row['ProductName'],
 
-        'supplierName' => $row['SupplierName'] ?? 'No Supplier',
 
-        'supplierLocation' => $row['SupplierLocation'] ?? '',
+        'supplierId' =>
 
-        'currentStock' => $currentStock,
+            $row['Supplier_ID'] !== null
 
-        'predictedDemand' => $predictedDemand,
+                ? (int)
+                    $row['Supplier_ID']
 
-        'netDemand' => round($netDemand, 2),
+                : null,
 
-        'packSize' => $packSize,
 
-        'recommendedQuantity' => (int) $recommendedQuantity,
+        'supplierName' =>
+            $row['SupplierFName']
+            ?? 'No Supplier',
 
-        'orderedQuantity' => (int) $recommendedQuantity,
 
-        'unitCost' => (float) ($row['SupplierPrice'] ?? 0)
+        'supplierLocation' =>
+            $row['SupplierLocation']
+            ?? '',
+
+
+        'currentStock' =>
+            $currentStock,
+
+
+        'predictedDemand' =>
+            $predictedDemand,
+
+
+        'netDemand' =>
+            round(
+                $netDemand,
+                2
+            ),
+
+
+        'packSize' =>
+            $packSize,
+
+
+        'recommendedQuantity' =>
+            (int)
+            $recommendedQuantity,
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MANAGER STARTS WITH AI'S RECOMMENDATION
+        |--------------------------------------------------------------------------
+        */
+
+        'orderedQuantity' =>
+            (int)
+            $recommendedQuantity,
+
+
+        'unitCost' =>
+            (float)
+            (
+                $row['SupplierPrice']
+                ?? 0
+            )
 
     ];
+
 }
 
 
 echo json_encode([
-    'success' => true,
-    'data' => $data
+
+    'success' =>
+        true,
+
+    'data' =>
+        $data
+
 ]);
+
 
 ?>

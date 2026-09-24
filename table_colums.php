@@ -6,7 +6,7 @@ $table_colums_mapping = [
     /// ======= INVENTORY DATABASE ======= ///
 
     'users' => [
-        'id', 'userName', 'email', 'password', 'phone', 'image', 'reset_token_hash', 'reset_token_expires_at','account_activation_hash' 
+        'id', 'userName', 'email', 'password', 'phone', 'image','accountType', 'reset_token_hash', 'reset_token_expires_at','account_activation_hash' 
     ],
     
     'forecast' => [
@@ -53,7 +53,7 @@ $table_colums_mapping = [
         'Product_ID' 
     ],
     'supplier' => [
-        'Supplier_ID', 'SupplierName', 'Location', 'Email', 'PhoneNumber', 'OfferedProductsType' 
+        'Supplier_ID', 'SupplierFName', 'SupplierLName', 'Location', 'Email', 'PhoneNumber', 'OfferedProductsType' 
     ],
     'supplierreturns' => [
         'SReturns_ID', 'Supplier_ID', 'Product_ID', 'Quantity', 'ReturnedDate', 'Status', 'Reason'
@@ -62,7 +62,7 @@ $table_colums_mapping = [
         'Pulled_ID', 'Product_ID', 'Supplier_ID', 'Quantity', 'Reason', 'PulledDate'
     ],
     'restock' => [
-        'Orestock_ID', 'Type', 'Quantity', 'OrderDate', 'Product_ID',
+        'Orestock_ID', 'ItemToOrder_ID','Type', 'Quantity', 'OrderDate', 'Product_ID',
         'Supplier_ID', 'Status', 'Image', 'DeliveryStatus','Date_Received'
         ,'TotalReceived','withIssue','ExpirationDate'
     ],
@@ -72,17 +72,17 @@ $table_colums_mapping = [
     //     'Receipt_Image', 'Status', 'WithIssue', 'Notes'
     // ],
 
-    // 'item_to_order' => [
-    //     'ItemToOrder_ID', 'ListToOrder_ID', 'Product_ID', 'Current_Stock', 'Predicted_Demand',
-    //     'Forecast_Start_Date', 'Forecast_End_Date', 'Net_Demand', 'Pack_Size',
-    //     'Recommended_Order_Quantity', 'Ordered_Quantity', 'Unit_Cost', 'Line_Total',
-    //     'Received_Quantity', 'Item_Status', 'Notes'
-    // ],
+    'item_to_order' => [
+        'ItemToOrder_ID', 'ListToOrder_ID', 'Product_ID', 'Current_Stock', 'Predicted_Demand',
+        'Forecast_Start_Date', 'Forecast_End_Date', 'Net_Demand', 'Pack_Size',
+        'Recommended_Order_Quantity', 'Ordered_Quantity', 'Unit_Cost', 'Line_Total',
+        'Received_Quantity', 'Item_Status', 'Notes'
+    ],
 
-    // 'list_to_order' => [
-    //     'ListToOrder_ID', 'Supplier_ID', 'Order_Date', 'Expected_Receive_Date', 'Order_Status',
-    //     'Total_Amount', 'Created_By', 'Notes'
-    // ],
+    'list_to_order' => [
+        'ListToOrder_ID', 'Supplier_ID', 'Order_Date', 'Expected_Receive_Date', 'Order_Status',
+        'Total_Amount', 'Created_By', 'Notes'
+    ],
 
     // 'inventory_batch' => [
     //     'Batch_ID', 'Product_ID', 'Restock_ID', 'Supplier_ID', 'BatchNum',

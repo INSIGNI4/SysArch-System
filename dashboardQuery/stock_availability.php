@@ -11,8 +11,8 @@ $totalStock = $conn->query($totalStockQuery)->fetch_assoc()['totalStock'] ?? 0;
 $chartQuery = "
     SELECT
         SUM(CASE WHEN i.Inventory = 0 THEN 1 ELSE 0 END) AS outOfStock,
-        SUM(CASE WHEN i.Inventory <= IFNULL(p.ReordingPoints, 5) AND i.Inventory > 0 THEN 1 ELSE 0 END) AS lowStock,
-        SUM(CASE WHEN i.Inventory > IFNULL(p.ReordingPoints, 5) THEN 1 ELSE 0 END) AS available
+        SUM(CASE WHEN i.Inventory <= IFNULL(p.ReordingPoints, 10) AND i.Inventory > 0 THEN 1 ELSE 0 END) AS lowStock,
+        SUM(CASE WHEN i.Inventory > IFNULL(p.ReordingPoints, 10) THEN 1 ELSE 0 END) AS available
     FROM product p
     INNER JOIN inventory i ON p.Product_ID = i.Product_ID
 ";
@@ -25,12 +25,12 @@ $lowStockQuery = "
         i.Inventory,
         CASE 
             WHEN i.Inventory = 0 THEN 'Out of Stock'
-            WHEN i.Inventory <= IFNULL(p.ReordingPoints, 5) THEN 'Low Stock'
+            WHEN i.Inventory <= IFNULL(p.ReordingPoints, 10) THEN 'Low Stock'
             ELSE 'Available'
         END AS StockStatus
     FROM product p
     INNER JOIN inventory i ON p.Product_ID = i.Product_ID
-    WHERE i.Inventory <= IFNULL(p.ReordingPoints, 5)
+    WHERE i.Inventory <= IFNULL(p.ReordingPoints, 10)
     ORDER BY i.Inventory ASC
     LIMIT 10
 ";

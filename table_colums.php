@@ -6,7 +6,7 @@ $table_colums_mapping = [
     /// ======= INVENTORY DATABASE ======= ///
 
     'users' => [
-        'id', 'userName', 'email', 'password', 'phone', 'image','accountType', 'reset_token_hash', 'reset_token_expires_at','account_activation_hash' 
+        'id', 'userName', 'email', 'password', 'phone', 'image','accountType', 'reset_token_hash', 'reset_token_expires_at','account_activation_hash','accountType' 
     ],
     
     'forecast' => [
@@ -49,12 +49,31 @@ $table_colums_mapping = [
         'Customer_ID', 'CustomerName', 'Location', 'Email', 'PhoneNumber'
     ],
     'customersreturns' => [
-        'CReturn_ID', 'ReferenceNo', 'Quantity', 'ReturnedDate', 'ReasonForReturn', 'Customer_ID',
+        'CReturn_ID', 'ReferenceNo', 'Quantity', 'ReturnedDate', 'ReasonForReturn',
         'Product_ID' 
     ],
+    // 'supplier' => [
+    //     'Supplier_ID',
+    //     'SupplierFName',
+    //     'SupplierLName',
+    //     'Location',
+    //     'Email',
+    //     'PhoneNumber',
+    //     'OfferedProductsType'
+        
+    // ],
+    //new
     'supplier' => [
-        'Supplier_ID', 'SupplierFName', 'SupplierLName', 'Location', 'Email', 'PhoneNumber', 'OfferedProductsType' 
+        'Supplier_ID',
+        'CompanyName',
+        'ContactPerson',
+        'Address',
+        'City',
+        'Email',
+        'PhoneNumber',
+        'ProductCategory'
     ],
+
     'supplierreturns' => [
         'SReturns_ID', 'Supplier_ID', 'Product_ID', 'Quantity', 'ReturnedDate', 'Status', 'Reason'
     ],
@@ -64,7 +83,7 @@ $table_colums_mapping = [
     'restock' => [
         'Orestock_ID', 'ItemToOrder_ID','Type', 'Quantity', 'OrderDate', 'Product_ID',
         'Supplier_ID', 'Status', 'Image', 'DeliveryStatus','Date_Received'
-        ,'TotalReceived','withIssue','ExpirationDate'
+        ,'TotalReceived','withIssue','ExpirationDate',
     ],
     
     // 'restock' => [

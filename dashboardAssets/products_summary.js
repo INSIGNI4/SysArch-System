@@ -29,7 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <tr>
                     <div class="product-item">
                         <span class="product-rank">${i + 1}.</span>
-                        <img src="${p.Image}" alt="${p.ProductName}">
+                        <img src="${p.Image.startsWith('uploads/') ? p.Image : 'uploads/' + p.Image}" 
+                                                    alt="${p.ProductName}">
                         <div class="product-info">
                             <strong>${p.ProductName}</strong> <small>${p.Type}</small>
                         </div>

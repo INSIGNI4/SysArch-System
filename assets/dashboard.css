@@ -26,13 +26,21 @@
     grid-row: span 2 / span 2;
     grid-column-start: 9;
 }
-
+/* 
 .return_dashboard {
     grid-column: span 2 / span 2;
     grid-row: span 2 / span 2;
     grid-column-start: 9;
     grid-row-start: 3;
+} */
+
+
+/* Sales Performance expands into the space previously used by Top Customer */
+.return_dashboard {
+    grid-column: 9 / span 2;
+    grid-row: 1 / span 4;
 }
+
 
 .products_dashboard {
     grid-column: span 4 / span 4;
@@ -85,3 +93,8 @@
     grid-column-start: 5;
     grid-row-start: 6;
 }
+
+
+
+
+

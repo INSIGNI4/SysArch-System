@@ -20,14 +20,14 @@ $sql = "
         p.Product_ID,
         p.ProductName,
         p.Supplier_ID,
+        s.CompanyName AS SupplierName,
         CONCAT_WS(
-            ' ',
-            s.SupplierFName,
-            s.SupplierLName
-        ) AS SupplierName,
-
-        s.Location AS SupplierLocation,
-        
+            ', ',
+            NULLIF(s.Address, ''),
+            NULLIF(s.City, '')
+        ) AS SupplierLocation,
+        s.PhoneNumber,
+        s.Email,
         p.SupplierPrice,
         p.Pack_Size,
 
@@ -121,62 +121,31 @@ $sql = "
         | BY AN AI RECOMMENDATION FOR THIS CYCLE
         |--------------------------------------------------------------------------
         */
+       
+
 
         AND NOT EXISTS (
-
             SELECT 1
-
-            FROM login.item_to_order i
-
-            INNER JOIN login.list_to_order l
-
-                ON l.ListToOrder_ID =
-                   i.ListToOrder_ID
-
-
+            FROM login.restock r
             WHERE
-
-                i.Product_ID =
-                    p.Product_ID
-
-
-                /*
-                | Only AI-generated orders
-                */
-
-                AND l.Created_By =
-                    'AI Recommendation'
-
-
-                /*
-                | Cancelled orders do NOT count as handled
-                */
-
-                AND l.Order_Status <>
-                    'Cancelled'
-
-
-                /*
-                | The AI order belongs to
-                | this forecast cycle
-                */
-
-                AND l.Forecast_Start_Date
-                    <= cycle.CycleStart
-
-                AND l.Forecast_End_Date
-                    >= cycle.CycleEnd
-
-        )
+                r.Product_ID = p.Product_ID
+                AND r.Status IN (
+                    'Requested',
+                    'Partially-Received',
+                    'Backorder-Fulfillment'
+                )
+        )        
 
 
     GROUP BY
         p.Product_ID,
         p.ProductName,
         p.Supplier_ID,
-        s.SupplierFName,
-        s.SupplierLName,
-        s.Location,
+        s.CompanyName,
+        s.Address,
+        s.City,
+        s.PhoneNumber,
+        s.Email,
         p.SupplierPrice,
         p.Pack_Size,
         inv.CurrentStock
@@ -317,14 +286,27 @@ while (
                 : null,
 
 
+        // 'supplierName' =>
+        //     $row['SupplierFName']
+        //     ?? 'No Supplier',
+
         'supplierName' =>
-            $row['SupplierFName']
+            $row['SupplierName']
             ?? 'No Supplier',
 
 
         'supplierLocation' =>
             $row['SupplierLocation']
             ?? '',
+
+
+        'supplierPhone' =>
+            $row['PhoneNumber']
+            ?? '',
+
+        'supplierEmail' =>
+            $row['Email']
+            ?? '',    
 
 
         'currentStock' =>

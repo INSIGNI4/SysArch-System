@@ -63,6 +63,73 @@ foreach ($columns as $col) {
     }
 }
 
+// AFTER UPDATE OF SUPPLIER
+
+
+ // Validate required supplier fields
+if ($table_name === 'supplier') {
+    $requiredSupplierFields = [
+        'CompanyName',
+        'ContactPerson',
+        'Address',
+        'City',
+        'Email',
+        'PhoneNumber',
+        'ProductCategory'
+    ];
+
+    foreach ($requiredSupplierFields as $field) {
+        if (
+            !isset($_POST[$field]) ||
+            trim((string) $_POST[$field]) === ''
+        ) {
+            $_SESSION['response'] = [
+                'success' => false,
+                'message' => "Please provide the supplier field: $field."
+            ];
+
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
+    }
+}
+
+
+ // Convert selected supplier fields to uppercase before insertion
+if ($table_name === 'supplier') {
+    $uppercaseFields = [
+        'CompanyName',
+        'ContactPerson',
+        'Address',
+        'City'
+    ];
+
+    foreach ($uppercaseFields as $field) {
+        if (isset($db_arr[$field])) {
+            $db_arr[$field] = mb_strtoupper(
+                trim($db_arr[$field]),
+                'UTF-8'
+            );
+        }
+    }
+
+    // Normalize email to lowercase
+    if (isset($db_arr['Email'])) {
+        $db_arr['Email'] = strtolower(trim($db_arr['Email']));
+    }
+
+    // Remove accidental spaces around the phone number
+    if (isset($db_arr['PhoneNumber'])) {
+        $db_arr['PhoneNumber'] = trim($db_arr['PhoneNumber']);
+    }
+}
+
+
+
+
+
+
+
 // Assign logged-in user for sales table
 if ($table_name === 'sales') {
     $db_arr['id'] = $id;

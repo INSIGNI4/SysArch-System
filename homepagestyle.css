@@ -401,6 +401,8 @@ body, html {
 .na-btn { border: none; border-radius: 4px; padding: 6px 15px; font-weight: bold; cursor: pointer; }
 .na-btn-import { background-color: #007bff; color: white; }
 .na-btn-add { background-color: #ffc107; color: white; }
+.na-btn-edit { background-color: #59554b; color: white; }
+.na-btn-edit:hover { background-color: #0a0802; color: white; }
 /* .na-btn-add:hover { background-color: #983906; color: white; } */
 .na-btn-update { background-color: #027004; color: white; }
 .na-btn-update:hover { background-color: #023003; color: white; }
@@ -479,12 +481,14 @@ body, html {
 
 .status-confirmed { background-color: rgba(60, 255, 0, 0.467); color: rgb(0, 0, 0);  }
 .status-partially-received { background-color: rgba(7, 255, 164, 0.764); color: rgb(0, 0, 0);  }
+.status-p-r-with-issue { background-color: rgb(71, 2, 8); color: rgb(255, 253, 253);  }
 .status-backorder-fulfillment { background-color: rgba(0, 86, 55, 0.764); color: rgb(253, 244, 244);  }
 .status-ordered { background-color: rgba(8, 228, 253, 0.901); color: rgb(0, 0, 0);  }
 .status-out-for-delivery { background-color: #016780; color: rgb(252, 252, 252);  }
 .status-cancelled { background-color: #6c1204; color: rgb(252, 252, 252);  }
 .status-received { background-color: #100a42; color: rgb(252, 252, 252);  }
 .status-delivered { background-color: #100a42; color: rgb(252, 252, 252);  }
+.status-received-with-issue { background-color: #6b2703; color: rgb(252, 252, 252);  }
 
 
 
@@ -518,6 +522,7 @@ body, html {
 .delivery-status-early { background-color: #001997; color: white; font-size: 15px; }
 .delivery-status-on-time { background-color: #28a745; color: white; font-size: 15px; }
 .delivery-status-delayed { background-color: #863d01; color: white; font-size: 15px; }
+.delivery-status-na { background-color: #100700; color: white; font-size: 15px; }
 
 
 
@@ -593,6 +598,7 @@ body, html {
     justify-content: center;
     align-items: flex-start;
     flex-grow: 1;
+    gap: 20px;
 }
 .account-card {
     display: flex;
@@ -1024,6 +1030,298 @@ tbody tr:hover {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================
+   USERS / ACCOUNTS SECTION
+   ========================= */
+
+.users-section {
+    width: 100%;
+    margin-top: 25px;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+}
+
+/* Header */
+.users-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.users-header h2 {
+    margin: 0;
+    margin-right: auto;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Add User Button */
+#users-add-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 7px;
+    background: #198754;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#users-add-btn:hover {
+    background: #157347;
+    transform: translateY(-1px);
+}
+
+/* Edit User Button */
+#edit-user-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 7px;
+    background: #0d6efd;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#edit-user-btn:hover {
+    background: #0b5ed7;
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   USERS TABLE
+   ========================= */
+
+#users-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Table Header */
+#users-table thead {
+    background: #1a1a1a;
+    color: white;
+}
+
+#users-table th {
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* Table Body */
+#users-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #e9ecef;
+    color: #444;
+    font-size: 14px;
+}
+
+/* Alternating rows */
+#users-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+/* Hover */
+#users-table tbody tr:hover {
+    background: #eef4ff;
+    transition: 0.2s ease;
+}
+
+/* Remove border from last row */
+#users-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================
+   SELECT BUTTON
+   ========================= */
+
+.select-user-btn {
+    padding: 7px 13px;
+    border: none;
+    border-radius: 6px;
+    background: #ffc107;
+    color: #212529;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.select-user-btn:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   TABLE RESPONSIVENESS
+   ========================= */
+
+.users-section {
+    overflow-x: auto;
+}
+
+#users-table {
+    min-width: 650px;
+}
+
+/* =========================================
+   FIT ADD USER / EDIT USER MODALS
+   ========================================= */
+
+#addUserModal .modal-content,
+#editUserModal .modal-content {
+    height: fit-content;
+    min-height: 0;
+    max-height: none;
+    flex: none;
+    padding: 25px;
+    box-sizing: border-box;
+}
+#addUserModal,
+#editUserModal {
+    align-items: center;
+    justify-content: center;
+}
+
+#addUserModal select,
+#editUserModal select {
+    margin-top: 12px;
+}
+
+.stock-legend {
+    color: #000000;
+}
+
+.stock-legend span {
+    color: #000000;
+}
+
+.stock-right,
+.stock-right h3,
+.stock-right li {
+    color: #000000;
+}
+
+
+/* #return-count,
+#return-product,
+#return-reason {
+    color: #000000 !important;
+} */
+
+/* #return-count {
+    color: red !important;
+}
+
+.return_content p b {
+    color: #000000 !important;
+} */
+
+#total-products,
+#growth-rate,
+#total-sold,
+#total-transactions {
+    color: #000 !important;
+}
+
+.return_dashboard .return_content p,
+.return_dashboard .return_content p b,
+.return_dashboard .return_content p span {
+    color: #000 !important;
+}
+
+.return_dashboard .return_content {
+    padding: 10px 10px 15px;
+}
+
+.return_dashboard .return_content p {
+    margin: 10px 0;
+}
+
+
+
+
+
+/* Sales Performance card */
+.return_dashboard {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    margin: 0;
+    overflow: hidden;
+}
+
+.return_dashboard .return_header {
+    flex-shrink: 0;
+}
+
+.return_dashboard .return_content {
+    flex: 1;
+    padding: 15px 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.return_dashboard .return_content p {
+    margin: 8px 0;
+}
 
 
 

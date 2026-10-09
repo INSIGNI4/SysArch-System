@@ -10,11 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (TransactionIDs.length === 0) {
         const option = document.createElement("option");
+        option.value = "";
         option.text = "No transaction available";
         option.disabled = true;
         supplierSelect.add(option);
       } else {
         const defaultOption = document.createElement("option");
+        defaultOption.value = "";
         defaultOption.text = "Select Transaction ID";
         defaultOption.disabled = true;
         defaultOption.selected = true;

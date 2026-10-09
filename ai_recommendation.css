@@ -467,3 +467,27 @@
         justify-content: flex-end;
     }
 }
+
+
+#aiOrderConfirmationModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#aiOrderConfirmationModal .ai-order-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}

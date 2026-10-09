@@ -4,7 +4,9 @@ $token = $_GET["token"];
 
 $token_hash = hash("sha256", $token);
 
-$mysqli = require __DIR__ . "/connect.php";
+require __DIR__ . "/connect.php";
+
+$mysqli = $conn;
 
 $sql = "SELECT * FROM users
         WHERE account_activation_hash = ?";

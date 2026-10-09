@@ -10,11 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (supplierIDs.length === 0) {
         const option = document.createElement("option");
+        option.value = "";
         option.text = "No supplier available";
         option.disabled = true;
         supplierSelect.add(option);
       } else {
         const defaultOption = document.createElement("option");
+        defaultOption.value = "";
         defaultOption.text = "Select Supplier ID";
         defaultOption.disabled = true;
         defaultOption.selected = true;

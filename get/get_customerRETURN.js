@@ -10,11 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (CustomerIDs.length === 0) {
         const option = document.createElement("option");
+        option.value = "";
         option.text = "No customer available";
         option.disabled = true;
         productSelect.add(option);
       } else {
         const defaultOption = document.createElement("option");
+        defaultOption.value = "";
         defaultOption.text = "Select Customer ID";
         defaultOption.disabled = true;
         defaultOption.selected = true;

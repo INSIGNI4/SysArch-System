@@ -42,8 +42,19 @@ $id = $_POST['id'];
 
 // collect data
 $update_arr = [];
+// foreach ($columns as $col) {
+//     if ($col !== $primaryKey) {
+
 foreach ($columns as $col) {
     if ($col !== $primaryKey) {
+
+        // Status is now controlled by the database trigger
+        // for restock records.
+        if ($table_name === 'restock' && $col === 'Status') {
+            continue;
+        }
+
+
         if ($col === "ExpirationDate") {
             if (isset($_POST[$col]) && $col !== $primaryKey) {
                 $update_arr[$col] = $_POST[$col];
@@ -57,6 +68,76 @@ foreach ($columns as $col) {
         }
     }
 }
+
+
+
+
+/* =========================================================
+   VALIDATE AND NORMALIZE SUPPLIER DETAILS
+   ========================================================= */
+if ($table_name === 'supplier') {
+
+    // Validate required fields before updating.
+    $requiredSupplierFields = [
+        'CompanyName',
+        'ContactPerson',
+        'Address',
+        'City',
+        'Email',
+        'PhoneNumber',
+        'ProductCategory'
+    ];
+
+    foreach ($requiredSupplierFields as $field) {
+        if (
+            !isset($update_arr[$field]) ||
+            trim((string) $update_arr[$field]) === ''
+        ) {
+            $_SESSION['response'] = [
+                'success' => false,
+                'message' => "Please provide the supplier field: $field."
+            ];
+
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
+    }
+
+    // Store these supplier fields in uppercase.
+    $uppercaseFields = [
+        'CompanyName',
+        'ContactPerson',
+        'Address',
+        'City'
+    ];
+
+    foreach ($uppercaseFields as $field) {
+        $update_arr[$field] = mb_strtoupper(
+            trim((string) $update_arr[$field]),
+            'UTF-8'
+        );
+    }
+
+    // Store email in lowercase.
+    $update_arr['Email'] = strtolower(
+        trim((string) $update_arr['Email'])
+    );
+
+    // Remove spaces at the beginning and end of the phone number.
+    $update_arr['PhoneNumber'] = trim(
+        (string) $update_arr['PhoneNumber']
+    );
+}
+
+
+
+
+
+
+
+
+
+
 
 if (in_array("Image", $columns) && isset($_FILES['Image']) && !empty($_FILES['Image']['name'])) {
     $stmtOld = $conn->prepare("SELECT `Image` FROM `$table_name` WHERE `$primaryKey` = ?");
@@ -246,34 +327,63 @@ if ($table_name === 'restock') {
         + $restockIssueQuantity;
 
 
+
+
+
+
+
+
+
+
+
     /*
      * If manager selected Received but the quantity
      * is still less than the ordered quantity,
      * automatically change it to Partially-Received.
      */
-    if (
-        ($_POST['Status'] ?? '') === 'Received'
-        &&
-        $totalThisDelivery < $restockOrderedQuantity
-    ) {
+    // if (
+    //     ($_POST['Status'] ?? '') === 'Received'
+    //     &&
+    //     $totalThisDelivery < $restockOrderedQuantity
+    // ) {
 
-        $isPartialRestock = true;
+    //     $isPartialRestock = true;
 
-        $update_arr['Status'] =
-            'Partially-Received';
-    }
+    //     $update_arr['Status'] =
+    //         'Partially-Received';
+    // }
+
+
+    // /*
+    //  * Manager may also directly select
+    //  * Partially-Received.
+    //  */
+    // elseif (
+    //     ($_POST['Status'] ?? '') === 'Partially-Received'
+    // ) {
+
+    //     $isPartialRestock = true;
+    // }
+
+
+
+
+
 
 
     /*
-     * Manager may also directly select
-     * Partially-Received.
-     */
-    elseif (
-        ($_POST['Status'] ?? '') === 'Partially-Received'
+    * Determine partial delivery from quantities,
+    * not from the Status dropdown.
+    */
+    if (
+        $totalThisDelivery > 0
+        &&
+        $totalThisDelivery < $restockOrderedQuantity
     ) {
-
         $isPartialRestock = true;
     }
+
+
 
 }
 
@@ -367,263 +477,6 @@ if ($table_name === 'restock') {
 
 
 
-// Execute and set response
-// if ($stmt->execute()) {
-//     $_SESSION['response'] = [
-//         'success' => true,
-//         'message' => ucfirst($table_name) . " updated successfully!"
-//     ];
-// } else {
-//     $_SESSION['response'] = [
-//         'success' => false,
-//         'message' => 'Update failed: ' . $stmt->error
-//     ];
-// }
-
-
-
-// if ($stmt->execute()) {
-
-//     /*
-//      * =========================================================
-//      * CREATE CHILD RESTOCK FOR PARTIAL DELIVERY
-//      * =========================================================
-//      */
-
-//     if (
-//         $table_name === 'restock'
-//         && ($oldRestockStatus !== 'Received')
-//         && (($_POST['Status'] ?? '') === 'Received')
-//         && $oldItemToOrderId !== null
-//     ) {
-
-//         $itemToOrderId = (int)$oldItemToOrderId;
-
-
-//         /*
-//          * Get the original ordered quantity
-//          * and current received quantity.
-//          */
-//         $remainingStmt = $conn->prepare("
-//             SELECT
-//                 ItemToOrder_ID,
-//                 Ordered_Quantity,
-//                 Received_Quantity,
-//                 Product_ID
-//             FROM item_to_order
-//             WHERE ItemToOrder_ID = ?
-//             LIMIT 1
-//         ");
-
-//         $remainingStmt->bind_param(
-//             "i",
-//             $itemToOrderId
-//         );
-
-//         $remainingStmt->execute();
-
-//         $remainingResult = $remainingStmt->get_result();
-
-
-//         if ($remainingRow = $remainingResult->fetch_assoc()) {
-
-//             $orderedQuantity =
-//                 (int)$remainingRow['Ordered_Quantity'];
-
-//             $receivedQuantity =
-//                 (int)$remainingRow['Received_Quantity'];
-
-//             $productId =
-//                 (int)$remainingRow['Product_ID'];
-
-
-//             /*
-//              * Get all quantities marked "With Issue"
-//              * for completed deliveries of this item.
-//              */
-//             $issueStmt = $conn->prepare("
-//                 SELECT
-//                     COALESCE(SUM(withIssue), 0) AS TotalIssues
-//                 FROM restock
-//                 WHERE ItemToOrder_ID = ?
-//                   AND Status = 'Received'
-//             ");
-
-//             $issueStmt->bind_param(
-//                 "i",
-//                 $itemToOrderId
-//             );
-
-//             $issueStmt->execute();
-
-//             $issueResult = $issueStmt->get_result();
-
-//             $issueRow = $issueResult->fetch_assoc();
-
-//             $totalIssues =
-//                 (int)($issueRow['TotalIssues'] ?? 0);
-
-//             $issueStmt->close();
-
-
-//             /*
-//              * Calculate everything accounted for.
-//              *
-//              * Good quantity
-//              * +
-//              * Quantity with issue
-//              */
-//             $totalAccounted =
-//                 $receivedQuantity + $totalIssues;
-
-
-//             /*
-//              * Calculate remaining quantity.
-//              */
-//             $remainingQuantity =
-//                 max(
-//                     $orderedQuantity - $totalAccounted,
-//                     0
-//                 );
-
-
-//             /*
-//              * Only create a child if something
-//              * is still missing.
-//              */
-//             if ($remainingQuantity > 0) {
-
-
-//                 /*
-//                  * Get supplier and type from
-//                  * the completed restock row.
-//                  */
-//                 $restockInfoStmt = $conn->prepare("
-//                     SELECT
-//                         Supplier_ID,
-//                         Type
-//                     FROM restock
-//                     WHERE Orestock_ID = ?
-//                     LIMIT 1
-//                 ");
-
-//                 $restockInfoStmt->bind_param(
-//                     "i",
-//                     $id
-//                 );
-
-//                 $restockInfoStmt->execute();
-
-//                 $restockInfoResult =
-//                     $restockInfoStmt->get_result();
-
-//                 $restockInfo =
-//                     $restockInfoResult->fetch_assoc();
-
-//                 $restockInfoStmt->close();
-
-
-//                 $supplierId =
-//                     (int)($restockInfo['Supplier_ID'] ?? 0);
-
-//                 $type =
-//                     $restockInfo['Type'] ?? 'Re-Order';
-
-
-//                 /*
-//                  * Prevent duplicate open child rows.
-//                  */
-//                 $checkChildStmt = $conn->prepare("
-//                     SELECT Orestock_ID
-//                     FROM restock
-//                     WHERE ItemToOrder_ID = ?
-//                       AND Status IN (
-//                           'Requested',
-//                           'Out for Delivery'
-//                       )
-//                     LIMIT 1
-//                 ");
-
-//                 $checkChildStmt->bind_param(
-//                     "i",
-//                     $itemToOrderId
-//                 );
-
-//                 $checkChildStmt->execute();
-
-//                 $checkChildResult =
-//                     $checkChildStmt->get_result();
-
-
-//                 if ($checkChildResult->num_rows === 0) {
-
-//                     /*
-//                      * Create the child restock.
-//                      */
-//                     $childStmt = $conn->prepare("
-//                         INSERT INTO restock (
-//                             ItemToOrder_ID,
-//                             Type,
-//                             Quantity,
-//                             Product_ID,
-//                             Supplier_ID,
-//                             Status,
-//                             TotalReceived,
-//                             withIssue
-//                         )
-//                         VALUES (
-//                             ?,
-//                             ?,
-//                             ?,
-//                             ?,
-//                             ?,
-//                             'Requested',
-//                             0,
-//                             0
-//                         )
-//                     ");
-
-//                     $childStmt->bind_param(
-//                         "isiii",
-//                         $itemToOrderId,
-//                         $type,
-//                         $remainingQuantity,
-//                         $productId,
-//                         $supplierId
-//                     );
-
-//                     $childStmt->execute();
-
-//                     $childStmt->close();
-//                 }
-
-//                 $checkChildStmt->close();
-//             }
-//         }
-
-//         $remainingStmt->close();
-//     }
-
-
-//     /*
-//      * =========================================================
-//      * NORMAL SUCCESS RESPONSE
-//      * =========================================================
-//      */
-
-//     $_SESSION['response'] = [
-//         'success' => true,
-//         'message' => ucfirst($table_name) . " updated successfully!"
-//     ];
-
-// } else {
-
-//     $_SESSION['response'] = [
-//         'success' => false,
-//         'message' => 'Update failed: ' . $stmt->error
-//     ];
-// }
-
 if ($stmt->execute()) {
 
     /* =========================================================
@@ -654,6 +507,7 @@ if ($stmt->execute()) {
         ");
 
         $remainingStmt->bind_param(
+            
             "i",
             $itemToOrderId
         );
@@ -859,8 +713,146 @@ if ($stmt->execute()) {
 
         }
 
+        
         $remainingStmt->close();
 
+    } else {
+
+        /*
+         * VERSION 1 DIRECT RESTOCK
+         * No ItemToOrder_ID exists.
+         *
+         * Create a Backorder-Fulfillment row
+         * for the remaining quantity.
+         */
+
+        $parentStmt = $conn->prepare("
+            SELECT
+                Product_ID,
+                Supplier_ID,
+                Type,
+                Quantity,
+                TotalReceived,
+                withIssue,
+                Expected_Receive_Date
+            FROM restock
+            WHERE Orestock_ID = ?
+            LIMIT 1
+        ");
+
+        $parentStmt->bind_param("i", $id);
+        $parentStmt->execute();
+
+        $parentResult = $parentStmt->get_result();
+        $parentRow = $parentResult->fetch_assoc();
+
+        $parentStmt->close();
+
+        if ($parentRow) {
+
+            $orderedQuantity =
+                (int) $parentRow['Quantity'];
+
+            $receivedQuantity =
+                (int) $parentRow['TotalReceived'];
+
+            $issueQuantity =
+                (int) $parentRow['withIssue'];
+
+            /*
+             * Calculate what is still owed.
+             */
+            $remainingQuantity =
+                max(
+                    $orderedQuantity
+                    - $receivedQuantity
+                    - $issueQuantity,
+                    0
+                );
+
+            if ($remainingQuantity > 0) {
+
+                /*
+                 * Prevent creating another
+                 * backorder for the same original
+                 * restock.
+                 */
+                $checkBackorderStmt = $conn->prepare("
+                    SELECT Orestock_ID
+                    FROM restock
+                    WHERE
+                        Product_ID = ?
+                        AND Supplier_ID = ?
+                        AND Status = 'Backorder-Fulfillment'
+                    LIMIT 1
+                ");
+
+                $checkBackorderStmt->bind_param(
+                    "ii",
+                    $parentRow['Product_ID'],
+                    $parentRow['Supplier_ID']
+                );
+
+                $checkBackorderStmt->execute();
+
+                $checkBackorderResult =
+                    $checkBackorderStmt->get_result();
+
+                if ($checkBackorderResult->num_rows === 0) {
+
+                    $backorderStmt = $conn->prepare("
+                        INSERT INTO restock
+                        (
+                            Type,
+                            Quantity,
+                            Product_ID,
+                            Supplier_ID,
+                            Expected_Receive_Date,
+                            Status,
+                            TotalReceived,
+                            withIssue
+                        )
+                        VALUES
+                        (
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            'Backorder-Fulfillment',
+                            0,
+                            0
+                        )
+                    ");
+
+                    $type =
+                        $parentRow['Type'] ?? 'Re-Order';
+
+                    $productId =
+                        (int) $parentRow['Product_ID'];
+
+                    $supplierId =
+                        (int) $parentRow['Supplier_ID'];
+
+                    $expectedDate =
+                        $parentRow['Expected_Receive_Date'];
+
+                    $backorderStmt->bind_param(
+                        "siiis",
+                        $type,
+                        $remainingQuantity,
+                        $productId,
+                        $supplierId,
+                        $expectedDate
+                    );
+
+                    $backorderStmt->execute();
+                    $backorderStmt->close();
+                }
+
+                $checkBackorderStmt->close();
+            }
+        }
     }
 
 

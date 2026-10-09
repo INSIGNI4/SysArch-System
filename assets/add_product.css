@@ -104,3 +104,1053 @@
         transform: translateY(0);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   PRODUCT SEARCH POPUP
+========================================= */
+
+.product-search-overlay {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.55);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* SEARCH BOX */
+
+.product-search-box {
+    background-color: white;
+
+    width: 420px;
+    max-width: 90%;
+
+    max-height: 80vh;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+/* HEADER */
+
+.product-search-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 15px;
+}
+
+.product-search-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+
+/* CLOSE BUTTON */
+
+.product-search-close {
+    border: none;
+
+    background: none;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    color: #555;
+
+    cursor: pointer;
+
+    line-height: 1;
+}
+
+.product-search-close:hover {
+    color: #f44336;
+}
+
+
+/* SEARCH INPUT */
+
+.product-search-input {
+    width: 100%;
+
+    padding: 10px;
+
+    border: 1px solid #545151;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+
+    margin-bottom: 10px;
+}
+
+
+/* SEARCH RESULTS */
+
+.product-search-results {
+    max-height: 350px;
+
+    overflow-y: auto;
+
+    border-top: 1px solid #ddd;
+}
+
+
+/* INDIVIDUAL PRODUCT */
+
+.product-search-result {
+    padding: 12px;
+
+    border-bottom: 1px solid #ddd;
+
+    cursor: pointer;
+
+    background-color: white;
+}
+
+.product-search-result:hover {
+    background-color: #f2f2f2;
+}
+
+
+/* PRODUCT NAME */
+
+.product-search-result-name {
+    font-weight: bold;
+
+    color: #333;
+
+    font-size: 14px;
+}
+
+
+/* PRODUCT DETAILS */
+
+.product-search-result-details {
+    margin-top: 4px;
+
+    font-size: 12px;
+
+    color: #666;
+}
+
+
+/* NO RESULTS */
+
+.product-search-no-results {
+    padding: 20px;
+
+    text-align: center;
+
+    color: #777;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   MULTI-ITEM RESTOCK MODAL
+========================================= */
+
+/* Make ONLY the Add Order/Restock modal wider */
+#addOrderRestockModal .modal-content {
+    width: 1000px;
+    max-width: 92%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+
+/* Container for all rows */
+#restock-items-container {
+    width: 100%;
+}
+
+
+/* Individual product row */
+.restock-item-row {
+    display: grid;
+
+    grid-template-columns:
+        2.8fr
+        1fr
+        1fr
+        2.3fr
+        1.3fr
+        45px;
+
+    gap: 10px;
+
+    align-items: end;
+
+    margin-bottom: 12px;
+
+    padding: 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    background-color: #fafafa;
+}
+
+
+/* Each field */
+.restock-row-field {
+    min-width: 0;
+}
+
+
+/* Labels */
+.restock-row-field label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-weight: 600;
+
+    font-size: 13px;
+
+    color: #333;
+}
+
+
+/* Inputs and selects */
+.restock-item-row input,
+.restock-item-row select {
+    width: 100%;
+
+    height: 38px;
+
+    padding: 7px 9px;
+
+    border: 1px solid #545151;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    box-sizing: border-box;
+}
+
+
+/* Product name */
+.restock-product-name {
+    margin-top: 5px;
+}
+
+
+/* Search product button */
+.restock-product-search {
+    height: 32px;
+
+    padding: 5px 10px;
+
+    border: 1px solid #777;
+
+    border-radius: 5px;
+
+    background-color: #f5f5f5;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+/* Search button hover */
+.restock-product-search:hover {
+    background-color: #e5e5e5;
+}
+
+
+/* Remove button */
+.restock-row-action {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+.remove-restock-item {
+    width: 38px;
+
+    height: 38px;
+
+    border: none;
+
+    border-radius: 5px;
+
+    background-color: #e0e0e0;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+
+.remove-restock-item:hover {
+    background-color: #f44336;
+
+    color: white;
+}
+
+
+/* Add Item button spacing */
+#add-restock-item-btn {
+    margin-top: 5px;
+
+    margin-bottom: 10px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 850px) {
+
+    #addOrderRestockModal .modal-content {
+        width: 95%;
+    }
+
+
+    .restock-item-row {
+        grid-template-columns:
+            1fr
+            1fr;
+
+        gap: 10px;
+    }
+
+
+    .restock-row-action {
+        justify-content: flex-start;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   SELECTED PRODUCT SEARCH BUTTON
+========================================= */
+
+.restock-product-search {
+    width: 100%;
+
+    margin-bottom: 5px;
+
+    background-color: #f5f5f5;
+
+    color: #333;
+}
+
+
+.restock-product-search:hover {
+    background-color: #e5e5e5;
+}
+
+
+
+
+.restock-product-name {
+    background-color: #f8f8f8;
+
+    font-weight: 500;
+
+    cursor: default;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   ALREADY SELECTED PRODUCT
+========================================= */
+
+.product-already-selected {
+    background-color: #e8f5e9;
+    border-left: 5px solid #4caf50;
+
+    cursor: not-allowed;
+
+    opacity: 0.8;
+}
+
+
+/* Keep already-selected product from
+   looking clickable */
+.product-already-selected:hover {
+    background-color: #e8f5e9;
+}
+
+
+/* Make the check mark stand out */
+.product-already-selected
+.product-search-result-name {
+    color: #2e7d32;
+}
+
+
+
+
+
+
+
+
+
+/* =========================================
+   SUPPLIER ORDER SUMMARY
+========================================= */
+
+#restock-supplier-summary {
+    margin-top: 15px;
+
+    padding: 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    background-color: #f8f8f8;
+}
+
+
+#restock-supplier-summary h4 {
+    margin: 0 0 10px 0;
+
+    font-size: 14px;
+
+    color: #333;
+}
+
+
+/* Each supplier group */
+
+.supplier-summary-group {
+    margin-bottom: 10px;
+
+    padding: 10px;
+
+    background-color: white;
+
+    border-radius: 6px;
+
+    border: 1px solid #ddd;
+}
+
+
+.supplier-summary-name {
+    font-weight: bold;
+
+    color: #333;
+
+    margin-bottom: 6px;
+}
+
+
+/* Individual product inside group */
+
+.supplier-summary-item {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 5px 0;
+
+    font-size: 13px;
+
+    border-top: 1px solid #eee;
+}
+
+
+.supplier-summary-product {
+    color: #022f16;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+.supplier-summary-quantity {
+    font-weight: bold;
+
+    color: #333;
+}
+
+
+.supplier-summary-empty {
+    margin: 0;
+
+    font-size: 13px;
+
+    color: #777;
+}
+
+
+
+
+
+
+
+/* ================================
+   ORDER CONFIRMATION MODAL
+================================ */
+
+.order-confirmation-box {
+    background-color: #ffffff;
+    width: 900px;
+    max-width: 92%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+}
+
+.order-confirmation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.order-confirmation-header h3 {
+    margin: 0;
+    color: #333333;
+}
+
+.order-confirmation-message {
+    margin-bottom: 15px;
+    font-size: 13px;
+    color: #666666;
+}
+
+.order-confirmation-warning {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    color: #856404;
+    font-size: 13px;
+}
+
+/* Supplier group */
+.confirmation-supplier-group {
+    margin-bottom: 15px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.confirmation-supplier-name {
+    padding: 10px;
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #333333;
+}
+
+/* Individual product */
+.confirmation-order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 12px;
+    border-top: 1px solid #eeeeee;
+    font-size: 13px;
+}
+
+.confirmation-product-name {
+    color: #034705;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.confirmation-product-details {
+    color: #000000;
+    text-align: right;
+}
+
+.confirmation-total {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: right;
+    color: #333333;
+}
+
+/* Optional supplier contact layouts */
+.supplier-summary-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #666666;
+}
+
+.supplier-summary-contact span {
+    display: inline-block;
+}
+
+.supplier-summary-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.supplier-summary-name {
+    font-weight: bold;
+    color: #000154;
+}
+
+.supplier-summary-phone,
+.supplier-summary-email {
+    color: #000000;
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+.supplier-summary-divider {
+    color: #aaaaaa;
+    font-weight: bold;
+}
+
+.confirmation-supplier-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: #666666;
+    background-color: #fafafa;
+    border-top: 1px solid #eeeeee;
+}
+
+.confirmation-supplier-contact span {
+    display: inline-block;
+}
+
+.confirmation-supplier-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+.confirmation-supplier-name {
+    font-weight: bold;
+    color: #333333;
+}
+
+.confirmation-supplier-phone,
+.confirmation-supplier-email {
+    color: #000000;
+    font-size: 12px;
+    font-weight: bolder;
+}
+
+.confirmation-supplier-divider {
+    color: #aaaaaa;
+    font-weight: bold;
+}
+
+/* =========================================================
+   RESTOCK SUPPLIER SUMMARY
+========================================================= */
+
+.supplier-summary-group {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding: 18px;
+    border: 1px solid #d6d6d6;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #222222;
+}
+
+.supplier-summary-group .supplier-summary-header {
+    margin-bottom: 12px;
+}
+
+/* Default supplier information layout: two columns */
+.supplier-summary-info-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    row-gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    align-items: start;
+    box-sizing: border-box;
+}
+
+/* Location must span the full row in the Create Order modal */
+.supplier-summary-info-row.supplier-location-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+}
+
+/* Make the Location item itself use the full available width */
+.supplier-summary-info-row.supplier-location-row .supplier-summary-info-item {
+    grid-column: 1 / -1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Each label and value */
+.supplier-summary-info-item {
+    display: grid;
+    grid-template-columns: 115px minmax(0, 1fr);
+    align-items: start;
+    min-width: 0;
+    color: #222222;
+    box-sizing: border-box;
+}
+
+.supplier-summary-info-item strong {
+    color: #333333;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.supplier-summary-info-item span {
+    min-width: 0;
+    color: #222222;
+    font-size: 15px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* =========================================================
+   RESTOCK EXPECTED RECEIVE DATE
+========================================================= */
+
+.supplier-summary-expected-date {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+    color: #222222;
+}
+
+.supplier-summary-expected-date label {
+    font-weight: 600;
+    color: #333333;
+}
+
+.supplier-summary-expected-date input {
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #bdbdbd;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #222222;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   RESTOCK PRODUCTS UNDER SUPPLIER
+========================================================= */
+
+.supplier-summary-items {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.supplier-summary-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 80px;
+    gap: 15px;
+    padding: 7px 0;
+    color: #222222;
+}
+
+.supplier-summary-product {
+    min-width: 0;
+    color: #222222;
+    font-size: 15px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.supplier-summary-quantity {
+    text-align: right;
+    font-weight: 600;
+    color: #222222;
+}
+
+/* =========================================================
+   ORDER CONFIRMATION - SUPPLIER INFORMATION
+========================================================= */
+
+.confirmation-supplier-info {
+    width: 100%;
+    margin-bottom: 15px;
+    color: #222222;
+    box-sizing: border-box;
+}
+
+/* Default supplier information layout: two columns */
+.confirmation-supplier-info .supplier-info-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    row-gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    align-items: start;
+    box-sizing: border-box;
+}
+
+/* Location must span the full row in the Review Order modal */
+.confirmation-supplier-info .supplier-info-row.supplier-location-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+}
+
+/* Make the Location item itself use the full available width */
+.confirmation-supplier-info .supplier-info-row.supplier-location-row .supplier-info-item {
+    grid-column: 1 / -1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.confirmation-supplier-info .supplier-info-item {
+    display: grid;
+    grid-template-columns: 115px minmax(0, 1fr);
+    align-items: start;
+    min-width: 0;
+    color: #222222;
+    box-sizing: border-box;
+}
+
+.confirmation-supplier-info .supplier-info-item strong {
+    color: #333333;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.confirmation-supplier-info .supplier-info-item span {
+    min-width: 0;
+    color: #222222;
+    font-size: 15px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* =========================================================
+   ORDER CONFIRMATION - EXPECTED DATE
+========================================================= */
+
+.confirmation-supplier-expected-date {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #dddddd;
+    color: #222222;
+}
+
+.confirmation-supplier-expected-date label {
+    color: #333333;
+    font-weight: 600;
+}
+
+.confirmation-supplier-expected-date strong {
+    color: #222222;
+    font-weight: 600;
+}
+
+/* =========================================================
+   ORDER CONFIRMATION - PRODUCTS
+========================================================= */
+
+.confirmation-supplier-items {
+    width: 100%;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.confirmation-supplier-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 80px;
+    column-gap: 20px;
+    align-items: start;
+    width: 100%;
+    padding: 7px 0;
+    color: #222222;
+    box-sizing: border-box;
+}
+
+.confirmation-supplier-item-name {
+    min-width: 0;
+    color: #222222;
+    font-size: 15px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.confirmation-supplier-item-quantity {
+    text-align: right;
+    color: #222222;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   RESPONSIVE LAYOUT
+========================================================= */
+
+@media (max-width: 650px) {
+    .order-confirmation-box {
+        width: 92%;
+        max-width: 92%;
+        padding: 14px;
+    }
+
+    .supplier-summary-group {
+        padding: 12px;
+    }
+
+    .supplier-summary-info-row,
+    .confirmation-supplier-info .supplier-info-row {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+        row-gap: 8px;
+    }
+
+    .supplier-summary-info-item,
+    .confirmation-supplier-info .supplier-info-item {
+        grid-template-columns: 115px minmax(0, 1fr);
+    }
+
+    .supplier-summary-expected-date,
+    .confirmation-supplier-expected-date {
+        align-items: flex-start;
+    }
+
+    .supplier-summary-item,
+    .confirmation-supplier-item {
+        grid-template-columns: minmax(0, 1fr) 65px;
+        gap: 10px;
+    }
+}

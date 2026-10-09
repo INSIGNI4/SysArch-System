@@ -2,35 +2,63 @@ fetch('dashboardQuery/get_top_products.php')
     .then(response => response.json())
     .then(chartData => {
         console.log("Chart Data:", chartData);
+
+        // Dashboard Analytics appearance:
         Highcharts.chart('container', {
-            chart: { type: 'column' },
+            chart: {
+                type: 'column',
+                backgroundColor: '#ffffff'
+            },
+
+            // Black text is used because the Analytics chart background is white.
             title: { 
                 text: 'Analytics',
                 style: {
-                    fontSize: '20px',   // Title font size
+                    color: '#000000',
+                    fontSize: '20px',
                     fontWeight: 'bold'
                 }
             },
+
             xAxis: {
                 categories: chartData.categories,
-                crosshair: true
+                crosshair: true,
+                labels: {
+                    style: {
+                        color: '#000000'
+                    }
+                }
             },
+
             yAxis: {
                 min: 0,
                 title: { 
                     text: 'Units Sold',
                     style: {
-                        fontSize: '14px'  // Y-axis title font size
+                        color: '#000000',
+                        fontSize: '14px'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#000000'
                     }
                 }
             },
-            tooltip: { valueSuffix: ' units' },
+
+            tooltip: {
+                valueSuffix: ' units'
+            },
+
             legend: {
                 itemStyle: {
-                    fontSize: '16px',   // 🔹 Font size of "Top Selling Products"
+                    color: '#000000',
+                    fontSize: '16px',
                     fontWeight: 'bold'
                 }
             },
+            
+            // Keep colorByPoint: true so the bars remain individually colored.
             plotOptions: {
                 column: { 
                     pointPadding: 0.2, 
@@ -38,6 +66,7 @@ fetch('dashboardQuery/get_top_products.php')
                     colorByPoint: true
                 }
             },
+
             series: [{
                 name: 'Top Selling Products',
                 data: chartData.data

@@ -14,6 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // $lastName = trim($_POST['lName']);
         $email = trim($_POST['email']);
         $phone = trim($_POST['phone']);
+        $accountType = trim($_POST['accountType']);
         $password = trim($_POST['password']);
         $password = md5($password);
 
@@ -45,9 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $activation_token_hash =hash("sha256", $activation_token);
 
-            $insertQuery = "INSERT INTO users (userName, email, phone, password, account_activation_hash) VALUES (?, ?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO users (userName, email, phone, password, accountType, account_activation_hash) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($insertQuery);
-            $stmt->bind_param("sssss", $userName, $email, $phone, $password, $activation_token_hash );
+            $stmt->bind_param("ssssss", $userName, $email, $phone, $password, $accountType, $activation_token_hash );
 
             if ($stmt->execute()) {
 
@@ -76,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "
                 <script>
                     
-                    window.location.href = 'signup-success.html';
+                    window.location.href = 'homepage2.php';
 
                 </script>";
                 // alert('Signup Successful!');
@@ -131,46 +132,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Check if account is activated
             if (is_null($row['account_activation_hash'])) {
-                // session_start();
-                // $_SESSION['email'] = $row['email'];
-
-                // session_start();
-
-                // $_SESSION['email'] = $row['email'];
-                // $_SESSION['user_id'] = $row['id'];
 
                 session_start();
 
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['user_id'] = $row['id'];
+                $_SESSION['accountType'] = $row['accountType'];
 
-                header("Location: homepage2.php");
-                                
+                // Redirect based on account type
+                if ($row['accountType'] === 'Manager') {
 
-                // ✅ Redirect to homepage normally
-                // header("Location: homepage2.php");
-                exit();
+                    header("Location: homepage2.php");
+                    exit();
+
+                } elseif ($row['accountType'] === 'Super Admin') {
+
+                    header("Location: homepage2.php");
+                    exit();
+
+                } elseif ($row['accountType'] === 'Cashier') {
+
+                    header("Location: POS_TEST/pos_test.php");
+                    exit();
+
+                } else {
+
+                    echo "<script>
+                        alert('Account type is not assigned. Please contact the administrator.');
+                        window.location.href = 'index.php';
+                    </script>";
+                    exit();
+                }
 
             } else {
-                // Not activated
-                header("Location: need_activation.php");
+
+                // Account has not been activated
+                echo "<script>
+                    alert('Please activate your account first using the activation link sent to your email.');
+                    window.location.href = 'index.php';
+                </script>";
                 exit();
             }
 
         } else {
+
             // Invalid credentials
             echo "<script>
                 alert('Account Not Found, Incorrect Email or Password!');
-                // ✅ Clear form before redirecting back to login
+
                 if (window.history.replaceState) {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
-                // Redirect to login page
+
                 window.location.href = 'index.php';
             </script>";
             exit();
         }
-
 
         $stmt->close();
     }
@@ -191,5 +208,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- <h1 class="emailerror">echo</h1> -->
 </body>
 </html>
-
-

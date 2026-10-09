@@ -60,21 +60,25 @@ $products = getProducts();
                     <div class="setting alignRight">
                         <a href="javascript:void(0);"><i class="fa fa-gear"></i></a>
                     </div>
-                    <p class="logo">IMS</p>
+                    <!-- <p class="logo">IMS</p> -->
+                    <img src="../sidebarlogo.png" alt="Lobo 2 Celle Logo" style="height: 140px; width: 235px; padding: 0rem 0rem 0.6rem;">
+            
                     <p class="timeAndDate">XX XX,XXXX XX:XX:XX XX</p>
                 </div>
-                <div class="pos_items_container">
+                <div class="pos_items_container" >
                     <div class="pos_items">
                         <p class="itemNoData">No Data</p>
                     </div>
+           
+                </div>
+                    
+                <div class="checkoutBtnContainer" >
                     <div class="item_total_container">
                         <p class="item_total">
                             <span class="item_total--label">TOTAL</span>
                             <span class="item_total--value">PHP: 0.00</span>
                         </p>
-                    </div>            
-                </div>
-                <div class="checkoutBtnContainer">
+                    </div> 
                     <a href="javascript:void(0);" class="checkoutBtn">CHECKOUT</a>
                 </div>
             </div>

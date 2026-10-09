@@ -25,7 +25,8 @@ let stockAdjustmentRowCount = 7, pulledIdCounter = 1007;
 
 // --- State Variables ---
 let activeReturnsTable = 'customer';
-let activeRestockTable = 'listToOrder';
+// let activeRestockTable = 'listToOrder';
+let activeRestockTable = 'itemToReceive';
 let selectedListToOrderId = null;
 let activeTransactionSalesView = 'transaction';
 let activeForecastAnalyticsView = 'forecast';
@@ -140,9 +141,13 @@ function showContentSection(sectionId) {
     if (sectionId === 'sales-aggregation') {
         showSalesAggregrationView('byProduct');
     }
+    // if (sectionId === 'order-restock') {
+    //     showRestockTable('listToOrder');
+    // }
+
     if (sectionId === 'order-restock') {
-        showRestockTable('listToOrder');
-    }
+        showRestockTable('itemToReceive');
+    }    
 
 }
 
@@ -342,76 +347,186 @@ function showReturnsTable(viewType) {
 //     }
 // }
 
+
+
+
+
+
+
+
+
+// function showRestockTable(viewType) {
+//     activeRestockTable = viewType;
+
+//     document.getElementById('list-restock-table-container').style.display =
+//         viewType === 'listToOrder' ? 'flex' : 'none';
+
+//     document.getElementById('item-restock-table-container').style.display =
+//         viewType === 'itemToOrder' ? 'flex' : 'none';
+
+//     document.getElementById('receive-restock-table-container').style.display =
+//         viewType === 'itemToReceive' ? 'flex' : 'none';
+
+//     document.getElementById('list-restock-btn').classList.toggle(
+//         'active',
+//         viewType === 'listToOrder'
+//     );
+
+//     document.getElementById('item-restock-btn').classList.toggle(
+//         'active',
+//         viewType === 'itemToOrder'
+//     );
+
+//     document.getElementById('receive-restock-btn').classList.toggle(
+//         'active',
+//         viewType === 'itemToReceive'
+//     );
+
+//     document.getElementById('edit-restock-btn').style.display =
+//         viewType === 'listToOrder' || viewType === 'itemToOrder'
+//             ? 'inline-block'
+//             : 'none';
+
+//     document.getElementById('delete-restock-btn').style.display =
+//         viewType === 'listToOrder' || viewType === 'itemToOrder'
+//             ? 'inline-block'
+//             : 'none';
+
+//     document.getElementById('order-restock-add-btn').style.display =
+//         viewType === 'listToOrder' || viewType === 'itemToOrder'
+//             ? 'inline-block'
+//             : 'none';
+
+//     // document.getElementById('place-order-btn').style.display =
+//     //     viewType === 'itemToOrder'
+//     //         ? 'inline-block'
+//     //         : 'none';
+
+//     document.getElementById('place-order-btn').style.display =
+//         viewType === 'listToOrder'
+//             ? 'inline-block'
+//             : 'none';            
+
+//     document.getElementById('update-restock-status-btn').style.display =
+//         viewType === 'itemToReceive'
+//             ? 'inline-block'
+//             : 'none';
+
+//     if (viewType === 'listToOrder') {
+//         document.getElementById('products-count').textContent =
+//             document.querySelectorAll('#list-restock-table-container tbody tr').length;
+//     }
+
+//     if (viewType === 'itemToOrder') {
+//         document.getElementById('products-count').textContent =
+//             document.querySelectorAll('#item-restock-table-container tbody tr').length;
+//     }
+
+//     if (viewType === 'itemToReceive') {
+//         document.getElementById('products-count').textContent =
+//             document.querySelectorAll('#receive-restock-table-container tbody tr').length;
+//     }
+// }
+
+
+
 function showRestockTable(viewType) {
-    activeRestockTable = viewType;
 
-    document.getElementById('list-restock-table-container').style.display =
-        viewType === 'listToOrder' ? 'flex' : 'none';
+    activeRestockTable = 'itemToReceive';
 
-    document.getElementById('item-restock-table-container').style.display =
-        viewType === 'itemToOrder' ? 'flex' : 'none';
+    // Only show the Receive/Restock table
+    const receiveTable =
+        document.getElementById('receive-restock-table-container');
 
-    document.getElementById('receive-restock-table-container').style.display =
-        viewType === 'itemToReceive' ? 'flex' : 'none';
-
-    document.getElementById('list-restock-btn').classList.toggle(
-        'active',
-        viewType === 'listToOrder'
-    );
-
-    document.getElementById('item-restock-btn').classList.toggle(
-        'active',
-        viewType === 'itemToOrder'
-    );
-
-    document.getElementById('receive-restock-btn').classList.toggle(
-        'active',
-        viewType === 'itemToReceive'
-    );
-
-    document.getElementById('edit-restock-btn').style.display =
-        viewType === 'listToOrder' || viewType === 'itemToOrder'
-            ? 'inline-block'
-            : 'none';
-
-    document.getElementById('delete-restock-btn').style.display =
-        viewType === 'listToOrder' || viewType === 'itemToOrder'
-            ? 'inline-block'
-            : 'none';
-
-    document.getElementById('order-restock-add-btn').style.display =
-        viewType === 'listToOrder' || viewType === 'itemToOrder'
-            ? 'inline-block'
-            : 'none';
-
-    // document.getElementById('place-order-btn').style.display =
-    //     viewType === 'itemToOrder'
-    //         ? 'inline-block'
-    //         : 'none';
-
-    document.getElementById('place-order-btn').style.display =
-        viewType === 'listToOrder'
-            ? 'inline-block'
-            : 'none';            
-
-    document.getElementById('update-restock-status-btn').style.display =
-        viewType === 'itemToReceive'
-            ? 'inline-block'
-            : 'none';
-
-    if (viewType === 'listToOrder') {
-        document.getElementById('products-count').textContent =
-            document.querySelectorAll('#list-restock-table-container tbody tr').length;
+    if (receiveTable) {
+        receiveTable.style.display = 'flex';
     }
 
-    if (viewType === 'itemToOrder') {
-        document.getElementById('products-count').textContent =
-            document.querySelectorAll('#item-restock-table-container tbody tr').length;
+    // Keep the old tables hidden
+    const listTable =
+        document.getElementById('list-restock-table-container');
+
+    if (listTable) {
+        listTable.style.display = 'none';
     }
 
-    if (viewType === 'itemToReceive') {
-        document.getElementById('products-count').textContent =
-            document.querySelectorAll('#receive-restock-table-container tbody tr').length;
+    const itemTable =
+        document.getElementById('item-restock-table-container');
+
+    if (itemTable) {
+        itemTable.style.display = 'none';
+    }
+
+    // Only the Receive button exists now
+    const receiveButton =
+        document.getElementById('receive-restock-btn');
+
+    if (receiveButton) {
+        receiveButton.classList.add('active');
+    }
+
+    // Hide old buttons if they still exist somewhere
+    const listButton =
+        document.getElementById('list-restock-btn');
+
+    if (listButton) {
+        listButton.classList.remove('active');
+    }
+
+    const itemButton =
+        document.getElementById('item-restock-btn');
+
+    if (itemButton) {
+        itemButton.classList.remove('active');
+    }
+
+    // Edit/Delete are not used for the new Version 1 receiving view
+    const editButton =
+        document.getElementById('edit-restock-btn');
+
+    if (editButton) {
+        editButton.style.display = 'none';
+    }
+
+    const deleteButton =
+        document.getElementById('delete-restock-btn');
+
+    if (deleteButton) {
+        deleteButton.style.display = 'none';
+    }
+
+    // CREATE ORDER should remain available
+    const addButton =
+        document.getElementById('order-restock-add-btn');
+
+    if (addButton) {
+        addButton.style.display = 'inline-block';
+    }
+
+    // PLACE ORDER is Version 2 / List-to-Order functionality
+    const placeOrderButton =
+        document.getElementById('place-order-btn');
+
+    if (placeOrderButton) {
+        placeOrderButton.style.display = 'none';
+    }
+
+    // Update button is for receiving/restock
+    const updateButton =
+        document.getElementById('update-restock-status-btn');
+
+    if (updateButton) {
+        updateButton.style.display = 'inline-block';
+    }
+
+    // Count rows in the actual restock table
+    const countElement =
+        document.getElementById('products-count');
+
+    if (countElement && receiveTable) {
+
+        countElement.textContent =
+            receiveTable.querySelectorAll('tbody tr').length;
     }
 }
 
@@ -883,17 +998,37 @@ if (sidebarToggle) {
     // });
 
 
-    document.getElementById('list-restock-btn').addEventListener('click', function () {
-        showRestockTable('listToOrder');
-    });
 
-    document.getElementById('item-restock-btn').addEventListener('click', function () {
-        showRestockTable('itemToOrder');
-    });
+//BUTTONS FOR RESTOCK
 
-    document.getElementById('receive-restock-btn').addEventListener('click', function () {
-        showRestockTable('itemToReceive');
-    });
+
+    // document.getElementById('list-restock-btn').addEventListener('click', function () {
+    //     showRestockTable('listToOrder');
+    // });
+
+    // document.getElementById('item-restock-btn').addEventListener('click', function () {
+    //     showRestockTable('itemToOrder');
+    // });
+
+    // document.getElementById('receive-restock-btn').addEventListener('click', function () {
+    //     showRestockTable('itemToReceive');
+    // });
+
+
+
+    const receiveRestockBtn =
+        document.getElementById('receive-restock-btn');
+
+    if (receiveRestockBtn) {
+
+        receiveRestockBtn.addEventListener('click', function () {
+
+            showRestockTable('itemToReceive');
+
+        });
+
+    }
+
 
 
     // SELECT LIST TO ORDER
@@ -993,65 +1128,74 @@ if (sidebarToggle) {
     //     }
     // });    
 
-    document.getElementById('place-order-btn').addEventListener('click', async function () {
 
-        if (!selectedListToOrderId) {
-            alert('Please select a List Order first.');
-            return;
-        }
 
-        const confirmed = confirm(
-            `Place List Order #${selectedListToOrderId}?\n\n` +
-            `This will change the order status to Ordered.`
-        );
 
-        if (!confirmed) {
-            return;
-        }
 
-        try {
 
-            const response = await fetch('place_order.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    listToOrderId: selectedListToOrderId
-                })
-            });
+//PLACE ORDER LISTENER
 
-            const rawResponse = await response.text();
 
-            console.log('place_order.php response:', rawResponse);
 
-            let result;
+    // document.getElementById('place-order-btn').addEventListener('click', async function () {
 
-            try {
-                result = JSON.parse(rawResponse);
-            } catch (error) {
-                console.error('Invalid JSON:', rawResponse);
+    //     if (!selectedListToOrderId) {
+    //         alert('Please select a List Order first.');
+    //         return;
+    //     }
 
-                alert('Server returned an invalid response.');
-                return;
-            }
+    //     const confirmed = confirm(
+    //         `Place List Order #${selectedListToOrderId}?\n\n` +
+    //         `This will change the order status to Ordered.`
+    //     );
 
-            if (!result.success) {
-                alert(result.error || 'Failed to place order.');
-                return;
-            }
+    //     if (!confirmed) {
+    //         return;
+    //     }
 
-            alert(result.message);
+    //     try {
 
-            location.reload();
+    //         const response = await fetch('place_order.php', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({
+    //                 listToOrderId: selectedListToOrderId
+    //             })
+    //         });
 
-        } catch (error) {
+    //         const rawResponse = await response.text();
 
-            console.error('Place order error:', error);
+    //         console.log('place_order.php response:', rawResponse);
 
-            alert('An error occurred while placing the order.');
-        }
-    });    
+    //         let result;
+
+    //         try {
+    //             result = JSON.parse(rawResponse);
+    //         } catch (error) {
+    //             console.error('Invalid JSON:', rawResponse);
+
+    //             alert('Server returned an invalid response.');
+    //             return;
+    //         }
+
+    //         if (!result.success) {
+    //             alert(result.error || 'Failed to place order.');
+    //             return;
+    //         }
+
+    //         alert(result.message);
+
+    //         location.reload();
+
+    //     } catch (error) {
+
+    //         console.error('Place order error:', error);
+
+    //         alert('An error occurred while placing the order.');
+    //     }
+    // });    
 
     
     // document.getElementById('daily-sales-btn').classList.toggle('active', viewType === 'daily');
@@ -1060,30 +1204,92 @@ if (sidebarToggle) {
     
     // showSalesAggregrationView
 
+    const byproductSalesBtn =
+        document.getElementById('byproduct-sales-btn');
 
-    document.getElementById('byproduct-sales-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'daily'));
-    document.getElementById('entire-sales-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'daily'));
-    
-    document.getElementById('daily-product-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'daily'));
-    document.getElementById('weekly-product-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'weekly'));
-    document.getElementById('monthly-product-btn').addEventListener('click', () => showSalesAggregrationView('byProduct', 'monthly'));
+    if (byproductSalesBtn) {
+        byproductSalesBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('byProduct', 'daily')
+        );
+    }
 
-    document.getElementById('daily-entire-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'daily'));
-    document.getElementById('weekly-entire-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'weekly'));
-    document.getElementById('monthly-entire-btn').addEventListener('click', () => showSalesAggregrationView('entire', 'monthly'));
 
-    //forecast & analytics view
-    document.getElementById('forecast-view-btn').addEventListener('click', () => showForecastAnalyticsView('forecast', 'daily'));
-    document.getElementById('analytics-view-btn').addEventListener('click', () => showForecastAnalyticsView('analytics', 'daily'));
-    
-    document.getElementById('daily-forecast-view-btn').addEventListener('click', () => showForecastAnalyticsView('forecast', 'daily'));
-    document.getElementById('weekly-forecast-view-btn').addEventListener('click', () => showForecastAnalyticsView('forecast', 'weekly'));
-    document.getElementById('monthly-forecast-view-btn').addEventListener('click', () => showForecastAnalyticsView('forecast', 'monthly'));
+    const entireSalesBtn =
+        document.getElementById('entire-sales-btn');
 
-    document.getElementById('daily-analytics-view-btn').addEventListener('click', () => showForecastAnalyticsView('analytics', 'daily'));
-    document.getElementById('weekly-analytics-view-btn').addEventListener('click', () => showForecastAnalyticsView('analytics', 'weekly'));
-    document.getElementById('monthly-analytics-view-btn').addEventListener('click', () => showForecastAnalyticsView('analytics', 'monthly'));
+    if (entireSalesBtn) {
+        entireSalesBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('entire', 'daily')
+        );
+    }
 
+
+    const dailyProductBtn =
+        document.getElementById('daily-product-btn');
+
+    if (dailyProductBtn) {
+        dailyProductBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('byProduct', 'daily')
+        );
+    }
+
+
+    const weeklyProductBtn =
+        document.getElementById('weekly-product-btn');
+
+    if (weeklyProductBtn) {
+        weeklyProductBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('byProduct', 'weekly')
+        );
+    }
+
+
+    const monthlyProductBtn =
+        document.getElementById('monthly-product-btn');
+
+    if (monthlyProductBtn) {
+        monthlyProductBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('byProduct', 'monthly')
+        );
+    }
+
+
+    const dailyEntireBtn =
+        document.getElementById('daily-entire-btn');
+
+    if (dailyEntireBtn) {
+        dailyEntireBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('entire', 'daily')
+        );
+    }
+
+
+    const weeklyEntireBtn =
+        document.getElementById('weekly-entire-btn');
+
+    if (weeklyEntireBtn) {
+        weeklyEntireBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('entire', 'weekly')
+        );
+    }
+
+
+    const monthlyEntireBtn =
+        document.getElementById('monthly-entire-btn');
+
+    if (monthlyEntireBtn) {
+        monthlyEntireBtn.addEventListener(
+            'click',
+            () => showSalesAggregrationView('entire', 'monthly')
+        );
+    }
 
 
     
@@ -1197,39 +1403,100 @@ if (sidebarToggle) {
 //     const notnullButton=document.getElementById('notnullButton');
 
 
-const nulltoggleBtn = document.getElementById('toggleNullBtn');
-const expInput = document.getElementById('expiration_date');
-const expInputClass = document.getElementById('edit-expirationdate');
-const notnulltoggleBtn = document.getElementById('toggleNotNullBtn');
 
 
 
-nulltoggleBtn.addEventListener('click',function(){
 
-    nulltoggleBtn.style.display = 'none';
-    notnulltoggleBtn.style.display = 'inline-block';
-    notnulltoggleBtn.style.color = 'blue'; 
-    expInput.disabled = true;
-    expInputClass.disabled = true;
+
+
+//TOGGLE
+
+
+
+// const nulltoggleBtn = document.getElementById('toggleNullBtn');
+// const expInput = document.getElementById('expiration_date');
+// const expInputClass = document.getElementById('edit-expirationdate');
+// const notnulltoggleBtn = document.getElementById('toggleNotNullBtn');
+
+
+
+// nulltoggleBtn.addEventListener('click',function(){
+
+//     nulltoggleBtn.style.display = 'none';
+//     notnulltoggleBtn.style.display = 'inline-block';
+//     notnulltoggleBtn.style.color = 'blue'; 
+//     expInput.disabled = true;
+//     expInputClass.disabled = true;
     
 
 
-})
+// })
 
-notnulltoggleBtn.addEventListener('click',function(){
-    // expInput.type = 'date';
-    notnulltoggleBtn.style.display = 'none';
-    nulltoggleBtn.style.display = 'inline-block';
-    nulltoggleBtn.style.color = 'red'; 
-    expInput.disabled = false;
-    expInputClass.disabled = false;
-
-
-})
+// notnulltoggleBtn.addEventListener('click',function(){
+//     // expInput.type = 'date';
+//     notnulltoggleBtn.style.display = 'none';
+//     nulltoggleBtn.style.display = 'inline-block';
+//     nulltoggleBtn.style.color = 'red'; 
+//     expInput.disabled = false;
+//     expInputClass.disabled = false;
 
 
+// })
 
 
+
+const nulltoggleBtn =
+    document.getElementById('toggleNullBtn');
+
+const expInput =
+    document.getElementById('expiration_date');
+
+const expInputClass =
+    document.getElementById('edit-expirationdate');
+
+const notnulltoggleBtn =
+    document.getElementById('toggleNotNullBtn');
+
+
+if (
+    nulltoggleBtn &&
+    notnulltoggleBtn &&
+    expInput &&
+    expInputClass
+) {
+
+    nulltoggleBtn.addEventListener('click', function () {
+
+        nulltoggleBtn.style.display = 'none';
+
+        notnulltoggleBtn.style.display = 'inline-block';
+
+        notnulltoggleBtn.style.color = 'blue';
+
+        expInput.disabled = true;
+
+        expInputClass.disabled = true;
+
+    });
+
+
+    notnulltoggleBtn.addEventListener('click', function () {
+
+        // expInput.type = 'date';
+
+        notnulltoggleBtn.style.display = 'none';
+
+        nulltoggleBtn.style.display = 'inline-block';
+
+        nulltoggleBtn.style.color = 'red';
+
+        expInput.disabled = false;
+
+        expInputClass.disabled = false;
+
+    });
+
+}
 
 
 
@@ -1289,4 +1556,132 @@ document.getElementById("logoutBtn").addEventListener("click", function(event) {
     }
   });
 });
+
+
+
+
+
+
+// ===============================
+// USERS / ACCOUNTS MODALS
+// ===============================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const addUserButton = document.getElementById("users-add-btn");
+    const editUserButton = document.getElementById("edit-user-btn");
+
+    const addUserModal = document.getElementById("addUserModal");
+    const editUserModal = document.getElementById("editUserModal");
+
+    const addUserCancelButton = document.getElementById("user-cancel-btn");
+    const editUserCancelButton = document.getElementById("edit-user-cancel-btn");
+
+    const selectUserButtons = document.querySelectorAll(".select-user-btn");
+
+    const editUserId = document.getElementById("edit-user-id");
+    const editUserUsername = document.getElementById("edit-user-username");
+    const editUserEmail = document.getElementById("edit-user-email");
+    const editUserPhone = document.getElementById("edit-user-phone");
+    const editUserAccountType = document.getElementById("edit-user-account-type");
+
+    let selectedUser = null;
+
+
+    // OPEN ADD USER MODAL
+    if (addUserButton) {
+        addUserButton.addEventListener("click", function () {
+
+            addUserModal.style.display = "flex";
+
+        });
+    }
+
+
+    // SELECT USER FROM TABLE
+    selectUserButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            selectedUser = {
+                id: this.dataset.id,
+                username: this.dataset.username,
+                email: this.dataset.email,
+                phone: this.dataset.phone,
+                accountType: this.dataset.accountType
+            };
+
+            // Fill the Edit User form
+            editUserId.value = selectedUser.id;
+            editUserUsername.value = selectedUser.username;
+            editUserEmail.value = selectedUser.email;
+            editUserPhone.value = selectedUser.phone;
+            const editUserAccountType = document.getElementById("edit-user-account-type");
+
+            // Highlight selected row
+            selectUserButtons.forEach(function (item) {
+                item.closest("tr").classList.remove("selected-user-row");
+            });
+
+            this.closest("tr").classList.add("selected-user-row");
+
+        });
+
+    });
+
+
+    // OPEN EDIT USER MODAL
+    if (editUserButton) {
+        editUserButton.addEventListener("click", function () {
+
+            if (!selectedUser) {
+                alert("Please select a user first.");
+                return;
+            }
+
+            editUserModal.style.display = "flex";
+
+        });
+    }
+
+
+    // CLOSE ADD USER MODAL
+    if (addUserCancelButton) {
+        addUserCancelButton.addEventListener("click", function () {
+
+            addUserModal.style.display = "none";
+
+        });
+    }
+
+
+    // CLOSE EDIT USER MODAL
+    if (editUserCancelButton) {
+        editUserCancelButton.addEventListener("click", function () {
+
+            editUserModal.style.display = "none";
+
+        });
+    }
+
+
+    // CLOSE MODAL WHEN CLICKING OUTSIDE THE MODAL CONTENT
+    window.addEventListener("click", function (event) {
+
+        if (event.target === addUserModal) {
+            addUserModal.style.display = "none";
+        }
+
+        if (event.target === editUserModal) {
+            editUserModal.style.display = "none";
+        }
+
+    });
+
+});
+
+
+
+
+
 

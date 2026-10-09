@@ -117,22 +117,22 @@ $totalSold = $totalSoldQuery->fetch_assoc()['total'] ?? 0;
 
 
 // ==========================================
-// TOTAL CUSTOMER
+// TOTAL TRANSACTIONS // added
 // ==========================================
-$customerQuery = $conn->query("
+$transactionQuery = $conn_pos->query("
     SELECT COUNT(*) AS total
-    FROM customers
+    FROM point_of_sale.sales_test
 ");
 
-if (!$customerQuery) {
+if (!$transactionQuery) {
     echo json_encode([
         "error" => true,
-        "message" => $conn->error
+        "message" => $conn_pos->error
     ]);
     exit;
 }
 
-$totalCustomer = $customerQuery->fetch_assoc()['total'] ?? 0;
+$totalTransactions = $transactionQuery->fetch_assoc()['total'] ?? 0;
 
 
 // ==========================================
@@ -142,7 +142,7 @@ echo json_encode([
     "totalProducts"  => (int)$totalProducts,
     "growthRate"     => (float)$growthRate,
     "totalSold"      => (int)$totalSold,
-    "totalCustomers" => (int)$totalCustomer,
+    "totalTransactions"  => (int)$totalTransactions,
     "updateDate"     => date("j M Y")
 ]);
 

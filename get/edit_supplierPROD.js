@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         supplierIDs.forEach(supplier => {''
           const option = document.createElement("option");
           option.value = supplier.Supplier_ID;
-          option.text = `${supplier.Supplier_ID} - ${supplier.SupplierFName} ${supplier.SupplierLName} (${supplier.Location}) -- (${supplier.OfferedProductsType})`;
+          option.text = `${supplier.Supplier_ID} - ${supplier.CompanyName} ${supplier.ContactPerson} (${supplier.City}) -- (${supplier.ProductCategory})`;
           
           supplierSelect.add(option);
         });

@@ -41,7 +41,33 @@ $sales_test = fetchTableData($conn_pos, 'sales_test');
 $product = fetchTableData($conn, 'product');
 $supplier = fetchTableData($conn, 'supplier');
 $customers = fetchTableData($conn, 'customers');
+
+// $sql = "
+//     SELECT
+//         r.*,
+//         p.ProductName,
+//         s.SupplierFName,
+//         s.SupplierLName
+//     FROM restock r
+//     LEFT JOIN product p
+//         ON r.Product_ID = p.Product_ID
+//     LEFT JOIN supplier s
+//         ON r.Supplier_ID = s.Supplier_ID
+//     ORDER BY r.Orestock_ID DESC
+// ";
+
+// $result = $conn->query($sql);
+
+// $restock = [];
+
+// while ($row = $result->fetch_assoc()) {
+//     $restock[] = $row;
+// }
+
+
 $restock = fetchTableData($conn, 'restock');
+
+
 $customersreturns = fetchTableData($conn, 'customersreturns');
 $supplierreturns = fetchTableData($conn, 'supplierreturns');
 $sales = fetchTableData($conn, 'sales');
@@ -213,6 +239,23 @@ if(isset($_SESSION['email'])){
     
 }
 
+
+// Get all users/accounts
+$usersQuery = "SELECT id, userName, email, phone, accountType, image FROM users";
+
+$usersResult = mysqli_query($conn, $usersQuery);
+
+if (!$usersResult) {
+    die("Users query failed: " . mysqli_error($conn));
+}
+
+
+
+
+
+
+
+
 ?>
 
 
@@ -258,7 +301,7 @@ if(isset($_SESSION['email'])){
                 <!-- <a class="nav-link" onclick="showContentSection('new-additions')">New Additions</a> -->
                 <a class="nav-link" onclick="showContentSection('products')">Products</a>
                 <a class="nav-link" onclick="showContentSection('suppliers')">Suppliers</a>
-                <a class="nav-link" onclick="showContentSection('customer')">Customer</a>
+                <!-- <a class="nav-link" onclick="showContentSection('customer')">Customer</a> -->
                 <a class="nav-link has-dropdown" onclick="showContentSection('returns')">Returns</a>
 
                 <a class="nav-link" onclick="showContentSection('order-restock')">Restock</a>
@@ -366,9 +409,9 @@ if(isset($_SESSION['email'])){
                                     AI RECOMMENDATION
 
                                 </button>
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <!-- <span class="icon-wrapper"><i class="fas fa-print"></i></span> -->
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                                <!-- <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span> -->
                             </div>
 
 
@@ -422,7 +465,7 @@ if(isset($_SESSION['email'])){
                                     </div>
 
 
-                                    <div id="salesChart"></div>
+                                    <!-- <div id="salesChart"></div> -->
 
                                     <!-- <script src="https://code.highcharts.com/highcharts.js"></script> -->
                                     <script>
@@ -457,18 +500,57 @@ if(isset($_SESSION['email'])){
                                         const forecast = data.map(r => parseFloat(r.MovingAverage3));
                                         const categories = data.map(r => formatPeriodLabel(type, r.Period));
 
+
+
+
                                         Highcharts.chart('salesChart', {
-                                            chart: { type: 'line' },
+                                            chart: { type: 'line', backgroundColor: '#ffffff' },
                                             title: { 
-                                            text: `Store Sales Forecast (${type.charAt(0).toUpperCase() + type.slice(1)} 3-Moving Average)` 
+                                            text: `Store Sales Forecast (${type.charAt(0).toUpperCase() + type.slice(1)} 3-Moving Average)` , 
+                                                style: {
+                                                    color: '#333333'
+                                                }
                                             },
-                                            subtitle: { text: 'Actual Sales vs Forecasted Trend' },
+                                            subtitle: { text: 'Actual Sales vs Forecasted Trend',
+                                                style: {
+                                                    color: '#555555'
+                                                }
+                                             },
                                             xAxis: {
-                                            categories: categories,
-                                            title: { text: type === 'daily' ? 'Date' : type === 'weekly' ? 'Week' : 'Month' }
+                                                categories: categories,
+                                                title: { 
+                                                    text: type === 'daily' ? 'Date' : type === 'weekly' ? 'Week' : 'Month',
+                                                    style: {
+                                                        color: '#333333'
+                                                    }
+                                                },
+                                                labels: {
+                                                    style: {
+                                                        color: '#333333'
+                                                    }
+                                                }
                                             },
-                                            yAxis: { title: { text: 'Total Quantity Sold' } },
-                                            legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' },
+                                            yAxis: {
+                                                title: { 
+                                                    text: 'Total Quantity Sold',
+                                                    style: {
+                                                        color: '#333333'
+                                                    }
+                                                },
+                                                labels: {
+                                                    style: {
+                                                        color: '#333333'
+                                                    }
+                                                }
+                                            },
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom',
+                                                itemStyle: {
+                                                    color: '#333333'
+                                                }
+                                            },
                                             tooltip: { shared: true, valueSuffix: ' units' },
                                             series: [
                                             { name: 'Actual Sales', data: actual, color: '#007bff' },
@@ -488,7 +570,7 @@ if(isset($_SESSION['email'])){
                                 </figure>
                             </div>
 
-                           <div class="topcustomer_dashboard">
+                            <!-- <div class="topcustomer_dashboard">
                                 <div class="topcustomer_header">
                                     <h3>Top Customer <br><span>(Week)</span></h3>
                                 </div>
@@ -502,9 +584,9 @@ if(isset($_SESSION['email'])){
                                     <tbody id="topcustomer-body">
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
 
-                            <div class="return_dashboard">
+                            <!-- <div class="return_dashboard">
                                 <div class="return_header">
                                     <h3>Return Summary <span id="return-month">(MONTH)</span></h3>
                                 </div>
@@ -514,7 +596,53 @@ if(isset($_SESSION['email'])){
                                     <p><b>Reason:</b> <span id="return-reason"></span></p>
                                 </div>
                                 
+                            </div> -->
+
+
+
+
+
+                            <div class="return_dashboard">
+                                <div class="return_header">
+                                    <h3>Sales Performance <span id="sales-month">(MONTH)</span></h3>
+                                </div>
+
+                                <div class="return_content">
+                                    <p>
+                                        <b>Total Sales:</b>
+                                        <span id="sales-total"></span>
+                                    </p>
+
+                                    <p>
+                                        <b>Transactions:</b>
+                                        <span id="sales-transactions"></span>
+                                    </p>
+
+                                    <p>
+                                        <b>Units Sold:</b>
+                                        <span id="sales-units"></span>
+                                    </p>
+
+                                    <p>
+                                        <b>Average Sale:</b>
+                                        <span id="sales-average"></span>
+                                    </p>
+                                </div>
+
                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                             <div class="products_dashboard">
                                 <div class="products_header">
@@ -705,12 +833,12 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <div class="totalcustomer_dashboard card">
-                                <div class="card-title">Total Customers</div>
+                                <div class="card-title">Total Transactions</div>
                                 <div class="card-body">
-                                    <div class="card-value" id="total-customers">0</div>
+                                    <div class="card-value" id="total-transactions">0</div>
                                 </div>
-                                
-                                <div class="card-footer" id="update-customers">Update --</div>
+
+                                <div class="card-footer" id="update-transactions">Update --</div>
                             </div>
 
                             <div class="stock_dashboard">
@@ -874,9 +1002,9 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <div class="header-icons">
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <!-- <span class="icon-wrapper"><i class="fas fa-print"></i></span> -->
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge"></span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                                <!-- <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span> -->
                             </div>
                         </div>
 
@@ -904,16 +1032,16 @@ if(isset($_SESSION['email'])){
                             <thead class="sticky-div">
                             <tr>
                                 <!-- <th>#</th> -->
-                                <th>Product ID</th>
+                                <th>Product Name</th>
                                 <th colspan="2">Location</th>
                                 <!-- <th>Price</th> -->
                                 <th>Inventory</th>
-                                <th>Unit In</th>
-                                <th>Unit Out</th>
+                                <!-- <th>Unit In</th>
+                                <th>Unit Out</th> -->
                                 <th>Status</th>
-                                <th>Expiration Date</th>
+                                <!-- <th>Expiration Date</th> -->
                                 <!-- <th>BarCode</th> -->
-                                <th>Supplier ID</th>
+                                <th>Supplier</th>
                                 
                             </tr>
                             </thead>
@@ -929,24 +1057,29 @@ if(isset($_SESSION['email'])){
                                 foreach($inventory as $index => $inventory){ ?>
                                     <tr>
                                     <!-- <td><?= $index + 1?></td> -->
-                                    <td class="product-id-cell"><?= $inventory['Product_ID']?></td>
+                                   <td class="product-id-cell">
+                                        <?php
+                                        foreach ($product as $prod) {
+                                            if ($prod['Product_ID'] == $inventory['Product_ID']) {
+                                                echo htmlspecialchars($prod['ProductName']);
+                                                break;
+                                            }
+                                        }
+                                        ?>
+                                    </td>
                                     <td><span class="Location-tag shelf"><?= $inventory['LocationS']?></span></td>
                                     <td><span class="Location-tag row"><?= $inventory['LocationR']?></span></td>
                                     <!-- <td><?= $inventory['Price']?></td> -->
-                                    <td><?= $inventory['Inventory']?></td>
-                                    <td style="color: green;"><?= empty($inventory['UnitIN']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($inventory['UnitIN'])) ?></td>
-                                    <!-- <td><?= date('F d, Y h:i A', strtotime($inventory['UnitIN']))?></td> -->
-                                    <!-- <td><?= date('F d, Y h:i A', strtotime($inventory['UnitOut']))?></td> -->
-                                    <td style="color: red;"><?= empty($inventory['UnitOut']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($inventory['UnitOut'])) ?></td>
-                                    <!-- <td><?= $inventory['Status']?></td> -->
+                                    <td><?= $inventory['Inventory'] <= 0 ? 0 : $inventory['Inventory'] ?></td>
+                                    
                                     <td><span class="inventory-status status-<?= strtolower($inventory['Status']) ?>">
                                                                         <?= htmlspecialchars($inventory['Status']) ?>
                                         </span>
                                     
+                                    
                                     </td>
-                                    <td style="color: red;"><?= empty($inventory['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($inventory['ExpirationDate'])) ?></td>
-                                    <!-- <td><?= $inventory['Barcode']?></td> -->
-                                    <td class="supplier-id-cell"><?= $inventory['Supplier_ID']?></td>
+                                    <!-- <td style="color: red;"><?= empty($inventory['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($inventory['ExpirationDate'])) ?></td> -->
+                                    <td style="font-weight: bolder;"><?= $inventory['SupplierName'], "  (",$inventory['City'] , ")" ?></td>
                                     
 
                                     </tr>
@@ -957,181 +1090,7 @@ if(isset($_SESSION['email'])){
                     </div>
                 </div>
                 
-                <div id="new-additions" class="content-section" >
-                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
-                        <div class="top-bar">
-                            <div class="tab">NEW ADDITIONS</div>
-                            <div class="user-controls">
-                                <div>      
-                                <?php
-                                    echo $row['userName'];                        
-                                ?>
-                                </div>
-                                    <div class="user-icon">👤</div>
-                            </div>
-                        </div>
-                        <div class="controls-bar">
-                            <div class="controls">
-                                <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE ADDED</option></select></div>
-                            </div>
-                            <div class="header-icons">
-                                    <span>🖨️</span>
-                                    <span class="icon-wrapper">🔔<span class="badge">3</span></span>
-                                    <span class="icon-wrapper" onclick="openCalendarModal()">📅<span class="badge">2</span></span>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="toolbar" style="display: flex; justify-content:space-between">
-                        <div>
-                        <input type="checkbox">
-                        <span id="na-count" class="na-count">30</span>
-                        <span class="na-icon-btn">📝</span>
-                        <span class="na-icon-btn">🗑️</span>
-                        <span class="na-icon-btn">🖨️</span>
-                        <button id="na-add-btn" class="na-btn na-btn-add">ADD</button>
-                        </div>
-
-                        <div class="actions" style="display: flex; align-items: space-between; gap: 35px;">
-                                <button class="na-btn na-btn-import">IMPORT</button>
-                                <div class="na-quick-search">🔍 Quick Search</div>
-                        </div>
-                        <div id="addNewAdditionModal" class="modal" style="display: none;">
-                            <div class="modal-content">
-                                <h3>Add New Addition</h3>
-                                <form id="newadditionForm" action="add.php" method="POST">
-                                    <input type="hidden" name="table" value="newaddition">
-
-                                    <!-- <label>Supplier ID:</label>
-                                    <input type="text" name="Supplier_ID" required> -->
-
-                                    <!-- <label>Product ID:</label>
-                                    <input type="text" name="Product_ID" required> -->
-
-                                    <label for="Product_ID">Choose Product ID:</label>
-                                    <select id="Product_ID" name="Product_ID" class="id-select" required>
-                                        <option disabled selected>Loading...</option>
-                                    </select>
-
-                                    <label>Quantity:</label>
-                                    <input type="number" name="Quantity" required>
-
-                                    <label>Date Added:</label>
-                                    <input type="datetime-local" name="Date_Added" required>
-
-
-                                    <label>Status:</label>
-                                    <div style="display: flex; justify-content:space-between; align-items:center;">
-                                    <select class="newaddition-status-select" name="Status" required>
-                                        <option value="New">New</option>
-                                        <option value="Returned">Returned</option>
-                                    </select>
-                                    
-                                    </div>
-
-                                    <!-- <label>Supplier ID:</label>
-                                    <input type="text" name="Supplier_ID" required> -->
-
-                                    <label for="Supplier_ID">Choose Supplier ID:</label>
-                                    <select id="Supplier_ID" name="Supplier_ID" class="id-select" required>
-                                        <option disabled selected>Loading...</option>
-                                    </select>
-
-
-                                    <!-- <label for="Product_ID">Choose Product ID:</label>
-                                    <select id="Product_ID" name="Product_ID" class="shelf-row-select" required>
-                                        <option disabled selected>Loading...</option>
-                                    </select> -->
-
-                                    <label>Location:</label>
-                                    <div style="display: flex; justify-content:space-between; align-items:center;">
-                                    <label>Shelf:</label>
-                                    <select class="shelf-row-select" name="LocationS" required>
-                                        <option value="Shelf A">Shelf A</option>
-                                        <option value="Shelf B">Shelf B</option>
-                                        <option value="Shelf C">Shelf C</option>
-                                        <option value="Shelf D">Shelf D</option>
-                                    </select>
-                                    
-                                    <!-- <input type="text" name="LocationS" required> -->
-
-                                    <label>Row:</label>
-
-                                    <select class="shelf-row-select" name="LocationR" required>
-                                        <option value="Row A">Row A</option>
-                                        <option value="Row B">Row B</option>
-                                        <option value="Row C">Row C</option>
-                                        <option value="Row D">Row D</option>
-                                    </select>
-                                    <!-- <input type="text" name="LocationR" required> -->
-                                    </div>
-                                    
-                                    
-
-                                    <div class="modal-buttons">
-                                        <button type="submit" class="na-btn na-btn-add">Save</button>
-                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
-                                        <button type="button" id="newadd-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <link rel="stylesheet" href="assets/add_product.css">
-                        <script src="assets/add_newaddition.js" defer></script>
-                        <script src="get/get_product.js" defer></script>
-                        <script src="get/get_supplier.js" defer></script>
-                        
-
-
-                        
-                    </div>
-                    <div class="table-container na-table-container">
-                        <table class="new-additions-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Inventory ID</th>
-                                    <th>Product ID</th>
-                                    <th>Quantity</th>
-                                    <th>Date Added</th>
-                                    <!-- <th>Expiration Date</th> -->
-                                    <th>Status</th>
-                                    <th>Supplier ID</th>
-                                    <th colspan="2">Location</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach($newaddition as $index => $newaddition){ ?>
-                                    <tr>
-                                    <td><?= $index + 1?></td>
-                                    <td class="inventory-id-cell"><?= $newaddition['Inventory_ID']?></td>
-                                    <td class="product-id-cell"><?= $newaddition['Product_ID']?></td>
-                                    <td><?= $newaddition['Quantity']?></td>
-                                    <td><?= date('F d,Y h:i A', strtotime($newaddition['Date_Added']))?></td>
-                                    
-                                    
-                                    <!-- <td style="color: red;"><?= empty($newaddition['Expiration_Date']) ? '- - - N/A - - -' : date('F d, Y', strtotime($newaddition['Expiration_Date'])) ?></td> -->
-                                    <!-- <td><?= date('d m Y', strtotime($newaddition['Expiration_Date']))?></td> -->
-                                    <!-- <td><?= $newaddition['Status']?></td> -->
-
-                                    <td><span class="newaddition-status na-status-<?= strtolower($newaddition['Status']) ?>">
-                                                                        <?= htmlspecialchars($newaddition['Status']) ?>
-                                        </span>
-                                            
-                                    </td>
-                                    <td class="supplier-id-cell"><?= $newaddition['Supplier_ID']?></td>
-                                    <td><span class="Location-tag shelf"><?= $newaddition['LocationS']?></span></td>
-                                    <td><span class="Location-tag row"><?= $newaddition['LocationR']?></span></td>
-
-                                    
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                
                 
 
                 <!--- PRODUCTS SECTION --->
@@ -1158,9 +1117,9 @@ if(isset($_SESSION['email'])){
                                 <!-- <div class="stock-info"><span>30</span><span class="in-stock-label">In Stock</span></div> -->
                             </div>
                             <div class="header-icons">
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <!-- <span class="icon-wrapper"><i class="fas fa-print"></i></span> -->
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                                <!-- <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span> -->
                             </div>
                         </div>
                     </div>
@@ -1176,7 +1135,7 @@ if(isset($_SESSION['email'])){
 
                         <span id="products-count" class="na-count"><?= $totalRows ?></span>
                         <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                        <!-- <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button> -->
                         <!-- <span class="na-icon-btn">📝</span>
                         <span class="na-icon-btn">🗑️</span> -->
                         <!-- <span class="na-icon-btn">🖨️</span> -->
@@ -1221,8 +1180,8 @@ if(isset($_SESSION['email'])){
                                     
                                     <input type="hidden" name="UnitSold" value="0" >
 
-                                    <label>Supplier Price (PHP):</label>
-                                    <input type="number" name="SupplierPrice" required>
+                                    <!-- <label>Supplier Price (PHP):</label>
+                                    <input type="number" name="SupplierPrice" required> -->
 
                                     <label>Store Price (PHP):</label>
                                     <input type="number" name="StorePrice" required>
@@ -1255,7 +1214,7 @@ if(isset($_SESSION['email'])){
 
                                     <label for="Supplier_ID">Choose Supplier ID:</label>
                                     <select id="Supplier_IDPROD" name="Supplier_ID" class="id-select" style="width: 60%;" required>
-                                        <option disabled selected>Loading...</option>
+                                        <option value="" disabled selected>Loading...</option>
                                     </select>
 
                                     <!-- <label>With Expiration? :</label>
@@ -1359,8 +1318,8 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Sold:</label>
                                     <input type="number" name="UnitSold" id="edit-sold"> -->
 
-                                    <label>Supplier Price (PHP):</label>
-                                    <input type="number" name="SupplierPrice" id="edit-supplierprice">
+                                    <!-- <label>Supplier Price (PHP):</label>
+                                    <input type="number" name="SupplierPrice" id="edit-supplierprice"> -->
 
                                     <label>Store Price (PHP):</label>
                                     <input type="number" name="StorePrice" id="edit-storeprice">
@@ -1375,7 +1334,7 @@ if(isset($_SESSION['email'])){
                                     <input type="text" name="Supplier_ID" id="edit-supplierid"> -->
 
                                     <label for="Supplier_ID">Choose Supplier ID:</label>
-                                    <select id="edit-supplierid" name="Supplier_ID" class="id-select" required>
+                                    <select id="edit-supplierid" name="Supplier_ID" class="id-select" style="width: 100%;" required>
                                         <option disabled selected>Loading...</option>
                                     </select>
                                     
@@ -1420,10 +1379,10 @@ if(isset($_SESSION['email'])){
                                     <!-- <th>Reorder Points</th> -->
                                     <th>Ordered</th>
                                     <th>Sold</th>
-                                    <th>Store Price</th>
-                                    <th>Supplier Price</th>
+                                    <th>Price</th>
+                                    <!-- <th>Supplier Price</th> -->
                                     <th>Image</th>
-                                    <th>Supplier ID</th>
+                                    <th>Supplier</th>
                                     <th>Pack Size</th>
                                     <th>Barcode</th>
                                     <th colspan="2">Location</th>
@@ -1441,7 +1400,7 @@ if(isset($_SESSION['email'])){
                                         <td class="units-ordered"><?= $products['UnitsOrdered']?></td>
                                         <td class="units-sold"><?= $products['UnitSold']?></td>
                                         <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $products['StorePrice']?></td>
-                                        <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $products['SupplierPrice']?></td>
+                                        <!-- <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $products['SupplierPrice']?></td> -->
                                         <td>
                                             <?php if (!empty($products['Image']) && file_exists("uploads/" . $products['Image'])): ?>
                                                 <a href="uploads/<?= $products['Image']?>" target="_blank">
@@ -1451,7 +1410,7 @@ if(isset($_SESSION['email'])){
                                                 No Image    
                                             <?php endif; ?>
                                         </td>
-                                        <td class="supplier-id-cell"><?= $products['Supplier_ID']?></td>
+                                        <td class="supplier-id-cell"><?= $products['SupplierName']?></td>
                                         <!-- <td style="color: red;"><?= empty($products['ExpirationDate']) ? '- - - N/A - - -' : date('F d, Y', strtotime($products['ExpirationDate'])) ?></td> -->
                                         <!-- <td><?= date('F d,Y', strtotime($products['ExpirationDate']))?></td> -->
                                         <td><?= $products['Pack_Size']?></td>
@@ -1464,15 +1423,15 @@ if(isset($_SESSION['email'])){
                                               <!-- data-expirationdate="<?= $products['ExpirationDate'] ?>" -->
                                         <td class="action-cell" >
                                             <!-- edit & delete action -->
-                                            <button style="display: none;" class="select-product-btn"
+                                            <button style="display: none;" class="select-product-btn na-btn na-btn-edit"
                                                 data-id="<?= $products['Product_ID'] ?>"
                                                 data-name="<?= $products['ProductName'] ?>"
                                                 data-type="<?= $products['Type'] ?>"
                                                 
                                                 
                                                 data-unitsold="<?= $products['UnitSold'] ?>"
+                                                
                                                 data-storeprice="<?= $products['StorePrice'] ?>"
-                                                data-supplierprice="<?= $products['SupplierPrice'] ?>"
                                                 data-packsize="<?= $products['Pack_Size'] ?>"
                                                 
                                                 data-barcode="<?= $products['Barcode'] ?>"
@@ -1482,6 +1441,8 @@ if(isset($_SESSION['email'])){
                                                 
                                                 📝 Edit
                                             </button>
+                                            <!-- data-supplierprice="<?= $products['SupplierPrice'] ?>" -->
+                                            <!-- data-storeprice="<?= $products['StorePrice'] ?>" -->
 
                                             <form style="display: none;" id="display-delete" action="delete.php" class="delete-product-form" method="POST" style="display: inline;">
                                                 <input type="hidden" name="table" value="product">
@@ -1534,9 +1495,9 @@ if(isset($_SESSION['email'])){
                                 <div class="control-group"><label>⇅ Sort by:</label><select><option>SUPPLIER ID</option></select></div> -->
                             </div>
                             <div class="header-icons">
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <!-- <span class="icon-wrapper"><i class="fas fa-print"></i></span> -->
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                                <!-- <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span> -->
                             </div>
                         </div>
                     </div>
@@ -1559,9 +1520,16 @@ if(isset($_SESSION['email'])){
                             ?>
 
                             <span id="products-count" class="na-count"><?= $totalRows ?></span>
-                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
-                            <!-- <span class="na-icon-btn">🖨️</span> -->
+
+                            <button id="edit-supplier-btn" class="na-btn na-btn-add1" type="button">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+
+                            <!-- <button id="delete-supplier-btn" class="na-btn na-btn-add1" type="button">
+                                <i class="fa-solid fa-trash"></i>
+                            </button> -->
+
+
                             <button id="sup-add-btn" class="na-btn na-btn-add" type="button">ADD</button>
                         </div>
 
@@ -1582,6 +1550,8 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Supplier Name:</label>
                                     <input type="text" name="SupplierName" style="text-transform: uppercase;" required> -->
                                     <!-- <h5 style="color: black;">Supplier Name</h5>               -->
+
+                                    <!-- 
                                     <label>Supplier First Name:</label>
                                     <input type="text" name="SupplierFName" style="text-transform: uppercase;" required>
 
@@ -1591,34 +1561,13 @@ if(isset($_SESSION['email'])){
                                     <label>Location:</label>
                                     <input type="text" name="Location" style="text-transform: uppercase;"required>
 
-                                    <!-- <label>Location:</label>
-                                    <div style="display: flex; justify-content:space-between; align-items:center;">
-                                
-                                    <select class="type-select" name="Location" required>
-                                        <option value="NONE">...</option>
-                                        <option value="Exhaust">Exhaust</option>
-                                        <option value="Tires">Tires</option>
-                                        <option value="Brakes">Brakes</option>
-                                        <option value="Stand">Stand</option>
-                                        <option value="Forks">Forks</option>
-                                        <option value="Rims">Rims</option>
-                                        <option value="Mirror">Mirror</option>
-                                        <option value="Suspension">Suspension</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Oil">Oil</option>
-                                    </select>
-                                    </div> -->
-
-
-
                                     <label>Email:</label>
                                     <input type="text" name="Email" style="text-transform: lowercase;"required>
 
                                     <label>Phone Number:</label>
                                     <input type="number" name="PhoneNumber" required>
 
-                                    <!-- <label>Offered Products:</label>
-                                    <input type="text" name="OfferedProductsType" required> -->
+
                                     <label>Offered Products::</label>
                                     <div style="display: flex; justify-content:space-between; align-items:center;">                   
                                     
@@ -1633,8 +1582,81 @@ if(isset($_SESSION['email'])){
                                         <option value="Ice Cream">Ice Cream</option>
                                         <option value="Beauty & Personal Care">Beauty & Personal Care</option>
                                     </select>
-                                    <!-- <input type="text" name="LocationR" required> -->
-                                    </div>
+                                
+                                    </div> -->
+
+
+
+                                    <label>Company Name:</label>
+                                    <input
+                                        type="text"
+                                        name="CompanyName"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Contact Person:</label>
+                                    <input
+                                        type="text"
+                                        name="ContactPerson"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Address:</label>
+                                    <input
+                                        type="text"
+                                        name="Address"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>City:</label>
+                                    <input
+                                        type="text"
+                                        name="City"
+                                        id="add-supplier-city"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Email:</label>
+                                    <input
+                                        type="email"
+                                        name="Email"
+                                        style="text-transform: lowercase;"
+                                        required
+                                    >
+
+                                    <label>Phone Number:</label>
+                                    <input
+                                        type="tel"
+                                        name="PhoneNumber"
+                                        required
+                                    >
+
+                                    <label>Product Category:</label>
+                                    <select
+                                        class="shelf-row-select"
+                                        name="ProductCategory"
+                                        style="width: max-content;"
+                                        required
+                                    >
+                                        <option value="">Select a category</option>
+                                        <option value="Noodles and Instant Meals">Noodles and Instant Meals</option>
+                                        <option value="Frozen Hotpot Goods">Frozen Hotpot Goods</option>
+                                        <option value="Side Dishes">Side Dishes</option>
+                                        <option value="Canned Goods">Canned Goods</option>
+                                        <option value="Beverages">Beverages</option>
+                                        <option value="Sweets and Snacks">Sweets and Snacks</option>
+                                        <option value="Ice Cream">Ice Cream</option>
+                                        <option value="Beauty & Personal Care">Beauty &amp; Personal Care</option>
+                                    </select>                                    
+
+
+
+
+
 
                                     <div class="modal-buttons">
                                         <button type="submit" class="na-btn na-btn-add">Save</button>
@@ -1647,6 +1669,188 @@ if(isset($_SESSION['email'])){
 
                         <link rel="stylesheet" href="assets/add_product.css">
                         <script src="assets/add_supplier2.js" defer></script>
+
+
+
+
+                        <div id="editSupplierModal" class="modal" style="display: none;">
+                            <div class="modal-content">
+
+                                <h3>Edit Supplier</h3>
+
+                                <form action="update.php" method="POST">
+
+                                    <input type="hidden" name="table" value="supplier">
+                                    <input type="hidden" name="id" id="edit-supplier-id">
+
+                                    <!-- <label>Supplier First Name:</label>
+                                    <input
+                                        type="text"
+                                        name="SupplierFName"
+                                        id="edit-supplier-fname"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Supplier Last Name:</label>
+                                    <input
+                                        type="text"
+                                        name="SupplierLName"
+                                        id="edit-supplier-lname"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Location:</label>
+                                    <input
+                                        type="text"
+                                        name="Location"
+                                        id="edit-supplier-location"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Email:</label>
+                                    <input
+                                        type="email"
+                                        name="Email"
+                                        id="edit-supplier-email"
+                                        style="text-transform: lowercase;"
+                                        required
+                                    >
+
+                                    <label>Phone Number:</label>
+                                    <input
+                                        type="text"
+                                        name="PhoneNumber"
+                                        id="edit-supplier-phone"
+                                        required
+                                    >
+
+                                    <label>Offered Products:</label>
+                                    <select
+                                        name="OfferedProductsType"
+                                        id="edit-supplier-offered"
+                                        required
+                                    >
+                                        <option value="Noodles and Instant Meals">Noodles and Instant Meals</option>
+                                        <option value="Frozen Hotpot Goods">Frozen Hotpot Goods</option>
+                                        <option value="Side Dishes">Side Dishes</option>
+                                        <option value="Canned Goods">Canned Goods</option>
+                                        <option value="Beverages">Beverages</option>
+                                        <option value="Sweets and Snacks">Sweets and Snacks</option>
+                                        <option value="Ice Cream">Ice Cream</option>
+                                        <option value="Beauty &amp; Personal Care">Beauty &amp; Personal Care</option>
+                                        <option value="NONE">NONE</option>
+                                    </select> -->
+
+
+
+
+
+
+                                    <label>Company Name:</label>
+                                    <input
+                                        type="text"
+                                        name="CompanyName"
+                                        id="edit-supplier-company"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Contact Person:</label>
+                                    <input
+                                        type="text"
+                                        name="ContactPerson"
+                                        id="edit-supplier-contact"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Address:</label>
+                                    <input
+                                        type="text"
+                                        name="Address"
+                                        id="edit-supplier-address"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>City:</label>
+                                    <input
+                                        type="text"
+                                        name="City"
+                                        id="edit-supplier-city"
+                                        style="text-transform: uppercase;"
+                                        required
+                                    >
+
+                                    <label>Email:</label>
+                                    <input
+                                        type="email"
+                                        name="Email"
+                                        id="edit-supplier-email"
+                                        style="text-transform: lowercase;"
+                                        required
+                                    >
+
+                                    <label>Phone Number:</label>
+                                    <input
+                                        type="tel"
+                                        name="PhoneNumber"
+                                        id="edit-supplier-phone"
+                                        required
+                                    >
+
+                                    <label>Product Category:</label>
+                                    <select
+                                        class="shelf-row-select"
+                                        
+                                        style="width: max-content;"
+
+                                        name="ProductCategory"
+                                        id="edit-supplier-category"
+                                        required
+                                    >
+                                        <option value="Noodles and Instant Meals">Noodles and Instant Meals</option>
+                                        <option value="Frozen Hotpot Goods">Frozen Hotpot Goods</option>
+                                        <option value="Side Dishes">Side Dishes</option>
+                                        <option value="Canned Goods">Canned Goods</option>
+                                        <option value="Beverages">Beverages</option>
+                                        <option value="Sweets and Snacks">Sweets and Snacks</option>
+                                        <option value="Ice Cream">Ice Cream</option>
+                                        <option value="Beauty & Personal Care">Beauty &amp; Personal Care</option>
+                                        <option value="NONE">NONE</option>
+                                    </select>
+
+
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-add">
+                                            Save Changes
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="cancel-edit-supplier-btn"
+                                            class="na-btn na-btn-cancel"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <script src="assets/edit_supplier.js" defer></script>
+
+                        
+
+
+
+
+
                     </div>
 
                     <div class="table-container suppliers-table-container">
@@ -1654,27 +1858,113 @@ if(isset($_SESSION['email'])){
                            <thead class="sticky-div">
                                 <tr>
                                     <!-- <th>#</th> -->
-                                    <th>Supplier ID</th>
+                                    <!-- <th>Supplier ID</th>
                                     <th>Supplier First Name</th>
                                     <th>Supplier Last Name</th>
-                                    <th>LOCATION</th>
-                                    <!-- <th colspan="4">Location</th> -->
+                                    <th>LOCATION</th>                                    
                                     <th>Offered Products TYPE</th>
                                     <th>Email</th>
                                     <th>Phone Number</th>
+                                    <th class="supplier-action-header" style="display: none;">Action</th> -->
+                                    <th>Supplier ID</th>
+                                    <th>Company Name</th>
+                                    <th>Contact Person</th>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>Product Category</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th class="supplier-action-header" style="display: none;">Action</th>
                                 </tr>
                             </thead>
+                            
                             <tbody>
                                 <?php foreach($supplier as $index => $supplier){ ?>
                                     <tr>
                                         <!-- <td><?= $index + 1?></td> -->
-                                        <td class="supplier-id-cell"><?= $supplier['Supplier_ID']?></td>
+                                        <!-- <td class="supplier-id-cell"><?= $supplier['Supplier_ID']?></td>
                                         <td><?= $supplier['SupplierFName']?></td>
                                         <td><?= $supplier['SupplierLName']?></td>
                                         <td><?= $supplier['Location']?></td>
-                                        <td><span class="type-tag-purple"><?= $supplier['OfferedProductsType']?></span></td>
-                                        <td><a href="#" class="email-link"><?= $supplier['Email']?></a></td>
-                                        <td><?= $supplier['PhoneNumber']?></td>
+                                        
+                                        <td>
+                                            <span class="type-tag-purple">
+                                                <?= htmlspecialchars($supplier['OfferedProductsType'] ?? '') ?>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <a href="#" class="email-link">
+                                                <?= htmlspecialchars($supplier['Email'] ?? '') ?>
+                                            </a>
+                                        </td>
+
+                                        <td><?= htmlspecialchars($supplier['PhoneNumber'] ?? '') ?></td>
+
+
+                                        <td class="supplier-action-cell" style="display: none;">
+                                            <button
+                                                type="button"
+                                                class="supplier-row-edit-btn na-btn na-btn-add"
+                                                data-id="<?= htmlspecialchars((string)$supplier['Supplier_ID'], ENT_QUOTES, 'UTF-8') ?>"
+                                                data-fname="<?= htmlspecialchars($supplier['SupplierFName'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-lname="<?= htmlspecialchars($supplier['SupplierLName'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-location="<?= htmlspecialchars($supplier['Location'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-email="<?= htmlspecialchars($supplier['Email'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-phone="<?= htmlspecialchars((string)($supplier['PhoneNumber'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                                                data-offered="<?= htmlspecialchars($supplier['OfferedProductsType'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                            >
+                                                📝 Edit
+                                            </button>
+                                        </td> -->
+
+
+
+
+
+                                        <td class="supplier-id-cell">
+                                            <?= htmlspecialchars((string)$supplier['Supplier_ID']) ?>
+                                        </td>
+
+                                        <td><?= htmlspecialchars($supplier['CompanyName'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($supplier['ContactPerson'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($supplier['Address'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($supplier['City'] ?? '') ?></td>
+
+                                        <td>
+                                            <span class="type-tag-purple">
+                                                <?= htmlspecialchars($supplier['ProductCategory'] ?? '') ?>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <a href="mailto:<?= htmlspecialchars($supplier['Email'] ?? '') ?>"
+                                            class="email-link">
+                                                <?= htmlspecialchars($supplier['Email'] ?? '') ?>
+                                            </a>
+                                        </td>
+
+                                        <td><?= htmlspecialchars($supplier['PhoneNumber'] ?? '') ?></td>
+
+                                        <td class="supplier-action-cell" style="display: none;">
+                                            <button
+                                                type="button"
+                                                class="supplier-row-edit-btn na-btn na-btn-edit"
+                                                data-id="<?= htmlspecialchars((string)$supplier['Supplier_ID'], ENT_QUOTES, 'UTF-8') ?>"
+                                                data-company="<?= htmlspecialchars($supplier['CompanyName'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-contact="<?= htmlspecialchars($supplier['ContactPerson'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-address="<?= htmlspecialchars($supplier['Address'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-city="<?= htmlspecialchars($supplier['City'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-email="<?= htmlspecialchars($supplier['Email'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                data-phone="<?= htmlspecialchars((string)($supplier['PhoneNumber'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                                                data-category="<?= htmlspecialchars($supplier['ProductCategory'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                            >
+                                                📝 Edit
+                                            </button>
+                                        </td>                                        
+                                        
+
+
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -1682,124 +1972,7 @@ if(isset($_SESSION['email'])){
                     </div>
                 </div>
 
-                <div id="customer" class="content-section">
-                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
-                    height: 80px;">
-                        <div class="top-bar">
-                            <div class="tab">CUSTOMERS</div>
-                            <div class="user-controls">
-                                <div>      
-                                <?php
-                                    echo $row['userName'];                        
-                                ?>
-                                </div>
-                                <div class="user-icon">👤</div>
-
-                            </div>
-                        </div>
-                        <div class="controls-bar">
-                            <div class="controls">
-                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>SUPPLIER ID</option></select></div> -->
-                            </div>
-                            <div class="header-icons">
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
-                                <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- <div class="toolbar">
-                        <?php 
-                        $totalRows = count($customers);
-                        ?>
-                        <span id="products-count" class="na-count"><?= $totalRows ?></span> 
-                        <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
-                        
-                        <button id="customer-add-btn" class="na-btn na-btn-add">ADD</button> -->
-
-
-
-                    <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
-                        <div>
-                            <?php 
-                            $totalRows = count($customers);
-                            ?>
-
-                            <span id="products-count" class="na-count"><?= $totalRows ?></span>
-                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
-                            <!-- <span class="na-icon-btn">🖨️</span> -->
-
-                            <button id="customer-add-btn" class="na-btn na-btn-add" type="button">ADD</button>
-                        </div>
-
-                        <div>
-                            <div class="na-quick-search">🔍 Quick Search</div>
-                        </div>  
-                        
-                        <div id="addCustomerModal" class="modal" style="display: none;">
-                            <div class="modal-content">
-                                <h3>Add New Customer</h3>
-                                <form id="customerForm" action="add.php" method="POST">
-                                    <input type="hidden" name="table" value="customers">
-
-                                    <!-- <label>Customer ID:</label>
-                                    <input type="text" name="Customer_ID" required> -->
-
-                                    <label>Customer Name:</label>
-                                    <input type="text" name="CustomerName" required>
-
-                                    <label>Location:</label>
-                                    <input type="text" name="Location" required>
-
-                                    <label>Email:</label>
-                                    <input type="text" name="Email" required>
-                                    
-                                    <label>Phone Number:</label>
-                                    <input type="tel" name="PhoneNumber" required maxlength=11>
-
-                                    <div class="modal-buttons">
-                                        <button type="submit" class="na-btn na-btn-add">Save</button>
-                                        <!-- <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button> -->
-                                        <button type="button" id="cus-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <link rel="stylesheet" href="assets/add_product.css">
-                        <script src="assets/add_customer.js" defer></script>
-                    </div>
-                    
-                    <div class="table-container customer-table-container">
-                        <table class="customer-table">
-                            <thead class="sticky-div">
-                                <tr>
-                                    <!-- <th>#</th> -->
-                                    <th>Customer ID</th>
-                                    <th>Customer Name</th>
-                                    <th>LOCATION</th>
-                                    <th class="icon-cell"></th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th></tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach($customers as $index => $customers){ ?>
-                                    <tr>
-                                        <!-- <td><?= $index + 1?></td> -->
-                                        <td><?= $customers['Customer_ID'] ?></td>
-                                        <td><?= $customers['CustomerName']?></td>
-                                        <td><?= $customers['Location']?></td>
-                                        <td class="icon-cell"><span>...</span></td>
-                                        <td><a href="#" class="email-link"><?= $customers['Email']?></a></td>
-                                        <td><?= $customers['PhoneNumber']?></td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                
                 
                 <div id="returns" class="content-section">
                     <div class="custom-header sticky-div-1"  style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
@@ -1827,9 +2000,9 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <div class="header-icons">
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <!-- <span class="icon-wrapper"><i class="fas fa-print"></i></span> -->
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                                <!-- <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span> -->
                             </div>
 
 
@@ -1864,8 +2037,14 @@ if(isset($_SESSION['email'])){
                             ?>
 
                             <!-- <span id="products-count" class="na-count"><?= $totalRows ?></span> -->
-                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <button id="edit-cus-return-btn" class="na-btn na-btn-add1" type="button" title="Edit Customer Return">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+
+                            <button id="edit-sup-return-btn" class="na-btn na-btn-add1" type="button" title="Edit Supplier Return">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <!-- <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button> -->
                             <!-- <span class="na-icon-btn">🖨️</span> -->
 
                             <button id="cusreturns-add-btn" class="na-btn na-btn-add" style="display: flex;">ADD</button>
@@ -1890,11 +2069,11 @@ if(isset($_SESSION['email'])){
                                     <!-- <label>Customer ID:</label>
                                     <input type="text" name="Customer_ID"> -->
 
-                                    <label for="Customer_IDRETURN">Choose Customer ID:</label>
+                                    <!-- <label for="Customer_IDRETURN">Choose Customer ID:</label>
                                     <select id="Customer_IDRETURN" name="Customer_ID" class="id-select" style="width: 60%;">
                                         
-                                        <option disabled selected>Loading...</option>
-                                    </select>
+                                        <option value="" disabled selected>Loading...</option>
+                                    </select> -->
 
                                     <label>ReferenceNo:</label>
                                     <!-- <input type="number" name="ReferenceNo" maxlength="11" required> -->
@@ -1905,7 +2084,7 @@ if(isset($_SESSION['email'])){
 
                                     <label for="Product_IDCRETURN">Choose Product ID:</label>
                                     <select id="Product_IDCRETURN" name="Product_ID" class="id-select" style="width: 60%;" required>
-                                        <option disabled selected>Loading...</option>
+                                        <option value="" disabled selected>Loading...</option>
                                     </select>
 
                                     <label>Quantity:</label>
@@ -1923,13 +2102,16 @@ if(isset($_SESSION['email'])){
                                         <option value="">-- Reason --</option>
                                         <option value="Wrong-Item">Wrong Item</option>
                                         <option value="Damaged">Damaged</option>
-                                        <option value="Not-Match">Not Match</option>
-                                        <option value="Faulty">Faulty</option>
-                                        <option value="Missing-Parts">Missing Parts</option>
-                                        <option value="Not-Fit">Not Fit</option>
-                                        <option value="Accidental">Accidental</option>
+                                        <option value="Expired">Expired</option>
                                         <option value="Other">Other</option>
+                                        <!-- <option value="Accidental">Accidental</option> -->
+                                        <!-- <option value="Not-Match">Not Match</option> -->
+                                        <!-- <option value="Faulty">Faulty</option> -->
+                                        <!-- <option value="Missing-Parts">Missing Parts</option> -->
+                                        <!-- <option value="Not-Fit">Not Fit</option> -->
+                                        
                                     </select>
+                                    
                                     
                                     </div>
                                     
@@ -1960,7 +2142,7 @@ if(isset($_SESSION['email'])){
 
                                     <label for="Supplier_IDSRETURN">Choose Supplier ID:</label>
                                     <select id="Supplier_IDSRETURN" name="Supplier_ID" class="id-select" style="width: 60%;" required>
-                                        <option disabled selected>Loading...</option>
+                                        <option value="" disabled selected>Loading...</option>
                                     </select>
 
                                     <!-- <label>Product ID:</label>
@@ -1968,7 +2150,7 @@ if(isset($_SESSION['email'])){
 
                                     <label for="Product_IDSRETURN">Choose Product ID:</label>
                                     <select id="Product_IDSRETURN" name="Product_ID" class="id-select" style="width: 60%;" required>
-                                        <option disabled selected>Loading...</option>
+                                        <option value="" disabled selected>Loading...</option>
                                     </select>
 
                                     <label>Quantity:</label>
@@ -2005,8 +2187,8 @@ if(isset($_SESSION['email'])){
                                         <option value="">-- Reason --</option>
                                         <option value="Wrong-Item">Wrong Item</option>
                                         <option value="Damaged">Damaged</option>
-                                        <option value="Missing-Parts">Missing Parts</option>
-                                        <option value="Accidental">Accidental</option>
+                                        <option value="Expired">Expired</option>
+                                        <!-- <option value="Accidental">Accidental</option> -->
                                         <option value="Other">Other</option>
                                     </select>
                                     
@@ -2026,6 +2208,200 @@ if(isset($_SESSION['email'])){
                         <script src="get/get_supplierSRETURN.js" defer></script>
                         <script src="get/get_productSRETURN.js" defer></script>
 
+
+
+
+
+
+
+
+                        <!-- <div id="editProductModal" class="modal">
+                            <div class="modal-content">
+                                <h3>Edit Product</h3>
+                                <form action="update.php" method="POST" enctype="multipart/form-data">
+                        -->
+
+                        <!-- EDIT CUSTOMER RETURN MODAL -->
+                        <div id="editCustomerReturnModal" class="modal">
+                            <div class="modal-content">
+                                <h2>Edit Customer Return</h2>
+
+                                <form action="update.php" method="POST">
+                                    <input type="hidden" name="table" value="customersreturns">
+                                    <input type="hidden" name="id" id="edit_CReturn_ID">
+
+                                    <label for="edit_customer_reference">Reference Number</label>
+                                    <input
+                                        type="text"
+                                        id="edit_customer_reference"
+                                        name="ReferenceNo"
+                                        required
+                                    >
+
+                                    <label for="edit_customer_product">Product</label>
+                                    <select
+                                        id="edit_customer_product"
+                                        name="Product_ID"
+                                        style="width: max-content; height: 34px"
+                                        required
+                                    >
+                                        <option value="">Loading products...</option>
+                                    </select>
+
+                                    <label for="edit_customer_quantity">Quantity</label>
+                                    <input
+                                        type="number"
+                                        id="edit_customer_quantity"
+                                        name="Quantity"
+                                        min="1"
+                                        required
+                                    >
+
+                                    <label for="edit_customer_date">Return Date</label>
+                                    <input
+                                        type="date"
+                                        id="edit_customer_date"
+                                        name="ReturnedDate"
+                                        required
+                                    >
+
+                                    <label for="edit_customer_reason">Reason for Return</label>
+                                    <select
+                                        id="edit_customer_reason"
+                                        name="ReasonForReturn"
+                                        style="width: max-content; height: 34px"
+                                        required
+                                    >
+                                        <option value="Wrong-Item">Wrong Item</option>
+                                        <option value="Damaged">Damaged</option>
+                                        <!-- <option value="Defective">Defective</option> -->
+                                        <option value="Expired">Expired</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-edit">
+                                            Save Changes
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="cancel-edit-customer-return"
+                                            class="na-btn na-btn-cancel"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- EDIT SUPPLIER RETURN MODAL -->
+                        <div id="editSupplierReturnModal" class="modal">
+                            <div class="modal-content">
+                                <h2 style="color: black;">Edit Supplier Return</h2>
+
+                                <form action="update.php" method="POST">
+                                    <input type="hidden" name="table" value="supplierreturns">
+                                    <input type="hidden" name="id" id="edit_SReturns_ID">
+
+                                    <label for="edit_supplier_id">Supplier</label>
+                                    <select
+                                        id="edit_supplier_id"
+                                        name="Supplier_ID"
+                                        class="shelf-row-select"
+                                        
+                                        style="width: max-content; height: 34px"
+                                        required
+                                    >
+                                        <option value="">Loading suppliers...</option>
+                                    </select>
+
+                                    <label for="edit_supplier_product">Product</label>
+                                    <select
+                                        id="edit_supplier_product"
+                                        name="Product_ID"
+                                        class="shelf-row-select"
+                                        
+                                        style="width: max-content; height: 34px"
+                                        required
+                                    >
+                                        <option value="">Loading products...</option>
+                                    </select>
+
+                                    <label for="edit_supplier_quantity">Quantity</label>
+                                    <input
+                                        type="number"
+                                        id="edit_supplier_quantity"
+                                        name="Quantity"
+                                        min="1"
+                                        required
+                                    >
+
+                                    <label for="edit_supplier_date">Return Date</label>
+                                    <input
+                                        type="date"
+                                        id="edit_supplier_date"
+                                        name="ReturnedDate"
+                                        required
+                                    >
+                                    
+
+                                    <label for="edit_supplier_status">Status</label>
+                                    <select
+                                        id="edit_supplier_status"
+                                        name="Status"
+                                        style="width: max-content; height: 34px"
+                                        required
+                                    >
+                                        <option value="Pending">Pending</option>
+                                        <option value="Out-for-Delivery">Out-for-Delivery</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Delivered">Delivered</option>
+                                        
+                                    </select>
+
+                                    <label for="edit_supplier_reason">Reason for Return</label>
+                                    <select
+                                        id="edit_supplier_reason"
+                                        style="width: max-content; height: 34px"
+                                        name="Reason"
+                                        required
+                                    >
+                                        <option value="Wrong-Item">Wrong-Item</option>
+                                        <option value="Damaged">Damaged</option>
+                                        <option value="Expired">Expired</option>
+                                        <!-- <option value="Accidental">Accidental</option> -->
+                                        <option value="Other">Other</option>
+                                        
+                                    </select>
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-edit">
+                                            Save Changes
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="cancel-edit-supplier-return"
+                                            class="na-btn na-btn-cancel"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <script src="assets/edit_product.js"></script>                    
+                        <script src="get/edit_supplierPROD.js"></script>                        
+                        <script src="returns_edit.js"></script>
+
+                        
+
+                        
+
+
                         
 
                         
@@ -2043,6 +2419,10 @@ if(isset($_SESSION['email'])){
                                     <th>Returned Date</th>
                                     <th>Status</th>
                                     <th>Reason</th>
+                                    <th class="supplier-return-action-header" style="display: none;">
+                                        Action
+                                    </th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -2070,6 +2450,28 @@ if(isset($_SESSION['email'])){
                                         </td>
 
                                         <!-- <td><span class="reason-tag reason-defective"><?= $supplierreturns['Reason']?></span></td> -->
+
+
+                                        <td class="supplier-return-action-cell" style="display:none;">
+                                            <button
+                                                type="button"
+                                                class="select-supplier-return-btn na-btn na-btn-edit"
+                                                data-id="<?= htmlspecialchars($supplierreturns['SReturns_ID'] ?? '') ?>"
+                                                data-supplierid="<?= htmlspecialchars($supplierreturns['Supplier_ID'] ?? '') ?>"
+                                                data-productid="<?= htmlspecialchars($supplierreturns['Product_ID'] ?? '') ?>"
+                                                data-quantity="<?= htmlspecialchars($supplierreturns['Quantity'] ?? '') ?>"
+                                                data-date="<?= htmlspecialchars($supplierreturns['ReturnedDate'] ?? '') ?>"
+                                                data-status="<?= htmlspecialchars($supplierreturns['Status'] ?? '') ?>"
+                                                data-reason="<?= htmlspecialchars($supplierreturns['Reason'] ?? '') ?>"
+                                            >
+                                                Edit
+                                            </button>
+                                        </td>
+
+
+                                        
+
+
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -2081,13 +2483,16 @@ if(isset($_SESSION['email'])){
                             <thead class="sticky-div">
                                 <tr>
                                     <th>#</th>
-                                    <th>CRETURNS ID</th>
-                                    <th>Customer ID</th>
+                                    <th>ID</th>
+                                    <!-- <th>Customer ID</th> -->
                                     <th>Reference No.</th>
                                     <th>Product ID</th>
                                     <th>Quantity</th>
                                     <th>Returned Date</th>
                                     <th>Reason</th>
+                                    <th class="customer-return-action-header" style="display: none;">
+                                        Action
+                                    </th>
                                 </tr>
                             </thead>
                            <tbody>
@@ -2095,8 +2500,8 @@ if(isset($_SESSION['email'])){
                                     <tr>
                                         <td><?= $index + 1?></td>
                                         <td><?= $customersreturns['CReturn_ID']?></td>
-                                        <td class="customer-id-cell"><?= $customersreturns['Customer_ID']?></td>
-                                        <td><?= $customersreturns['ReferenceNo']?></td>
+                                        <!-- <td class="customer-id-cell"><?= $customersreturns['Customer_ID']?></td> -->
+                                        <td style="color: rgb(1, 39, 152);"><?= $customersreturns['ReferenceNo']?></td>
                                         <td class="procduct-id-cell"><?= $customersreturns['Product_ID']?></td>
                                         <td><?= $customersreturns['Quantity']?></td>
                                         <td><?= date('F d, Y h:i A', strtotime($customersreturns['ReturnedDate']))?></td>
@@ -2106,6 +2511,27 @@ if(isset($_SESSION['email'])){
                                             </span>
                                         
                                         </td>
+
+
+
+                                        <td class="customer-return-action-cell" style="display:none;">
+                                            <button
+                                                type="button"
+                                                class="select-customer-return-btn na-btn na-btn-edit"
+                                                data-id="<?= htmlspecialchars($customersreturns['CReturn_ID'] ?? '') ?>"
+                                                data-reference="<?= htmlspecialchars($customersreturns['ReferenceNo'] ?? '') ?>"
+                                                data-productid="<?= htmlspecialchars($customersreturns['Product_ID'] ?? '') ?>"
+                                                data-quantity="<?= htmlspecialchars($customersreturns['Quantity'] ?? '') ?>"
+                                                data-date="<?= htmlspecialchars($customersreturns['ReturnedDate'] ?? '') ?>"
+                                                data-reason="<?= htmlspecialchars($customersreturns['ReasonForReturn'] ?? '') ?>"
+                                            >
+                                                Edit
+                                            </button>
+                                        </td>
+
+
+
+
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -2114,17 +2540,19 @@ if(isset($_SESSION['email'])){
                 </div>
 
                 
-                
-                
+             
+
+
+ 
                 <div id="order-restock" class="content-section">
-                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;
+                    <div class="custom-header sticky-div-1" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover; 
                     height: 80px; ">
                         <div class="top-bar">
                             <div class="tab">RESTOCK</div>
                             <div class="user-controls">
-                                <div>
+                                <div>      
                                 <?php
-                                    echo $row['userName'];
+                                    echo $row['userName'];                        
                                 ?>
                                 </div>
                                 <div class="user-icon">👤</div>
@@ -2133,15 +2561,15 @@ if(isset($_SESSION['email'])){
                         <div class="controls-bar">
                              <div class="controls">
                                 <div class="toggle-buttons">
-                                    <button id="list-restock-btn" class="toggle-btn active">
+                                    <!-- <button id="list-restock-btn" class="toggle-btn active">
                                         List to Order
                                     </button>
 
                                     <button id="item-restock-btn" class="toggle-btn">
                                         Item to Order
-                                    </button>
+                                    </button> -->
 
-                                    <button id="receive-restock-btn" class="toggle-btn">
+                                    <button id="receive-restock-btn" class="toggle-btn active">
                                         Item to Receive
                                     </button>
                                 </div>
@@ -2150,25 +2578,43 @@ if(isset($_SESSION['email'])){
                             </div>
                             <!-- <div class="na-quick-search">🔍 Quick Search</div> -->
                             <div class="header-icons">
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <!-- <span class="icon-wrapper"><i class="fas fa-print"></i></span> -->
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                                <!-- <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span> -->
                             </div>
                         </div>
                     </div>
                     <!-- <div class="toolbar">
-                        <?php
+                        <?php 
                         $totalRows = count($restock);
                         ?>
+                    
+                        
 
-                        <span id="products-count" class="na-count"><?= $totalRows ?></span>
+                        <span id="products-count" class="na-count"><?= $totalRows ?></span> 
                         <span class="na-icon-btn">📝</span><span class="na-icon-btn">🗑️</span><span class="na-icon-btn">🖨️</span>
-
+                        
                         <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
                         <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
                          -->
 
                     <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
+                        <!-- <div>
+                            <?php 
+                            $totalRows = count($restock);
+                            ?>
+
+                            <span id="products-count" class="na-count"><?= $totalRows ?></span>
+                            <button id="edit-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="delete-restock-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            
+                             
+                            <button id="order-restock-add-btn" class="na-btn na-btn-add">ADD</button>
+                            <button id="update-restock-status-btn" class="na-btn na-btn-update">UPDATE</button>
+                        </div> -->
+
+
+
                         <div>
                             <?php
                             $totalRows = count($restock);
@@ -2184,24 +2630,203 @@ if(isset($_SESSION['email'])){
                                 <i class="fa-solid fa-trash"></i>
                             </button>
 
-                            <button id="order-restock-add-btn" class="na-btn na-btn-add" type="button">
+                            <!-- <button id="order-restock-add-btn" class="na-btn na-btn-add" type="button">
                                 ADD
+                            </button> -->
+
+                            <button id="order-restock-add-btn" class="na-btn na-btn-add" type="button">
+                                CREATE ORDER
                             </button>
 
                             <button id="place-order-btn" class="na-btn na-btn-update" type="button" style="display:none;">
                                 PLACE ORDER
                             </button>
 
-                            <button id="update-restock-status-btn" class="na-btn na-btn-update" type="button" style="display:none;">
+                            <button id="update-restock-status-btn" class="na-btn na-btn-update" type="button" style="display:inline-block;">
                                 UPDATE
                             </button>
                         </div>
 
+
+
+
+
+
                         <div>
                             <div class="na-quick-search">🔍 Quick Search</div>
-                        </div>
+                        </div>  
 
-                                <!-- //ADD RESTOCK -->
+
+
+
+                        <div id="addOrderRestockModal" class="modal" style="display: none;">
+                            <div class="modal-content">
+                                <h3>Add New Order/Restock</h3>
+                                
+
+                                <!-- <form id="restockForm" action="add.php" method="POST"> -->
+                                <form id="restockForm" action="add_restock.php" method="POST">
+
+                                    <input type="hidden" name="table" value="restock">
+
+                                    <!-- MULTIPLE RESTOCK ITEMS -->
+                                    <div id="restock-items-container">
+
+                                        <!-- Rows will be created by JavaScript -->
+
+                                    </div>
+
+
+
+                                    <!-- SUPPLIER ORDER SUMMARY -->
+                                    <div id="restock-supplier-summary">
+
+                                        <h4>Order Summary by Supplier</h4>
+
+                                        <div id="supplier-summary-content">
+
+                                            <p class="supplier-summary-empty">
+                                                No products added yet.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <!-- ADD ANOTHER PRODUCT -->
+                                    <button type="button" id="add-restock-item-btn" class="na-btn na-btn-add">
+                                        + Add Item
+                                    </button>
+
+                                    <input type="hidden" name="Status" value="Requested">
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-add">
+                                            Confirm Order
+                                        </button>
+
+                                        <button type="button" id="ord-cancel-btn" class="na-btn na-btn-cancel">
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </form>
+                                <!-- PRODUCT SEARCH POPUP -->
+                                <div id="productSearchModal" class="product-search-overlay" style="display: none;">
+
+                                    <div class="product-search-box">
+
+                                        <div class="product-search-header">
+
+                                            <h3>Select Product</h3>
+
+                                            <button
+                                                type="button"
+                                                id="closeProductSearch"
+                                                class="product-search-close">
+                                                ×
+                                            </button>
+
+                                        </div>
+
+                                        <input
+                                            type="text"
+                                            id="productSearchInput"
+                                            class="product-search-input"
+                                            placeholder="Search product name..."
+                                            autocomplete="off">
+
+                                        <div id="productSearchResults" class="product-search-results">
+
+                                            <!-- Products will appear here -->
+
+                                        </div>
+
+                                    </div>
+
+                                </div>     
+                                
+                                <!-- Order Confirmation Modal -->
+                                <div id="orderConfirmationModal" class="product-search-overlay" style="display: none;">
+
+                                    <div class="order-confirmation-box">
+
+                                        <div class="order-confirmation-header">
+
+                                            <h3>Review Order</h3>
+
+                                            <button
+                                                type="button"
+                                                id="closeOrderConfirmation"
+                                                class="product-search-close">
+                                                ×
+                                            </button>
+
+                                        </div>
+
+                                        <p class="order-confirmation-message">
+                                            Please review the order details below before placing the order.
+                                        </p>
+
+                                        <div id="order-confirmation-summary">
+
+                                            <!-- Summary will be generated by JavaScript -->
+
+                                        </div>
+
+                                        <div class="order-confirmation-warning">
+
+                                            Please make sure the product, supplier, and quantity
+                                            are correct before confirming.
+
+                                        </div>
+
+                                        <div class="modal-buttons">
+
+                                            <button
+                                                type="button"
+                                                id="backToOrderBtn"
+                                                class="na-btn na-btn-cancel">
+
+                                                Back
+
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                id="confirmFinalOrderBtn"
+                                                class="na-btn na-btn-add">
+
+                                                Confirm & Place Order
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>                                
+
+                            </div>
+                        </div>
+                        
+                        <link rel="stylesheet" href="assets/add_product.css">
+                        <!-- <script src="assets/add_order.js" defer></script> -->
+                        <!-- <script src="get_product.php" defer></script> -->
+                        <!-- <script src="get/get_supplierORDRES.js" defer></script>
+                        <script src="get/get_productORDRES.js" defer></script> -->
+
+                        <script src="assets/add_order.js" defer></script>
+                        <script src="assets/restock_items.js" defer></script>
+                        <script src="order_confirmation.js"></script>
+
+
+
+
+
+
 
                         <div id="addListToOrderModal" class="modal" style="display: none;">
                             <!-- <div class="modal-content"> -->
@@ -2473,6 +3098,10 @@ if(isset($_SESSION['email'])){
                                             Cancelled
                                         </option>
 
+                                        <option value="P-R-With-Issue">
+                                            P-R-With Issue
+                                        </option>
+
                                         <option value="Received">
                                             Received
                                         </option>
@@ -2501,7 +3130,7 @@ if(isset($_SESSION['email'])){
                                         <button type="button" id="toggleNotNullBtnOrder_restock" style="display: none;">YES ?</button>
                                     </label>
                                     <!-- <input type="date" name="ExpirationDate" id="update-datereceived" style="width: 50%;" required> -->
-                                    <input type="date" name="ExpirationDate" id="update-expiration-date" style="width: 50%;">
+                                    <input type="date" name="ExpirationDate" id="update-expiration-date" style="width: 50%;" required>
                                     </div>
 
                                     <!-- <label>Expiration Date:</label>
@@ -2526,14 +3155,30 @@ if(isset($_SESSION['email'])){
                         </div>
 
                         <link rel="stylesheet" href="assets/add_product.css">
-                        <script src="assets/add_order.js" defer></script>
+                        <!-- <script src="assets/add_order.js" defer></script> -->
                         <script src="assets/update_restock.js" defer></script>
                         <script src="get/get_productORDRES.js" defer></script>
                         <script src="compare_quantity.js" defer></script>
 
-                    </div>
 
-                    <div id="list-restock-table-container" class="table-container order-restock-table-container">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        
+                    </div>
+                    <div id="list-restock-table-container" class="table-container order-restock-table-container" style="display:none;">
                         <table class="order-restock-table">
                             <thead class="sticky-div">
                                 <tr>
@@ -2663,24 +3308,26 @@ if(isset($_SESSION['email'])){
                         </table>
                     </div>
 
-                    <div id="receive-restock-table-container" class="table-container order-restock-table-container" style="display:none;">
+                    <div id="receive-restock-table-container" class="table-container order-restock-table-container">
                         <table class="order-restock-table">
                             <thead class="sticky-div">
                                 <tr>
-                                    <th>#</th>
-                                    <th>ITEM ORDER ID</th>
-                                    <th>PRODUCT ID</th>
+                                    <!-- <th>#</th> -->
+                                    <!-- <th>ITEM ORDER ID</th> -->
+                                    <th>PRODUCT</th>
                                     <!-- <th>SUPPLIER ID</th> -->
-                                    <th>ORDERED QUANTITY</th>
+                                     <th>SUPPLIER</th>
+                                    
                                     <th>ORDER DATE</th>
-                                    <th>PROOF OF TRANSACTION</th>
+                                    <!-- <th>PROOF OF TRANSACTION</th> -->
                                     <th>STATUS</th>
-                                    <th>DELIVERY STATUS</th>
+                                    <!-- <th>DELIVERY STATUS</th> -->
                                     <th>DATE RECEIVED</th>
-                                    <th>WITHOUT ISSUE</th>
+                                    <th>ORDER QTY.</th>
+                                    <th>GOOD</th>
                                     <th>WITH ISSUE</th>
-                                    <th>EXPIRATION DATE</th>
-                                    <th></th>
+                                    <!-- <th>EXPIRATION DATE</th> -->
+                                    <th>ACTION</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2692,13 +3339,83 @@ if(isset($_SESSION['email'])){
                                 foreach ($restock as $index => $restocks) {
                                 ?>
                                     <tr>
-                                        <td><?= $restocks['Orestock_ID'] ?></td>
-                                        <td><?= $restocks['ItemToOrder_ID'] ?></td>
-                                        <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td>
+                                        <!-- <td><?= $restocks['Orestock_ID'] ?></td> -->
+                                        <!-- <td><?= $restocks['ItemToOrder_ID'] ?></td> -->
+                                        <!-- <td class="product-id-cell"><?= $restocks['Product_ID'] ?></td> -->
                                         <!-- <td class="supplier-id-cell"><?= $restocks['Supplier_ID'] ?></td> -->
-                                        <td><?= $restocks['Quantity'] ?></td>
+
+
+                                        <!-- <td><?= $restocks['Orestock_ID'] ?></td> -->
+
+                                        <td class="product-id-cell">
+                                            <strong>
+                                                <?= htmlspecialchars($restocks['ProductName'] ?? 'Unknown Product') ?>
+                                            </strong>
+                                            <br>
+                                            <small>
+                                                ID: <?= htmlspecialchars($restocks['Product_ID']) ?>
+                                            </small>
+                                        </td>
+
+                                        <!-- <td>
+                                            <strong>
+                                                <?= htmlspecialchars($restocks['SupplierName'] ?? 'Unknown Supplier') ?>
+                                            </strong>
+                                            <br>
+                                            <small>
+                                                <?= htmlspecialchars($restocks['ContactPerson']) ?>
+                                            </small>
+                                            <br>
+                                            <small>
+                                                ID: :<?= htmlspecialchars($restocks['Supplier_ID']) ?>
+                                            </small>
+                                        </td> -->
+
+
+
+
+
+
+
+
+
+
+
+                                        <td class="supplier-info-cell">
+                                            <strong>
+                                                <?= htmlspecialchars($restocks['SupplierName'] ?? 'Unknown Supplier') ?>
+                                            </strong>
+                                            <br>
+
+                                            <!-- <small>
+                                                Contact:
+                                                <?= htmlspecialchars($restocks['ContactPerson'] ?? 'N/A') ?>
+                                            </small>
+                                            <br> -->
+
+                                            <!-- <small>
+                                                Address:
+                                                <?= htmlspecialchars($restocks['Address'] ?? 'N/A') ?>
+                                            </small>
+                                            <br> -->
+
+                                            <small>
+                                                <!-- City: -->
+                                                <?= htmlspecialchars($restocks['City'] ?? 'N/A') ?>
+                                            </small>
+                                            <br>
+
+                                            <small>
+                                                Supplier ID:
+                                                <?= htmlspecialchars($restocks['Supplier_ID'] ?? '') ?>
+                                            </small>
+                                        </td>                                        
+
+                                        
+
+
                                         <td><?= date('F d, Y h:i A', strtotime($restocks['OrderDate'])) ?></td>
-                                        <td>
+                                        <!-- <td>
                                             <?php if (!empty($restocks['Image']) && file_exists("uploads/" . $restocks['Image'])): ?>
                                                 <a href="uploads/<?= $restocks['Image'] ?>" target="_blank">
                                                     <img src="uploads/<?= $restocks['Image'] ?>" alt="Product Image" style="max-width: 50px; max-height: 50px; object-fit: cover;">
@@ -2706,27 +3423,28 @@ if(isset($_SESSION['email'])){
                                             <?php else: ?>
                                                 No Image
                                             <?php endif; ?>
-                                        </td>
+                                        </td> -->
                                         <td>
                                             <span class="status-tag status-<?= strtolower($restocks['Status']) ?>">
                                                 <?= htmlspecialchars($restocks['Status']) ?>
                                             </span>
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             <span class="delivery-status-tag delivery-status-<?= strtolower($restocks['DeliveryStatus']) ?>">
                                                 <?= htmlspecialchars($restocks['DeliveryStatus']) ?>
                                             </span>
-                                        </td>
+                                        </td> -->
                                         <td style="color:red;">
                                             <?= empty($restocks['Date_Received']) ? '- - - N/A - - -' : date('F d, Y h:i A', strtotime($restocks['Date_Received'])) ?>
                                         </td>
+                                        <td><?= $restocks['Quantity'] ?></td>
                                         <td><?= $restocks['TotalReceived'] ?></td>
                                         <td><?= $restocks['withIssue'] ?></td>
-                                        <td>
+                                        <!-- <td>
                                             <?= !empty($restocks['ExpirationDate']) ? date('F d, Y', strtotime($restocks['ExpirationDate'])) : '- - -' ?>
-                                        </td>
+                                        </td> -->
                                         <td class="action-cell">
-                                            <button style="display:none;" class="update-order-btn"
+                                            <button style="display:none;" class="update-order-btn na-btn na-btn-update"
                                                 data-id="<?= $restocks['Orestock_ID'] ?>"
                                                 data-proof="<?= $restocks['Image'] ?>"
                                                 data-status="<?= $restocks['Status'] ?>"
@@ -2743,10 +3461,15 @@ if(isset($_SESSION['email'])){
                                 <?php } ?>
                             </tbody>
                         </table>
-                    </div>
-                    <!-- ADD LIST TO ORDER MODAL -->
+                    </div>  
+                    <!-- ADD LIST TO ORDER MODAL -->              
+                        
+                                
 
                 </div>
+
+
+
 
 
                 
@@ -2779,9 +3502,9 @@ if(isset($_SESSION['email'])){
                             </div>
 
                             <div class="header-icons">
-                                <span class="icon-wrapper"><i class="fas fa-print"></i></span>
+                                <!-- <span class="icon-wrapper"><i class="fas fa-print"></i></span> -->
                                 <span class="icon-wrapper" onclick="openNotifications()"><i class="fas fa-envelope"></i><span class="badge">0</span></span>
-                                <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span>
+                                <!-- <span class="icon-wrapper" onclick="openCalendarModal()"><i class="fa-regular fa-calendar-days"></i><span class="badge">2</span></span> -->
                             </div>
 
 
@@ -2791,12 +3514,12 @@ if(isset($_SESSION['email'])){
                     <div class="toolbar sticky-div-2" style="display: flex; justify-content:space-between;">
                         <div>
 
-                            <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button>
+                            <!-- <button id="edit-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-pen-to-square"></i></button> -->
+                            <!-- <button id="delete-product-btn" class="na-btn na-btn-add1" type="button"><i class="fa-solid fa-trash"></i></button> -->
                             <!-- <span class="na-icon-btn">🖨️</span> -->
                              
-                            <button id="transaction-add-btn" class="na-btn na-btn-add">ADD</button>
-                            <button id="sales-add-btn" class="na-btn na-btn-add">ADD</button>
+                            <!-- <button id="transaction-add-btn" class="na-btn na-btn-add">ADD</button> -->
+                            <!-- <button id="sales-add-btn" class="na-btn na-btn-add">ADD</button> -->
                             
                         </div>
 
@@ -2805,11 +3528,11 @@ if(isset($_SESSION['email'])){
                         <div class="search-container" style="display:flex; justify-content:flex-end; margin-bottom:10px;">
                         <input 
                             type="text" 
-                            id="quickSearch" 
+                            id="transactionQuickSearch" 
                             placeholder="🔍 Quick Search..." 
                             style="padding:8px 12px; border-radius:6px; border:1px solid #ccc; width:250px;"
                         >
-                        </div>
+                        </div>  
 
 
 
@@ -2930,12 +3653,12 @@ if(isset($_SESSION['email'])){
 
                                     <label for="Transaction_IDSALES">Choose Transaction ID:</label>
                                     <select id="Transaction_IDSALES" name="Transaction_ID" class="id-select"  style="width: 60%;"required>
-                                        <option disabled selected>Loading...</option>
+                                        <option value="" disabled selected>Loading...</option>
                                     </select>
 
                                     <label for="Product_ID">Choose Product ID:</label>
                                     <select id="Product_IDSALES" name="Product_ID" class="id-select" style="width: 60%;" required>
-                                        <option disabled selected>Loading...</option>
+                                        <option value="" disabled selected>Loading...</option>
                                     </select>
 
                                     <!-- <label for="Product_ID">Choose Batch ID:</label>
@@ -2945,7 +3668,7 @@ if(isset($_SESSION['email'])){
 
                                     <label for="BatchNum">Choose Batch ID:</label>
                                     <select id="Product_IDSALES_Batch" name="BatchNum" class="id-select" style="width: 60%;" required>
-                                    <option disabled selected>Loading...</option>
+                                    <option value="" disabled selected>Loading...</option>
                                     </select>
 
 
@@ -3016,7 +3739,7 @@ if(isset($_SESSION['email'])){
                         <table class="transaction-sales-table">
                             <thead class="sticky-div">
                                 <tr>
-                                    <th></th>
+                                    <th>#</th>
                                     <th>Sales Item ID</th>   
                                     <th>Transaction ID</th>
                                     <th>Product ID</th>
@@ -3039,23 +3762,42 @@ if(isset($_SESSION['email'])){
                                 usort($sales_item_test, function ($a, $b) {
                                     return $b['SalesItem_ID'] <=> $a['SalesItem_ID'];
                                 });
+
+                                
+
+
+
+
+
+                                /* =========================================================
+                                LOAD PRODUCT NAMES ONCE
+                                ========================================================= */
+
+                                $productNames = [];
+
+                                $productQuery = mysqli_query(
+                                    $conn,
+                                    "SELECT Product_ID, ProductName FROM product"
+                                );
+
+                                while ($productRow = mysqli_fetch_assoc($productQuery)) {
+                                    $productNames[$productRow['Product_ID']] =
+                                        $productRow['ProductName'];
+                                }
+
+
+
+                                $sales_item_test = array_slice($sales_item_test, 0, 50);
                                 
                                 foreach($sales_item_test as $index => $sales_item_test){ ?>
                                     <tr>
                                         <td><?= $index + 1?></td>
-                                        <td><?= $sales_item_test['SalesItem_ID'] ?></td>
-                                        <td><?= $sales_item_test['Sales_ID'] ?></td>
+                                        <td>SALLE-ITEM-<?= $sales_item_test['SalesItem_ID'] ?></td>
+                                        <td>SALES-<?= $sales_item_test['Sales_ID'] ?></td>
                                         <td class="product-id-cell"><?= $sales_item_test['Product_ID'] ?></td>
 
                                         <td>
-                                            <?php 
-                                            
-                                            $productsales_id = $sales_item_test['Product_ID'];
-                                            $product_query = mysqli_query($conn, "SELECT ProductName FROM product where Product_ID = '$productsales_id'");
-                                            $productname = mysqli_fetch_assoc($product_query);
-                                            echo $productname['ProductName'] ?? 'Unknown Product';
-
-                                            ?>
+                                            <?= $productNames[$sales_item_test['Product_ID']] ?? 'Unknown Product' ?>
                                         </td>
 
                                         <!-- <td><?= $sales_item_test['ProductName'] ?></td> -->
@@ -3078,6 +3820,8 @@ if(isset($_SESSION['email'])){
                                         <td>
                                             <?= date('M d, Y h:i A', strtotime($sales_item_test['date_created'])) ?>
                                         </td>
+                                        
+
                                         <!-- <td>
                                             <?= date('M d, Y h:i A', strtotime($sales_item_test['date_updated'])) ?>
                                         </td> -->
@@ -3098,12 +3842,12 @@ if(isset($_SESSION['email'])){
                         <table class="transaction-sales-table">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>#</th>
                                     <th>Transaction ID</th>
                                     <th>Reference No.</th>
                                     <th>User</th>
                                     <th>Total</th>
-                                    <th>Amount Tendered</th>
+                                    <th>Amount Received</th>
                                     <th>Change Amount</th>
                                     <th>Date Created</th>
                                 </tr>
@@ -3113,11 +3857,16 @@ if(isset($_SESSION['email'])){
                                 usort($sales_test, function ($a, $b) {
                                     return $b['Sales_ID'] <=> $a['Sales_ID'];
                                 });
+
+                                // $sales_item_test = array_slice($sales_item_test, 0, 50);
+
+
+
                                 foreach($sales_test as $index => $sales_test){ ?>
                                     <tr>
                                         <td><?= $index + 1?></td>
-                                        <td><?= $sales_test['Sales_ID'] ?></td>
-                                        <td><?= $sales_test['ReferenceNo'] ?></td>
+                                        <td>SALES-<?= $sales_test['Sales_ID'] ?></td>
+                                        <td style="color: rgb(1, 39, 152);"><?= $sales_test['ReferenceNo'] ?></td>
                                         <td>
                                             <?php 
                                             
@@ -3129,11 +3878,14 @@ if(isset($_SESSION['email'])){
                                             ?>
                                         </td>
 
-                                        <td><?= $sales_test['total_amount'] ?></td>
-                                        <td><?= $sales_test['amount_tendered'] ?></td>
-                                        <td><?= $sales_test['change_amt'] ?></td>
+                                        <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $sales_test['total_amount'] ?></td>
+                                        <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $sales_test['amount_tendered'] ?></td>
+                                        <td><span style="color: darkgreen; font-weight: bolder; float:left">PHP: </span><?= $sales_test['change_amt'] ?></td>
 
-                                        <td><?= $sales_test['date_created'] ?></td>
+                                        <!-- <td><?= $sales_test['date_created'] ?></td> -->
+                                        <td>
+                                            <?= date('M d, Y h:i A', strtotime($sales_test['date_created'])) ?>
+                                        </td>
                                         <!-- <td><?= $sales_test['date_updated'] ?></td> -->
 
 
@@ -3547,11 +4299,111 @@ if(isset($_SESSION['email'])){
 
                 </div>
 
+
+                <div id="stock-adjustments" class="content-section">
+                    <link rel="stylesheet" href="reports/reports-page.css">
+                    <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
+                        <div class="top-bar">
+                            <div class="tab">Reports</div>
+
+                            <div class="user-controls">
+                                <div>
+                                    <?php echo $row['userName']; ?>
+                                </div>
+
+                                <div class="user-icon">👤</div>
+                            </div>
+                        </div>
+
+                        <div class="report-filter">
+                            <label for="reportType" style="color: white;">Report Type:</label>
+                            <select id="reportType" onchange="updateReportLinks()">
+                                <option value="daily" selected>Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                            </div>
+                        </div>
+
+                    <div id="report-content" class="report-cards">
+                        <div class="report-card">
+                            <h3>Sales Summary</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_sales_summary_pdf.php?type=daily" class="export-btn pdf report-type-link">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <h3>Inventory Summary</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_inventory_summary_pdf.php?type=daily" class="export-btn pdf report-type-link">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <h3>Product Received</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_product_received_pdf.php?type=daily" class="export-btn pdf report-type-link">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <h3>Product Orders</h3>
+                            <div class="export-buttons">
+                                <a href="reports/export_product_orders_pdf.php?type=daily" class="export-btn pdf report-type-link">PDF</a>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <div>
+                                <h3>
+                                    Demand Forecast & Recommendation
+                                    <span style="font-size: 14px; font-weight: normal;">— 2 Weeks</span>
+                                </h3>
+                            </div>
+
+                            <div class="export-buttons">
+                                <a href="reports/export_demand_reorder_pdf.php"
+                                class="export-btn pdf">
+                                    PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function updateReportLinks() {
+                        const type = document.getElementById("reportType").value;
+                        const links = document.querySelectorAll(".report-type-link");
+
+                        links.forEach(function(link) {
+                            link.href = link.href.replace(
+                                /type=(daily|weekly|monthly)/,
+                                "type=" + type
+                            );
+                        });
+                    }
+
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const reportType = document.getElementById("reportType");
+                        const forecastPeriod = document.getElementById("forecastPeriod");
+                        const demandForecastPdf = document.getElementById("demandForecastPdf");
+
+                        updateReportLinks();
+
+                        reportType.addEventListener("change", updateReportLinks);
+
+                        forecastPeriod.addEventListener("change", function() {
+                            demandForecastPdf.href =
+                                "reports/export_demand_reorder_pdf.php?period=" + this.value;
+                        });
+                    });
+                </script>                
                  
                         
 
 
-                <div id="stock-adjustments" class="content-section">
+                <!-- <div id="stock-adjustments" class="content-section">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
                         <div class="top-bar">
                             <div class="tab">Daily Reports</div>
@@ -3566,55 +4418,16 @@ if(isset($_SESSION['email'])){
                             </div>
                         </div>
                         <div class="controls-bar" style="height: 30px;">
-                             <div class="controls">
-                                <!-- <div class="control-group"><label>📊 Group by:</label><select></select></div>
-                                <div class="control-group"><label>⇅ Sort by:</label><select><option>DATE</option></select></div> -->
+                            <div class="controls">
                             </div>
-                            <!-- <div class="na-quick-search">🔍 Quick Search</div> -->
+                        
                         </div>
                     </div>
                     <div class="toolbar" >
-                        <!-- <input type="checkbox">
-                        <span id="stock-adjustments-count" class="na-count">07</span>
-                        <span class="na-icon-btn">📝</span>
-                        <span class="na-icon-btn">🗑️</span> -->
+            
                         <button id="printBtn">🖨️</button>
-                        <!-- <span class="na-icon-btn">🖨️</span> -->
-                        
-                        <!-- <button id="adjustments-add-btn" class="na-btn na-btn-add">ADD</button>
-                        <div id="addAdjustmentModal" class="modal" style="display: none;">
-                            <div class="modal-content">
-                                <h3>Add New Stock Adjustment</h3>
-                                <form id="adjustmentForm" action="add.php" method="POST">
-                                    <input type="hidden" name="table" value="pulledoutitems">
-
-                                    <label>Product ID:</label>
-                                    <input type="number" name="Product_ID" required>
-
-                                    <label>Supplier ID:</label>
-                                    <input type="number" name="Supplier_ID" required>
-
-                                    <label>Quantity:</label>
-                                    <input type="number" name="Quantity" required>
-
-                                    <label>Reason:</label>
-                                    <input type="text" name="Reason" required>
-
-                                    <label>Pulled Date:</label>
-                                    <input type="date" name="PulledDate" required>
-   
-
-                                    <div class="modal-buttons">
-                                        <button type="submit" class="na-btn na-btn-add">Save</button>
-                                        <button type="button" id="cancel-btn" class="na-btn na-btn-cancel close-modal-btn">Cancel</button>
-                                        <button type="button" id="adjustment-cancel-btn" class="na-btn na-btn-cancel">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div> -->
-
-                        <!-- <link rel="stylesheet" href="assets/add_product.css">
-                        <script src="assets/add_adjustment.js" defer></script> -->
+                   
+         
                     </div>
                     <link rel="stylesheet" href="assets/daily_reports.css">
                     <div class="report-container">
@@ -3640,10 +4453,11 @@ if(isset($_SESSION['email'])){
                     </div>
 
 
-            <!-- END OF STOCK ADJUSTMENT -->
-                </div>
+                </div> -->
+                <!-- END OF STOCK ADJUSTMENT -->
                 <script src="reports/daily_reports.js"></script>
 
+                <!-- ACOUount -->
                 <div id="account" class="content-section">
                     <div class="custom-header" style="background-image: url(topbarlogo.png);background-repeat: no-repeat;background-size: cover;">
                         <div class="top-bar"><div class="tab">ACCOUNT</div>
@@ -3725,30 +4539,214 @@ if(isset($_SESSION['email'])){
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="account-info-right">
-                                <div class="recent-sales-card">
-                                    <h3>Recent Sales</h3>
-                                    <div class="recent-sales-table-container">
-                                        <table class="recent-sales-table">
-                                            <thead>
-                                                <tr><th>Sales ID</th><th>Date</th><th>Product</th><th>Quantity</th></tr>
-                                            </thead>
-                                            <tbody>
-                                                <td colspan="4" style="text-align: center;">No recent sales</td>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="account-footer">
-                                        <span>Deleted Files 🗑️</span>
-                                    </div>
-                                </div>
-                                <div class="bottom-links">
-                                    <a href="#">Privacy</a>
-                                    <a href="#">Languages</a>
-                                    <a href="#">Help</a>
-                                </div>
-                            </div> -->
+                            
                         </div>
+                        
+                        
+                        <?php if (isset($_SESSION['accountType']) && strtolower(trim($_SESSION['accountType'])) === 'super admin') { ?>
+
+                        <div class="users-section">
+
+                            <div class="users-header">
+                                <h2>Users / Accounts</h2>
+
+                                <button type="button" id="users-add-btn">
+                                    Add User
+                                </button>
+
+                                <button type="button" id="edit-user-btn">
+                                    Edit User
+                                </button>
+                            </div>
+
+                            <table id="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Account Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <?php while ($user = mysqli_fetch_assoc($usersResult)) { ?>
+
+                                        <tr>
+                                            <td>
+                                                <?= htmlspecialchars($user['id']) ?>
+                                            </td>
+
+                                            <td>
+                                                <?= htmlspecialchars($user['userName']) ?>
+                                            </td>
+
+                                            <td>
+                                                <?= htmlspecialchars($user['email']) ?>
+                                            </td>
+
+                                            <td>
+                                                <?= htmlspecialchars($user['phone']) ?>
+                                            </td>
+
+                                            <td>
+                                                <?= htmlspecialchars($user['accountType']) ?>
+                                            </td>
+
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    class="select-user-btn"
+                                                    data-id="<?= htmlspecialchars($user['id']) ?>"
+                                                    data-username="<?= htmlspecialchars($user['userName']) ?>"
+                                                    data-email="<?= htmlspecialchars($user['email']) ?>"
+                                                    data-phone="<?= htmlspecialchars($user['phone']) ?>"
+                                                    data-account-type="<?= htmlspecialchars($user['accountType']) ?>">
+                                                    📝 Select
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <!-- ADD USER MODAL -->
+                        <div id="addUserModal" class="modal" style="display: none;">
+                            <div class="modal-content">
+
+                                <h3>Add New User</h3>
+
+                                <form id="userForm" action="register.php" method="POST">
+
+                                    <input type="hidden" name="signup" value="1">
+
+                                    <label>Username:</label>
+                                    <input type="text" name="userName" required>
+
+                                    <label>Email:</label>
+                                    <input type="email" name="email" required>
+
+                                    <label>Password:</label>
+                                    <input type="password" name="password" required>
+
+                                    <label>Phone:</label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        maxlength="11"
+                                        pattern="[0-9]{11}"
+                                        required
+                                    >
+                                    
+                                    <!-- USER TYPE -->
+                                    <label>Account Type:</label>
+                                    <select name="accountType" required>
+                                        <option value="" disabled selected>Select Account Type</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Cashier">Cashier</option>
+                                        <option value="Super Admin">Super Admin</option>
+                                    </select>
+
+                                    <div class="modal-buttons">
+                                        <button type="submit" class="na-btn na-btn-add">
+                                            Create Account
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="user-cancel-btn"
+                                            class="na-btn na-btn-cancel"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                        <!-- EDIT USER MODAL -->
+                        <div id="editUserModal" class="modal" style="display: none; ">
+                            <div class="modal-content">
+
+                                <h3>Edit User</h3>
+
+                                <form id="editUserForm" action="update.php" method="POST">
+
+                                    <input type="hidden" name="table" value="users">
+
+                                    <input
+                                        type="hidden"
+                                        name="id"
+                                        id="edit-user-id">
+
+                                    <label>Username:</label>
+                                    <input
+                                        type="text"
+                                        name="userName"
+                                        id="edit-user-username"
+                                        required>
+
+                                    <label>Email:</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        id="edit-user-email"
+                                        required>
+
+                                    <label>Phone:</label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        id="edit-user-phone"
+                                        maxlength="11"
+                                        required>
+
+
+                                    <p style="font-size: 12px; color: gray;">
+                                        Leave the password unchanged when editing.
+                                    </p>
+
+                                    <!-- EDIT USER ACCOUNT TYPE -->
+                                    <label>Account Type:</label>
+                                    <select name="accountType" id="edit-user-account-type" required>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Cashier">Cashier</option>
+                                        <option value="Super Admin">Super Admin</option>
+                                    </select>
+
+                                    <div class="modal-buttons">
+                                        <button
+                                            type="submit"
+                                            class="na-btn na-btn-add">
+
+                                            Save Changes
+
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="edit-user-cancel-btn"
+                                            class="na-btn na-btn-cancel">
+
+                                            Cancel
+
+                                        </button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                        <?php } ?>
+                            
                     </div>
                 </div>
 
@@ -3952,10 +4950,10 @@ if(isset($_SESSION['email'])){
             <div class="ai-order-footer">
 
                 <div class="ai-order-grand-total">
-                    <strong>Grand Total:</strong>
+                    <!-- <strong>Grand Total:</strong>
                     <span id="aiOrderGrandTotal">
                         ₱0.00
-                    </span>
+                    </span> -->
                 </div>
 
                 <div class="ai-order-buttons">
@@ -3982,6 +4980,57 @@ if(isset($_SESSION['email'])){
 
     </div>
 
+    <!-- AI ORDER CONFIRMATION MODAL -->
+    <div id="aiOrderConfirmationModal" style="display: none;">
+
+        <div class="ai-order-modal-content">
+
+            <!-- HEADER -->
+            <div class="ai-order-header">
+                <h2>CONFIRM AI ORDER</h2>
+
+                <button
+                    type="button"
+                    class="ai-order-close"
+                    id="aiConfirmationCloseBtn">
+                    &times;
+                </button>
+            </div>
+
+            <!-- ORDER REVIEW -->
+            <div id="aiOrderConfirmationContent">
+
+                <!-- JavaScript will insert the order summary here -->
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="ai-order-footer">
+
+                <div class="ai-order-buttons">
+
+                    <button
+                        type="button"
+                        id="aiConfirmationCancelBtn"
+                        class="ai-order-cancel-btn">
+                        Back
+                    </button>
+
+                    <button
+                        type="button"
+                        id="aiConfirmationConfirmBtn"
+                        class="ai-order-confirm-btn">
+                        Confirm & Place Order
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>    
+
     <!-- Link to the external JavaScript file -->
     <!-- <script src="homepagescript.js"></script> -->
 
@@ -3991,6 +5040,7 @@ if(isset($_SESSION['email'])){
     <script src="add_list_to_order.js"></script>
     <!-- <script src="get_product.js" defer></script>
     <script src="get_supplier.js" defer></script> -->
+    <script src="assets/add_user.js" defer></script>
 
 </body>
 </html>

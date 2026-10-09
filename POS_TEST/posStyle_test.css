@@ -18,7 +18,7 @@
 
 .productResultContainer{
     padding: 2px;
-    border: 1px solid blue;
+    border: 2px solid rgb(27, 27, 30);
     position: relative;
     overflow: hidden;
 }
@@ -33,7 +33,7 @@
     color: white;
     font-size: 17px;
     left: 0;
-    background: #d32241cc;
+    background: rgba(50, 45, 45, 0.914);
     height: 53px;
     font-weight: bold;
     padding: 8px;
@@ -57,7 +57,7 @@
 }
 
 .pos_header{
-    background: rgb(236, 123, 123);
+    background: rgb(46, 41, 41);
     text-align: center;
     padding-bottom: 10px;
 }
@@ -130,14 +130,14 @@
     text-align: center;
     display: block;
     text-decoration: none;
-    border: 2px solid rgb(255, 91, 91);
+    border: 2px solid rgb(11, 8, 8);
     border-radius: 5px;
-    color: rgb(255, 91, 91);
+    color: rgb(66, 61, 61);
 }
 .checkoutBtn:hover{
-    background:  rgb(255, 91, 91);
+    background:  rgb(66, 10, 10);
     color: white;
-    transition: .2s;
+    transition: .5s;
 
 }
 
@@ -319,3 +319,244 @@ hr {
 .searchResultEntry * {
     pointer-events: none;
 }   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   POS TEST - PRODUCT OVERFLOW + STICKY CART
+   ========================================= */
+
+/* Keep the POS columns aligned */
+.container-fluid > .row {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* LEFT SIDE: Product listing */
+.container-fluid > .row > .col-xs-9 {
+    min-width: 0;
+}
+
+/* Prevent product cards from overflowing their grid */
+.searchResultContainer {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.searchResultContainer > .row {
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.productColContainer {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.productResultContainer {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.productImage {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.productInfoContainer {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.productName,
+.productPrice {
+    overflow-wrap: anywhere;
+}
+
+/* RIGHT SIDE: Sticky checkout sidebar */
+.posOrderContainer {
+    position: sticky;
+    top: 10px;
+    align-self: flex-start;
+    min-width: 0;
+    height: calc(100vh - 20px);
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Logo and date/time */
+.posOrderContainer .pos_header {
+    flex: 0 0 auto;
+}
+
+/* Product list fills the available middle space */
+.posOrderContainer .pos_items_container {
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* Cart content */
+.posOrderContainer .pos_items {
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+/* Total and checkout button stay together at the bottom */
+.posOrderContainer .checkoutBtnContainer {
+    flex: 0 0 auto;
+    margin-top: 0;
+    padding: 12px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Total directly above Checkout */
+.posOrderContainer .item_total_container {
+    position: static;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+.posOrderContainer .item_total {
+    margin: 0;
+}
+
+/* Checkout button */
+.posOrderContainer .checkoutBtn {
+    display: block;
+    position: static;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+/* Header stays at the top of the sidebar */
+.pos_header {
+    flex-shrink: 0;
+}
+
+/* Cart section takes the remaining available space */
+.pos_items_container {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Cart items scroll independently */
+.pos_items {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Keep total visible below the cart */
+.item_total_container {
+    flex-shrink: 0;
+}
+
+/* Keep checkout button at the bottom */
+.checkoutBtnContainer {
+    flex-shrink: 0;
+}
+
+/* Avoid oversized content on narrower screens */
+.posOrderContainer img {
+    max-width: 100%;
+    object-fit: contain;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Uniform product card sizing */
+.productResultContainer {
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Uniform image display area */
+.productResultContainer .productImage {
+    width: 100%;
+    height: 155px;
+    min-height: 155px;
+    max-height: 155px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+/* Keep product details aligned */
+.productResultContainer .productInfoContainer {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 5px 8px;
+    box-sizing: border-box;
+}
+
+/* Prevent long names from making cards uneven */
+.productResultContainer .productName {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+/* Keep prices within their cards */
+.productResultContainer .productPrice {
+    overflow-wrap: anywhere;
+}
